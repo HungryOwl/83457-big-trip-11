@@ -1,7 +1,7 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
 * Студент: [Анна Новикова](https://up.htmlacademy.ru/ecmascript/11/user/83457).
-* Наставник: `Неизвестно`.
+* Наставник: [Юлия Корецкая](https://htmlacademy.ru/profile/id11886).
 
 ---
 

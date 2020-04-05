@@ -1,5 +1,3 @@
-"use strict";
-
 const TRIP_COUNT = 3;
 
 const menuTemplate = () => {

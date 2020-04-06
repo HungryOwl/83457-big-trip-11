@@ -35,9 +35,9 @@ const renderTemplates = (...templates) => {
 const renderTrips = (tripsCount) => {
   const tripListElement = document.querySelector(`.trip-events__list`);
 
-  Array(tripsCount).fill(``).forEach(() => {
+  for (let i = 0; i < tripsCount; i++) {
     renderTemplate(tripListElement, getTripPointTemplate());
-  });
+  }
 };
 
 renderTemplates(

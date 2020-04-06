@@ -19,13 +19,13 @@ const renderTemplates = (...templates) => {
   templates.forEach((template) => {
     let {className} = template;
 
-    elem[className] = !elem[className] ? utils.getHtmlElement(className) : elem[className];
+    elem[className] = !elem[className] ? utils.getHtmlNode(className) : elem[className];
     renderTemplate(elem[className], template.render(), template.place && template.place);
   });
 };
 
 const renderTrips = (tripsCount) => {
-  const tripListElement = utils.getHtmlElement(`trip-events__list`);
+  const tripListElement = utils.getHtmlNode(`trip-events__list`);
 
   for (let i = 0; i < tripsCount; i++) {
     renderTemplate(tripListElement, getTripPointTemplate());

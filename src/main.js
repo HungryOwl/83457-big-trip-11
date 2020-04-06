@@ -34,7 +34,7 @@ const renderTrips = (tripsCount) => {
 
 renderTemplates(
     {className: `trip-controls`, render: getMenuTemplate},
-    {className: `trip-controls`, render: getfilterTemplate, place: `afterEnd`},
+    {className: `trip-controls`, render: getfilterTemplate},
     {className: `trip-main`, render: getTripInfoTemplate, place: `afterBegin`},
     {className: `trip-info`, render: getTripInfoCost},
     {className: `trip-events`, render: getSortTemplate},

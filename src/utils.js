@@ -1,4 +1,4 @@
-const getHtmlNode = (className) => {
+const getHtmlElement = (className) => {
   const element = document.querySelector(`.${className}`);
 
   if (!element) {
@@ -8,4 +8,4 @@ const getHtmlNode = (className) => {
   return element;
 };
 
-export {getHtmlNode};
+export {getHtmlElement};

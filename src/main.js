@@ -1,12 +1,12 @@
 import * as utils from './utils';
 import {getMenuTemplate} from './components/menu';
 import {getfilterTemplate} from './components/filter';
-import {getTripInfoTemplate} from './components/tripInfo';
-import {getTripInfoCost} from './components/tripInfoCost';
-import {getSortTemplate} from './components/sortTrip';
-import {getTripEditTemplate} from './components/editTrip';
-import {getTripDaysTemplate} from './components/tripDays';
-import {getTripPointTemplate} from './components/tripPoint';
+import {getTripInfoTemplate} from './components/trip-info';
+import {getTripInfoCost} from './components/trip-info-cost';
+import {getSortTemplate} from './components/sort-trip';
+import {getTripEditTemplate} from './components/edit-trip';
+import {getTripDaysTemplate} from './components/trip-days';
+import {getTripPointTemplate} from './components/trip-point';
 
 const TRIP_COUNT = 3;
 const elem = {};

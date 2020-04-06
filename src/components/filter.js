@@ -1,4 +1,4 @@
-const getfilterTemplate = () => (
+const getFilterTemplate = () => (
   `
     <!-- Фильтры -->
     <h2 class="visually-hidden">Filter events</h2>
@@ -23,5 +23,5 @@ const getfilterTemplate = () => (
   `
 );
 
-export {getfilterTemplate};
+export {getFilterTemplate};
 

@@ -1,6 +1,6 @@
 import * as utils from './utils';
 import {getMenuTemplate} from './components/menu';
-import {getfilterTemplate} from './components/filter';
+import {getFilterTemplate} from './components/filter';
 import {getTripInfoTemplate} from './components/trip-info';
 import {getTripInfoCost} from './components/trip-info-cost';
 import {getSortTemplate} from './components/sort-trip';
@@ -34,7 +34,7 @@ const renderTrips = (tripsCount) => {
 
 renderTemplates(
     {className: `trip-controls`, render: getMenuTemplate},
-    {className: `trip-controls`, render: getfilterTemplate},
+    {className: `trip-controls`, render: getFilterTemplate},
     {className: `trip-main`, render: getTripInfoTemplate, place: `afterBegin`},
     {className: `trip-info`, render: getTripInfoCost},
     {className: `trip-events`, render: getSortTemplate},

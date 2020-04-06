@@ -11,4 +11,4 @@ const getTripInfoTemplate = () => (
   `
 );
 
-export {getTripInfoTemplate}
+export {getTripInfoTemplate};

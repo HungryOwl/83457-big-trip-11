@@ -1,3 +1,4 @@
+import * as utils from './utils';
 import {getMenuTemplate} from './components/menu';
 import {getfilterTemplate} from './components/filter';
 import {getTripInfoTemplate} from './components/tripInfo';
@@ -10,30 +11,21 @@ import {getTripPointTemplate} from './components/tripPoint';
 const TRIP_COUNT = 3;
 const elem = {};
 
-const getHtmlElement = (className) => {
-  const element = document.querySelector(`.${className}`);
-
-  if (!element) {
-    throw new Error(`Элемент не найден`);
-  }
-
-  return element;
-};
-
 const renderTemplate = (container, template, place = `beforeEnd`) => {
   container.insertAdjacentHTML(place, template);
 };
 
 const renderTemplates = (...templates) => {
   templates.forEach((template) => {
-    const container = document.querySelector(template.container);
+    let {className} = template;
 
-    renderTemplate(container, template.render(), template.place && template.place);
+    elem[className] = !elem[className] ? utils.getHtmlElement(className) : elem[className];
+    renderTemplate(elem[className], template.render(), template.place && template.place);
   });
 };
 
 const renderTrips = (tripsCount) => {
-  const tripListElement = document.querySelector(`.trip-events__list`);
+  const tripListElement = utils.getHtmlElement(`trip-events__list`);
 
   for (let i = 0; i < tripsCount; i++) {
     renderTemplate(tripListElement, getTripPointTemplate());
@@ -41,13 +33,13 @@ const renderTrips = (tripsCount) => {
 };
 
 renderTemplates(
-    {container: `.trip-controls`, render: getMenuTemplate},
-    {container: `.trip-controls`, render: getfilterTemplate, place: `afterEnd`},
-    {container: `.trip-main`, render: getTripInfoTemplate, place: `afterBegin`},
-    {container: `.trip-info`, render: getTripInfoCost},
-    {container: `.trip-events`, render: getSortTemplate},
-    {container: `.trip-events`, render: getTripEditTemplate},
-    {container: `.trip-events`, render: getTripDaysTemplate}
+    {className: `trip-controls`, render: getMenuTemplate},
+    {className: `trip-controls`, render: getfilterTemplate, place: `afterEnd`},
+    {className: `trip-main`, render: getTripInfoTemplate, place: `afterBegin`},
+    {className: `trip-info`, render: getTripInfoCost},
+    {className: `trip-events`, render: getSortTemplate},
+    {className: `trip-events`, render: getTripEditTemplate},
+    {className: `trip-events`, render: getTripDaysTemplate}
 );
 
 renderTrips(TRIP_COUNT);

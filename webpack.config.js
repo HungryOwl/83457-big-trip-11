@@ -5,7 +5,6 @@ module.exports = {
   entry: `./src/main.js`,
   devtool: `source-map`,
   output: {
-    /* eslint-disable no-undef */
     filename: `bundle.js`,
     path: path.join(__dirname, `public`)
   },

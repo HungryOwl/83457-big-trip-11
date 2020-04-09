@@ -6,9 +6,7 @@ import {getTripInfoCost} from './components/trip-info-cost';
 import {getSortTemplate} from './components/sort-trip';
 import {getTripEditTemplate} from './components/edit-trip';
 import {getTripDaysTemplate} from './components/trip-days';
-import {getTripPointTemplate} from './components/trip-point';
 
-const TRIP_COUNT = 3;
 const mainClassNames = [`trip-main`, `trip-controls`];
 const secondaryClassNames = [`trip-info`, `trip-events`];
 const elem = {};
@@ -25,14 +23,6 @@ const renderTemplates = (...templates) => {
   });
 };
 
-const renderTrips = (tripsCount) => {
-  const tripListElement = utils.getHtmlElement(`trip-events__list`);
-
-  for (let i = 0; i < tripsCount; i++) {
-    renderTemplate(tripListElement, getTripPointTemplate());
-  }
-};
-
 utils.getContainerClasses(mainClassNames, elem);
 renderTemplates(
     {container: elem[`trip-main`], render: getTripInfoTemplate, place: `afterBegin`},
@@ -47,5 +37,3 @@ renderTemplates(
     {container: elem[`trip-events`], render: getTripEditTemplate},
     {container: elem[`trip-events`], render: getTripDaysTemplate}
 );
-
-renderTrips(TRIP_COUNT);

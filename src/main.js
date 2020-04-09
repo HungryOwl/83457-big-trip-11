@@ -35,9 +35,9 @@ const renderTrips = (tripsCount) => {
 
 utils.getContainerClasses(mainClassNames, elem);
 renderTemplates(
+    {container: elem[`trip-main`], render: getTripInfoTemplate, place: `afterBegin`},
     {container: elem[`trip-controls`], render: getMenuTemplate},
-    {container: elem[`trip-controls`], render: getFilterTemplate},
-    {container: elem[`trip-main`], render: getTripInfoTemplate, place: `afterBegin`}
+    {container: elem[`trip-controls`], render: getFilterTemplate}
 );
 
 utils.getContainerClasses(secondaryClassNames, elem);

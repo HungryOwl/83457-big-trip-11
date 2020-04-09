@@ -9,6 +9,8 @@ import {getTripDaysTemplate} from './components/trip-days';
 import {getTripPointTemplate} from './components/trip-point';
 
 const TRIP_COUNT = 3;
+const mainClassNames = [`trip-main`, `trip-controls`];
+const secondaryClassNames = [`trip-info`, `trip-events`];
 const elem = {};
 
 const renderTemplate = (container, template, place = `beforeEnd`) => {
@@ -17,10 +19,9 @@ const renderTemplate = (container, template, place = `beforeEnd`) => {
 
 const renderTemplates = (...templates) => {
   templates.forEach((template) => {
-    let {className} = template;
+    let {container} = template;
 
-    elem[className] = !elem[className] ? utils.getHtmlElement(className) : elem[className];
-    renderTemplate(elem[className], template.render(), template.place && template.place);
+    renderTemplate(container, template.render(), template.place && template.place);
   });
 };
 
@@ -32,14 +33,19 @@ const renderTrips = (tripsCount) => {
   }
 };
 
+utils.getContainerClasses(mainClassNames, elem);
 renderTemplates(
-    {className: `trip-controls`, render: getMenuTemplate},
-    {className: `trip-controls`, render: getFilterTemplate},
-    {className: `trip-main`, render: getTripInfoTemplate, place: `afterBegin`},
-    {className: `trip-info`, render: getTripInfoCost},
-    {className: `trip-events`, render: getSortTemplate},
-    {className: `trip-events`, render: getTripEditTemplate},
-    {className: `trip-events`, render: getTripDaysTemplate}
+    {container: elem[`trip-controls`], render: getMenuTemplate},
+    {container: elem[`trip-controls`], render: getFilterTemplate},
+    {container: elem[`trip-main`], render: getTripInfoTemplate, place: `afterBegin`}
+);
+
+utils.getContainerClasses(secondaryClassNames, elem);
+renderTemplates(
+    {container: elem[`trip-info`], render: getTripInfoCost},
+    {container: elem[`trip-events`], render: getSortTemplate},
+    {container: elem[`trip-events`], render: getTripEditTemplate},
+    {container: elem[`trip-events`], render: getTripDaysTemplate}
 );
 
 renderTrips(TRIP_COUNT);

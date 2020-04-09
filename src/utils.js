@@ -8,4 +8,10 @@ const getHtmlElement = (className) => {
   return element;
 };
 
-export {getHtmlElement};
+const getContainerClasses = (classNamesArr, obj) => {
+  return classNamesArr.forEach((className) => {
+    obj[className] = getHtmlElement(className);
+  });
+};
+
+export {getHtmlElement, getContainerClasses};

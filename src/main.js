@@ -17,9 +17,9 @@ const renderTemplate = (container, template, place = `beforeEnd`) => {
 
 const renderTemplates = (...templates) => {
   templates.forEach((template) => {
-    let {container} = template;
+    const {container} = template;
 
-    renderTemplate(container, template.render(), template.place && template.place);
+    renderTemplate(container, template.render(), template.place);
   });
 };
 

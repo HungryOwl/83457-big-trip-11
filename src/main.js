@@ -1,11 +1,14 @@
 import * as utils from './utils';
 import {getMenuTemplate} from './components/menu';
-import {getFilterTemplate} from './components/filter';
+import {getFilterTemplate} from './components/filters';
 import {getTripInfoTemplate} from './components/trip-info';
 import {getTripInfoCost} from './components/trip-info-cost';
 import {getSortTemplate} from './components/sort-trip';
 import {getTripEditTemplate} from './components/edit-trip';
 import {getTripDaysTemplate} from './components/trip-days';
+import {getFilters} from './mock/filters';
+
+const filters = getFilters();
 
 const mainClassNames = [`trip-main`, `trip-controls`];
 const secondaryClassNames = [`trip-info`, `trip-events`];
@@ -18,8 +21,9 @@ const renderTemplate = (container, template, place = `beforeEnd`) => {
 const renderTemplates = (...templates) => {
   templates.forEach((template) => {
     const {container} = template;
+    const {data} = template;
 
-    renderTemplate(container, template.render(), template.place);
+    renderTemplate(container, template.render(data), template.place);
   });
 };
 
@@ -27,7 +31,7 @@ utils.getContainerClasses(mainClassNames, elem);
 renderTemplates(
     {container: elem[`trip-main`], render: getTripInfoTemplate, place: `afterBegin`},
     {container: elem[`trip-controls`], render: getMenuTemplate},
-    {container: elem[`trip-controls`], render: getFilterTemplate}
+    {container: elem[`trip-controls`], render: getFilterTemplate, data: filters}
 );
 
 utils.getContainerClasses(secondaryClassNames, elem);

@@ -14,4 +14,9 @@ const getContainerClasses = (classNamesArr, obj) => {
   });
 };
 
-export {getHtmlElement, getContainerClasses};
+const randomInteger = (min = 1, max) => {
+  let rand = min - 0.5 + Math.random() * (max - min + 1);
+  return Math.round(rand);
+};
+
+export {randomInteger, getHtmlElement, getContainerClasses};

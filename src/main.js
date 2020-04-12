@@ -1,6 +1,6 @@
 import * as utils from './utils';
 import {getMenuTemplate} from './components/menu';
-import {getFilterTemplate} from './components/filters';
+import {getFiltersTemplate} from './components/filters';
 import {getTripInfoTemplate} from './components/trip-info';
 import {getTripInfoCost} from './components/trip-info-cost';
 import {getSortTemplate} from './components/sort-trip';
@@ -31,7 +31,7 @@ utils.getContainerClasses(mainClassNames, elem);
 renderTemplates(
     {container: elem[`trip-main`], render: getTripInfoTemplate, place: `afterBegin`},
     {container: elem[`trip-controls`], render: getMenuTemplate},
-    {container: elem[`trip-controls`], render: getFilterTemplate, data: filters}
+    {container: elem[`trip-controls`], render: getFiltersTemplate, data: filters}
 );
 
 utils.getContainerClasses(secondaryClassNames, elem);

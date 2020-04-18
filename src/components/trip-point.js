@@ -67,11 +67,11 @@ const getTripPointTemplate = (point) => {
 
   let timeDuration = endTime - startTime;
 
-  const days = Math.floor(timeDuration / MS_IN_DAY) || null;
+  const days = Math.floor(timeDuration / MS_IN_DAY);
   timeDuration = timeDuration - days * MS_IN_DAY;
-  const hours = Math.floor(timeDuration / MS_IN_HOUR) || null;
+  const hours = Math.floor(timeDuration / MS_IN_HOUR);
   timeDuration = timeDuration - hours * MS_IN_HOUR;
-  const minutes = Math.floor(timeDuration / MS_IN_MIN) || null;
+  const minutes = Math.floor(timeDuration / MS_IN_MIN);
 
   const eventDuration = `
     ${days ? days + `D` : ``}

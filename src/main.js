@@ -7,9 +7,12 @@ import {getTripInfoCost} from './components/trip-info-cost';
 import {getSortTemplate} from './components/sort-trip';
 import {getTripEditTemplate} from './components/edit-trip';
 import {getTripDaysTemplate} from './components/trip-days';
-import {getFilters} from './mock/filters';
+import {filters as filtersArr} from './mock/filters';
+import {dayGroups as dayGroupsArr} from './mock/trip-days';
 
-const filters = getFilters();
+
+const filters = filtersArr.slice();
+const dayGroups = dayGroupsArr.slice();
 
 const mainClassNames = [`trip-main`, `trip-controls`];
 const secondaryClassNames = [`trip-info`, `trip-events`];
@@ -35,10 +38,10 @@ renderTemplates(
     {container: elem[`trip-controls`], render: getFiltersTemplate, data: filters}
 );
 
-// utils.getContainerClasses(secondaryClassNames, elem);
-// renderTemplates(
-//     {container: elem[`trip-info`], render: getTripInfoCost},
-//     {container: elem[`trip-events`], render: getSortTemplate},
-//     {container: elem[`trip-events`], render: getTripEditTemplate},
-//     {container: elem[`trip-events`], render: getTripDaysTemplate}
-// );
+utils.getContainerClasses(secondaryClassNames, elem);
+renderTemplates(
+    {container: elem[`trip-info`], render: getTripInfoCost},
+    {container: elem[`trip-events`], render: getSortTemplate},
+    {container: elem[`trip-events`], render: getTripEditTemplate},
+    {container: elem[`trip-events`], render: getTripDaysTemplate, data: dayGroups}
+);

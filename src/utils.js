@@ -19,7 +19,7 @@ const getRandomInteger = (min = 1, max) => {
   return Math.round(rand);
 };
 
-const getFormatDate = (value) => {
+const getFormattedDate = (value) => {
   const digits = `` + value;
   return `00`.substring(digits.length) + digits;
 };
@@ -28,5 +28,5 @@ export {
   getRandomInteger,
   getHtmlElement,
   getContainerClasses,
-  getFormatDate
+  getFormattedDate
 };

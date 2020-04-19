@@ -1,4 +1,4 @@
-import {getRandomInteger, getFormatDate} from '../utils';
+import {getRandomInteger, getFormattedDate} from '../utils';
 
 const MIN_IN_HOUR = 60;
 const HOURS_IN_DAY = 24;
@@ -115,8 +115,10 @@ const getDestination = () => destinations[getRandomInteger(0, destinations.lengt
 
 // По велению судьбы и дизайнера мы получаем дату из поля ввода в формате 18/03/19 00:00
 const parseDate = (value) => {
-  const [day, month, year] = value.split(` `)[0].split(`/`);
+  let [day, month, year] = value.split(` `)[0].split(`/`);
   const [hours, minutes] = value.split(` `)[1].split(`:`);
+  year = 20 + year;
+
   return new Date(year, month, day, hours, minutes);
 };
 
@@ -147,9 +149,9 @@ const getEventDuration = (from, to) => {
   hours = Math.floor(timeDuration / MS_IN_HOUR);
 
   return `
-    ${days ? getFormatDate(days) + `D` : ``}
-    ${hours ? getFormatDate(hours) + `H` : ``}
-    ${minutes ? getFormatDate(minutes) + `M` : ``}
+    ${days ? getFormattedDate(days) + `D` : ``}
+    ${hours ? getFormattedDate(hours) + `H` : ``}
+    ${minutes ? getFormattedDate(minutes) + `M` : ``}
   `;
 };
 

@@ -44,7 +44,7 @@ const getTripPointTemplate = (point) => {
           &euro;&nbsp;<span class="event__price-value">${price}</span>
         </p>
 
-        ${getCheckedOffersTemplate(offers)}
+        ${offers && getCheckedOffersTemplate(offers)}
 
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>

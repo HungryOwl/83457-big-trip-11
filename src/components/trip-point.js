@@ -1,5 +1,5 @@
 import {offers as offersMap} from '../mock/trip-point';
-import {randomInteger, formatDate} from '../utils';
+import {formatDate} from '../utils';
 
 const MIN_IN_HOUR = 60;
 const HOURS_IN_DAY = 24;
@@ -28,11 +28,10 @@ const getEventDuration = (from, to) => {
   let hours;
   let minutes;
 
+  minutes = new Date(timeDuration).getMinutes();
   days = Math.floor(timeDuration / MS_IN_DAY);
   timeDuration = timeDuration - days * MS_IN_DAY;
   hours = Math.floor(timeDuration / MS_IN_HOUR);
-  timeDuration = timeDuration - hours * MS_IN_HOUR;
-  minutes = Math.floor(timeDuration / MS_IN_MIN);
 
   return `
     ${days ? formatDate(days) + `D` : ``}
@@ -40,6 +39,29 @@ const getEventDuration = (from, to) => {
     ${minutes ? formatDate(minutes) + `M` : ``}
   `;
 };
+
+const startTime = getDate(`17/03/19 12:24`);
+const endTime = getDate(`18/03/19 13:55`);
+const eventDuration = getEventDuration(startTime, endTime);
+const eventTime = getEventTime(startTime, endTime);
+
+const pointType = `Flight`;
+const destination = `Дзержинск`;
+const prepositions = {
+  Taxi: `to`,
+  Bus: `to`,
+  Train: `to`,
+  Ship: `to`,
+  Transport: `to`,
+  Drive: `to`,
+  Flight: `to`,
+  [`Check-in`]: `at`,
+  Sightseeing: `at`,
+  Restaurant: `at`
+};
+
+const preposition = prepositions[pointType];
+const price = 20;
 
 const getEventOfferMarkup = (name, price) => {
   return (
@@ -63,29 +85,6 @@ const getCheckedOffersTemplate = (eventType) => {
      <ul class="event__selected-offers">${offersList}</ul>`
   );
 };
-
-const startTime = getDate(`18/03/19 12:25`);
-const endTime = getDate(`18/03/19 13:55`);
-const eventDuration = getEventDuration(startTime, endTime);
-const eventTime = getEventTime(startTime, endTime);
-
-const pointType = `Flight`;
-const destination = `Дзержинск`;
-const prepositions = {
-  Taxi: `to`,
-  Bus: `to`,
-  Train: `to`,
-  Ship: `to`,
-  Transport: `to`,
-  Drive: `to`,
-  Flight: `to`,
-  [`Check-in`]: `at`,
-  Sightseeing: `at`,
-  Restaurant: `at`
-};
-
-const preposition = prepositions[pointType];
-const price = 20;
 
 const getTripPointTemplate = (point) => {
   // const {} = point;

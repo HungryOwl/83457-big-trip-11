@@ -31,51 +31,53 @@ const getLowCost = () => getRandomInteger(10, 60);
 const getMiddleCost = () => getRandomInteger(70, 140);
 const getHightCost = () => getRandomInteger(150, 600);
 
+const isChecked = () => Math.random() > 0.5;
+
 const offersMap = new Map([
   [`Taxi`, [
-    {name: `Order Uber`, price: getLowCost(), checked: false},
-    {name: `Order Uber Comfort`, price: getMiddleCost(), checked: false},
-    {name: `Order Uber VIP`, price: getMiddleCost(), checked: false},
+    {name: `Order Uber`, price: getLowCost(), checked: isChecked()},
+    {name: `Order Uber Comfort`, price: getMiddleCost(), checked: isChecked()},
+    {name: `Order Uber VIP`, price: getMiddleCost(), checked: isChecked()},
   ]],
   [`Bus`, [
-    {name: `City bus tour`, price: getMiddleCost(), checked: false},
-    {name: `Wifi`, price: getLowCost(), checked: false},
-    {name: `Air conditioning`, price: getLowCost(), checked: false},
+    {name: `City bus tour`, price: getMiddleCost(), checked: isChecked()},
+    {name: `Wifi`, price: getLowCost(), checked: isChecked()},
+    {name: `Air conditioning`, price: getLowCost(), checked: isChecked()},
   ]],
   [`Train`, [
-    {name: `Reserved seat`, price: getLowCost(), checked: false},
-    {name: `Сoupe`, price: getHightCost(), checked: false},
-    {name: `Restaurant car`, price: getHightCost(), checked: false},
-    {name: `Sleeping set`, price: getMiddleCost(), checked: false},
-    {name: `Wifi`, price: getLowCost(), checked: false},
+    {name: `Reserved seat`, price: getLowCost(), checked: isChecked()},
+    {name: `Сoupe`, price: getHightCost(), checked: isChecked()},
+    {name: `Restaurant car`, price: getHightCost(), checked: isChecked()},
+    {name: `Sleeping set`, price: getMiddleCost(), checked: isChecked()},
+    {name: `Wifi`, price: getLowCost(), checked: isChecked()},
   ]],
   [`Flight`, [
-    {name: `Add luggage`, price: getLowCost(), checked: true},
-    {name: `Switch to comfort`, price: getMiddleCost(), checked: true},
-    {name: `Add meal`, price: getLowCost(), checked: false},
-    {name: `Choose seats`, price: getLowCost(), checked: true},
-    {name: `Travel by train`, price: getLowCost(), checked: false}
+    {name: `Add luggage`, price: getLowCost(), checked: isChecked()},
+    {name: `Switch to comfort`, price: getMiddleCost(), checked: isChecked()},
+    {name: `Add meal`, price: getLowCost(), checked: isChecked()},
+    {name: `Choose seats`, price: getLowCost(), checked: isChecked()},
+    {name: `Travel by train`, price: getLowCost(), checked: isChecked()}
   ]],
   [`Drive`, [
-    {name: `Rent a car`, price: getHightCost(), checked: false},
-    {name: `Rent a bike`, price: getHightCost(), checked: true}
+    {name: `Rent a car`, price: getHightCost(), checked: isChecked()},
+    {name: `Rent a bike`, price: getHightCost(), checked: isChecked()}
   ]],
   [`Check-in`, [
-    {name: `Add breakfast`, price: getLowCost(), checked: true},
-    {name: `Add lunch`, price: getLowCost(), checked: true},
-    {name: `Add dinner`, price: getMiddleCost(), checked: true},
-    {name: `Room with minibar`, price: getMiddleCost(), checked: false},
-    {name: `Rooftop pool`, price: getMiddleCost(), checked: false},
+    {name: `Add breakfast`, price: getLowCost(), checked: isChecked()},
+    {name: `Add lunch`, price: getLowCost(), checked: isChecked()},
+    {name: `Five stars`, price: getMiddleCost(), checked: isChecked()},
+    {name: `Room with minibar`, price: getMiddleCost(), checked: isChecked()},
+    {name: `Rooftop pool`, price: getMiddleCost(), checked: isChecked()},
   ]],
   [`Sightseeing`, [
-    {name: `Book excursion tickets`, price: getLowCost(), checked: false},
-    {name: `Lunch in city`, price: getLowCost(), checked: true},
-    {name: `Going to the theater`, price: getMiddleCost(), checked: false},
-    {name: `Trip to the exhibition of paintings`, price: getLowCost(), checked: true},
-    {name: `Tour of places of military glory`, price: getLowCost(), checked: false}
+    {name: `Book excursion tickets`, price: getLowCost(), checked: isChecked()},
+    {name: `Lunch in city`, price: getLowCost(), checked: isChecked()},
+    {name: `Going to the theater`, price: getMiddleCost(), checked: isChecked()},
+    {name: `Trip to the exhibition of paintings`, price: getLowCost(), checked: isChecked()},
+    {name: `Tour of places of military glory`, price: getLowCost(), checked: isChecked()}
   ]],
   [`Restaurant`, [
-    {name: `Five Stars`, price: getHightCost(), checked: false}
+    {name: `Five Stars`, price: getHightCost(), checked: isChecked()}
   ]]
 ]);
 

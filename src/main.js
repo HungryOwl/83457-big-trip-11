@@ -1,4 +1,5 @@
 import * as utils from './utils';
+
 import {getMenuTemplate} from './components/menu';
 import {getFiltersTemplate} from './components/filters';
 import {getTripInfoTemplate} from './components/trip-info';
@@ -34,10 +35,10 @@ renderTemplates(
     {container: elem[`trip-controls`], render: getFiltersTemplate, data: filters}
 );
 
-utils.getContainerClasses(secondaryClassNames, elem);
-renderTemplates(
-    {container: elem[`trip-info`], render: getTripInfoCost},
-    {container: elem[`trip-events`], render: getSortTemplate},
-    {container: elem[`trip-events`], render: getTripEditTemplate},
-    {container: elem[`trip-events`], render: getTripDaysTemplate}
-);
+// utils.getContainerClasses(secondaryClassNames, elem);
+// renderTemplates(
+//     {container: elem[`trip-info`], render: getTripInfoCost},
+//     {container: elem[`trip-events`], render: getSortTemplate},
+//     {container: elem[`trip-events`], render: getTripEditTemplate},
+//     {container: elem[`trip-events`], render: getTripDaysTemplate}
+// );

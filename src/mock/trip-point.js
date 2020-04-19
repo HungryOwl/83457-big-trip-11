@@ -47,7 +47,6 @@ const POINTS_COUNT = dates.length;
 const getLowCost = () => getRandomInteger(10, 60);
 const getMiddleCost = () => getRandomInteger(70, 140);
 const getHightCost = () => getRandomInteger(150, 600);
-
 const isChecked = () => Math.random() > 0.5;
 
 const offersMap = new Map([
@@ -121,8 +120,8 @@ const parseDate = (value) => {
   return new Date(year, month, day, hours, minutes);
 };
 
-const getDate = () => {
-  const date = dates.splice(getRandomInteger(0, dates.length - 1), 1)[0];
+const getDate = (datesArr) => {
+  const date = datesArr.splice(getRandomInteger(0, dates.length - 1), 1)[0];
   date.from = parseDate(date.from);
   date.to = parseDate(date.to);
 
@@ -184,12 +183,14 @@ const getPoint = () => {
   const description = getRandomDescription(SENTENCE_COUNT, descriptionArr);
   const photos = getPhotos(PHOTO_COUNT);
   const preposition = prepositions[type];
-  const date = getDate();
+  const date = getDate(dates);
+  const price = getRandomInteger(10, 600);
   date.eventTime = getEventTime(date.from, date.to);
   date.eventDuration = getEventDuration(date.from, date.to);
 
   return {
     type,
+    price,
     destination,
     offers,
     description,
@@ -199,20 +200,19 @@ const getPoint = () => {
   };
 };
 
-/* eslint-disable consistent-return */
-// Временно дизейблим линтер т.к. это функция сортировки, она не должна ничего возвращать
 const sortPoints = (point, nextPoint) => {
-  if (point.date.from.getTime() > nextPoint.date.from.getTime()) {
+  const prevTimestamp = point.date.from.getTime();
+  const nextTimestamp = nextPoint.date.from.getTime();
+
+  if (prevTimestamp > nextTimestamp) {
     return 1;
   }
 
-  if (point.date.from.getTime() === nextPoint.date.from.getTime()) {
+  if (prevTimestamp === nextTimestamp) {
     return 0;
   }
 
-  if (point.date.from.getTime() < nextPoint.date.from.getTime()) {
-    return -1;
-  }
+  return -1;
 };
 
 const getPoints = (count) => {
@@ -224,7 +224,6 @@ const getPoints = (count) => {
 
 const points = getPoints(POINTS_COUNT);
 
-export {
-  offersMap,
-  points
-};
+console.log(points);
+
+export {points};

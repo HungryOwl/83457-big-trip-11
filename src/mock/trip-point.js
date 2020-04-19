@@ -73,17 +73,15 @@ In rutrum ac purus sit amet tempus`.split(`.`);
 
 const getRandomDescription = (count, descArr) => {
   let initialArr = descArr;
-  let descriptionArr = [];
+  let descriptions = [];
 
   for (let i = 0; i < count; i++) {
     let index = Math.floor(Math.random() * initialArr.length);
     descriptionArr.push(initialArr.splice(index, 1).join(``).trim());
   }
 
-  return descriptionArr;
+  return descriptions;
 };
-
-console.log(getRandomDescription(SENTENCE_COUNT, descriptionArr));
 
 const photo = `http://picsum.photos/248/152?r=${randomInteger(5)}`;
 const PHOTO_COUNT = 7;

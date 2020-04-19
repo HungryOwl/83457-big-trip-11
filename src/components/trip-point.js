@@ -9,9 +9,10 @@ const MS_IN_DAY = MS_IN_SEC * SEC_IN_MIN * MIN_IN_HOUR * HOURS_IN_DAY;
 const MS_IN_HOUR = MIN_IN_HOUR * SEC_IN_MIN * MS_IN_SEC;
 const MS_IN_MIN = SEC_IN_MIN * MS_IN_SEC;
 
-const getDate = (value) => {
+const parseDate = (value) => {
   const [day, month, year] = value.split(` `)[0].split(`/`);
   const [hours, minutes] = value.split(` `)[1].split(`:`);
+
   return new Date(year, month, day, hours, minutes);
 };
 
@@ -24,6 +25,7 @@ const getEventTime = (from, to) => {
 
 const getEventDuration = (from, to) => {
   let timeDuration = to - from;
+
   let days;
   let hours;
   let minutes;
@@ -40,8 +42,9 @@ const getEventDuration = (from, to) => {
   `;
 };
 
-const startTime = getDate(`17/03/19 12:24`);
-const endTime = getDate(`18/03/19 13:55`);
+const startTime = parseDate(`17/03/19 12:24`);
+const endTime = parseDate(`18/03/19 13:55`);
+
 const eventDuration = getEventDuration(startTime, endTime);
 const eventTime = getEventTime(startTime, endTime);
 

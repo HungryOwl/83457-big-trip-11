@@ -8,9 +8,6 @@ const MS_IN_DAY = MS_IN_SEC * SEC_IN_MIN * MIN_IN_HOUR * HOURS_IN_DAY;
 const MS_IN_HOUR = MIN_IN_HOUR * SEC_IN_MIN * MS_IN_SEC;
 const MS_IN_MIN = SEC_IN_MIN * MS_IN_SEC;
 
-const PHOTO_COUNT = getRandomInteger(1, 7);
-const SENTENCE_COUNT = getRandomInteger(1, 5);
-
 const pointTypes = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`];
 const destinations = [`Горький`, `Дзержинск`, `Сталинград`, `Ногинск`, `Ворошиловск`, `Ульяновск`, `Молотов`, `Орджоникидзе`];
 
@@ -28,21 +25,25 @@ const prepositions = {
 };
 
 const dates = [
-  {from: `16/03/19 10:10`, to: `16/03/19 13:00`},
-  {from: `16/03/19 19:19`, to: `17/03/19 06:15`},
-  {from: `17/03/19 11:11`, to: `17/03/19 12:00`},
-  {from: `18/03/19 18:16`, to: `19/03/19 05:25`},
-  {from: `17/03/19 12:24`, to: `17/03/19 13:55`},
-  {from: `19/03/19 10:10`, to: `19/03/19 14:25`},
-  {from: `19/03/19 20:20`, to: `19/03/19 21:21`},
-  {from: `17/03/19 14:14`, to: `17/03/19 20:10`},
-  {from: `17/03/19 22:15`, to: `18/03/19 07:33`},
-  {from: `18/03/19 09:10`, to: `18/03/19 12:15`},
-  {from: `18/03/19 13:45`, to: `18/03/19 16:05`},
-  {from: `16/03/19 14:05`, to: `16/03/19 13:55`},
-  {from: `19/03/19 15:00`, to: `19/03/19 19:55`},
-  {from: `19/03/19 21:45`, to: `19/03/19 23:00`},
+  {from: `16/03/21 10:10`, to: `16/03/21 13:00`},
+  {from: `16/03/21 19:19`, to: `17/03/21 06:15`},
+  {from: `17/03/21 11:11`, to: `17/03/21 12:00`},
+  {from: `18/03/21 18:16`, to: `19/03/21 05:25`},
+  {from: `17/03/21 12:24`, to: `17/03/21 13:55`},
+  {from: `19/03/21 10:10`, to: `19/03/21 14:25`},
+  {from: `19/03/21 20:20`, to: `19/03/21 21:21`},
+  {from: `17/03/21 14:14`, to: `17/03/21 20:10`},
+  {from: `17/03/21 22:15`, to: `18/03/21 07:33`},
+  {from: `18/03/21 09:10`, to: `18/03/21 12:15`},
+  {from: `18/03/21 13:45`, to: `18/03/21 16:05`},
+  {from: `16/03/21 14:05`, to: `16/03/21 13:55`},
+  {from: `19/03/21 15:00`, to: `19/03/21 19:55`},
+  {from: `19/03/21 21:45`, to: `19/03/21 23:00`},
 ];
+
+const PHOTO_COUNT = getRandomInteger(1, 7);
+const SENTENCE_COUNT = getRandomInteger(1, 5);
+const POINTS_COUNT = dates.length;
 
 const getLowCost = () => getRandomInteger(10, 60);
 const getMiddleCost = () => getRandomInteger(70, 140);
@@ -74,6 +75,11 @@ const offersMap = new Map([
     {name: `Add meal`, price: getLowCost(), checked: isChecked()},
     {name: `Choose seats`, price: getLowCost(), checked: isChecked()},
     {name: `Travel by train`, price: getLowCost(), checked: isChecked()}
+  ]],
+  [`Ship`, [
+    {name: `Full board meals`, price: getMiddleCost(), checked: isChecked()},
+    {name: `Teacher services`, price: getMiddleCost(), checked: isChecked()},
+    {name: `SPA treatments`, price: getMiddleCost(), checked: isChecked()}
   ]],
   [`Drive`, [
     {name: `Rent a car`, price: getHightCost(), checked: isChecked()},
@@ -110,10 +116,18 @@ const getPointType = () => pointTypes[getRandomInteger(0, pointTypes.length - 1)
 const getDestination = () => destinations[getRandomInteger(0, destinations.length - 1)];
 
 // По велению судьбы и дизайнера мы получаем дату из поля ввода в формате 18/03/19 00:00
-const getDate = (value) => {
+const parseDate = (value) => {
   const [day, month, year] = value.split(` `)[0].split(`/`);
   const [hours, minutes] = value.split(` `)[1].split(`:`);
   return new Date(year, month, day, hours, minutes);
+};
+
+const getDate = () => {
+  const date = dates.splice(getRandomInteger(0, dates.length - 1), 1)[0];
+  date.from = parseDate(date.from);
+  date.to = parseDate(date.to);
+
+  return date;
 };
 
 const getEventTime = (from, to) => {
@@ -171,11 +185,9 @@ const getPoint = () => {
   const description = getRandomDescription(SENTENCE_COUNT, descriptionArr);
   const photos = getPhotos(PHOTO_COUNT);
   const preposition = prepositions[type];
-  const date = {
-    from:,
-    to:,
-    event_duration:
-  };
+  const date = getDate();
+  date.eventTime = getEventTime(date.from, date.to);
+  date.eventDuration = getEventDuration(date.from, date.to);
 
   return {
     type,
@@ -183,7 +195,8 @@ const getPoint = () => {
     offers,
     description,
     photos,
-    preposition
+    preposition,
+    date
   };
 };
 

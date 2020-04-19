@@ -1,6 +1,6 @@
 import {getTripPointTemplate} from './trip-point';
 
-const TRIPS_COUNT = 3;
+const TRIPS_COUNT = 22;
 
 const getTripEventsList = (tripsCount, pointTemplate) => {
   let tripEvents = ``;

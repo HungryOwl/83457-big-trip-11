@@ -19,4 +19,14 @@ const randomInteger = (min = 1, max) => {
   return Math.round(rand);
 };
 
-export {randomInteger, getHtmlElement, getContainerClasses};
+const formatDate = (value) => {
+  const digits = `` + value;
+  return `00`.substring(digits.length) + digits;
+};
+
+export {
+  randomInteger,
+  getHtmlElement,
+  getContainerClasses,
+  formatDate
+};

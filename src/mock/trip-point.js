@@ -128,7 +128,7 @@ const getRandomDescription = (count, descArr) => {
 
   for (let i = 0; i < count; i++) {
     let index = Math.floor(Math.random() * initialArr.length);
-    descriptionArr.push(initialArr.splice(index, 1).join(``).trim());
+    descriptions.push(initialArr.splice(index, 1).join(``).trim());
   }
 
   return descriptions;
@@ -149,11 +149,13 @@ const getPoint = () => {
   const type = getPointType();
   const destination = getDestination();
   const offers = offersMap.get(type);
+  const description = getRandomDescription(SENTENCE_COUNT, descriptionArr);
 
   return {
     type,
     destination,
-    offers
+    offers,
+    description
   };
 };
 

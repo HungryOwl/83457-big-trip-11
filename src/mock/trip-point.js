@@ -6,7 +6,6 @@ const SEC_IN_MIN = 60;
 const MS_IN_SEC = 1000;
 const MS_IN_DAY = MS_IN_SEC * SEC_IN_MIN * MIN_IN_HOUR * HOURS_IN_DAY;
 const MS_IN_HOUR = MIN_IN_HOUR * SEC_IN_MIN * MS_IN_SEC;
-const MS_IN_MIN = SEC_IN_MIN * MS_IN_SEC;
 
 const pointTypes = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`];
 const destinations = [`Горький`, `Дзержинск`, `Сталинград`, `Ногинск`, `Ворошиловск`, `Ульяновск`, `Молотов`, `Орджоникидзе`];
@@ -200,6 +199,8 @@ const getPoint = () => {
   };
 };
 
+/* eslint-disable consistent-return */
+// Временно дизейблим линтер т.к. это функция сортировки, она не должна ничего возвращать
 const sortPoints = (point, nextPoint) => {
   if (point.date.from.getTime() > nextPoint.date.from.getTime()) {
     return 1;
@@ -221,4 +222,9 @@ const getPoints = (count) => {
     .sort(sortPoints);
 };
 
-export {offersMap};
+const points = getPoints(POINTS_COUNT);
+
+export {
+  offersMap,
+  points
+};

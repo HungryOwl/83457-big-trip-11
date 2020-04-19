@@ -14,19 +14,19 @@ const getContainerClasses = (classNamesArr, obj) => {
   });
 };
 
-const randomInteger = (min = 1, max) => {
+const getRandomInteger = (min = 1, max) => {
   let rand = min - 0.5 + Math.random() * (max - min + 1);
   return Math.round(rand);
 };
 
-const formatDate = (value) => {
+const getFormatDate = (value) => {
   const digits = `` + value;
   return `00`.substring(digits.length) + digits;
 };
 
 export {
-  randomInteger,
+  getRandomInteger,
   getHtmlElement,
   getContainerClasses,
-  formatDate
+  getFormatDate
 };

@@ -1,5 +1,5 @@
-import {offers as offersMap} from '../mock/trip-point';
-import {formatDate} from '../utils';
+import {offersMap} from '../mock/trip-point';
+import {getFormatDate} from '../utils';
 
 const MIN_IN_HOUR = 60;
 const HOURS_IN_DAY = 24;
@@ -34,9 +34,9 @@ const getEventDuration = (from, to) => {
   hours = Math.floor(timeDuration / MS_IN_HOUR);
 
   return `
-    ${days ? formatDate(days) + `D` : ``}
-    ${hours ? formatDate(hours) + `H` : ``}
-    ${minutes ? formatDate(minutes) + `M` : ``}
+    ${days ? getFormatDate(days) + `D` : ``}
+    ${hours ? getFormatDate(hours) + `H` : ``}
+    ${minutes ? getFormatDate(minutes) + `M` : ``}
   `;
 };
 

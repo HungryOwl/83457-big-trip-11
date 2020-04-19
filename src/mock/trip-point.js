@@ -8,6 +8,8 @@ const MS_IN_DAY = MS_IN_SEC * SEC_IN_MIN * MIN_IN_HOUR * HOURS_IN_DAY;
 const MS_IN_HOUR = MIN_IN_HOUR * SEC_IN_MIN * MS_IN_SEC;
 const MS_IN_MIN = SEC_IN_MIN * MS_IN_SEC;
 
+const PHOTO_COUNT = 7;
+
 const getLowCost = () => randomInteger(10, 60);
 const getMiddleCost = () => randomInteger(70, 140);
 const getHightCost = () => randomInteger(150, 600);
@@ -34,7 +36,6 @@ const getEventDuration = (from, to) => {
 
   minutes = new Date(timeDuration).getMinutes();
   days = Math.floor(timeDuration / MS_IN_DAY);
-  console.log('days', days);
   timeDuration = timeDuration - days * MS_IN_DAY;
   hours = Math.floor(timeDuration / MS_IN_HOUR);
 
@@ -83,8 +84,16 @@ const getRandomDescription = (count, descArr) => {
   return descriptions;
 };
 
-const photo = `http://picsum.photos/248/152?r=${randomInteger(5)}`;
-const PHOTO_COUNT = 7;
+const getPhotos = (count) => {
+  let photoArr = [];
+
+  for (let i = 0; i < count; i++) {
+    const photo = `http://picsum.photos/248/152?r=${randomInteger(1, 100)}`;
+    photoArr.push(photo);
+  }
+
+  return photoArr;
+};
 
 const offers = new Map([
   [`Taxi`, [

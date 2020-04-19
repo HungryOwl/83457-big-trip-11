@@ -44,10 +44,23 @@ const PHOTO_COUNT = getRandomInteger(1, 7);
 const SENTENCE_COUNT = getRandomInteger(1, 5);
 const POINTS_COUNT = dates.length;
 
-const getLowCost = () => getRandomInteger(10, 60);
-const getMiddleCost = () => getRandomInteger(70, 140);
-const getHightCost = () => getRandomInteger(150, 600);
+const getLowCost = () => getRandomInteger(10, 60) * 100;
+const getMiddleCost = () => getRandomInteger(70, 140) * 100;
+const getHighCost = () => getRandomInteger(150, 600) * 100;
 const isChecked = () => Math.random() > 0.5;
+
+const prices = {
+  Taxi: getMiddleCost(),
+  Bus: getLowCost(),
+  Train: getMiddleCost(),
+  Ship: getMiddleCost(),
+  Transport: getLowCost(),
+  Drive: getLowCost(),
+  Flight: getHighCost(),
+  [`Check-in`]: getLowCost(),
+  Sightseeing: getLowCost(),
+  Restaurant: getMiddleCost()
+};
 
 const offersMap = new Map([
   [`Taxi`, [
@@ -62,8 +75,8 @@ const offersMap = new Map([
   ]],
   [`Train`, [
     {name: `Reserved seat`, price: getLowCost(), checked: isChecked()},
-    {name: `Сoupe`, price: getHightCost(), checked: isChecked()},
-    {name: `Restaurant car`, price: getHightCost(), checked: isChecked()},
+    {name: `Сoupe`, price: getHighCost(), checked: isChecked()},
+    {name: `Restaurant car`, price: getHighCost(), checked: isChecked()},
     {name: `Sleeping set`, price: getMiddleCost(), checked: isChecked()},
     {name: `Wifi`, price: getLowCost(), checked: isChecked()},
   ]],
@@ -80,8 +93,8 @@ const offersMap = new Map([
     {name: `SPA treatments`, price: getMiddleCost(), checked: isChecked()}
   ]],
   [`Drive`, [
-    {name: `Rent a car`, price: getHightCost(), checked: isChecked()},
-    {name: `Rent a bike`, price: getHightCost(), checked: isChecked()}
+    {name: `Rent a car`, price: getHighCost(), checked: isChecked()},
+    {name: `Rent a bike`, price: getHighCost(), checked: isChecked()}
   ]],
   [`Check-in`, [
     {name: `Add breakfast`, price: getLowCost(), checked: isChecked()},
@@ -98,7 +111,7 @@ const offersMap = new Map([
     {name: `Tour of places of military glory`, price: getLowCost(), checked: isChecked()}
   ]],
   [`Restaurant`, [
-    {name: `Five Stars`, price: getHightCost(), checked: isChecked()}
+    {name: `Five Stars`, price: getHighCost(), checked: isChecked()}
   ]]
 ]);
 
@@ -186,7 +199,7 @@ const getPoint = () => {
   const photos = getPhotos(PHOTO_COUNT);
   const preposition = prepositions[type];
   const date = getDate(dates);
-  const price = getRandomInteger(10, 600);
+  const price = prices[type];
   date.eventTime = getEventTime(date.from, date.to);
   date.eventDuration = getEventDuration(date.from, date.to);
 

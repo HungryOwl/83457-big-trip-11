@@ -3,12 +3,16 @@ const getEventOfferMarkup = (name, price) => {
     `<li class="event__offer">
         <span class="event__offer-title">${name}</span>
         &plus;
-        &euro;&nbsp;<span class="event__offer-price">${price}</span>
+        &#8381;&nbsp;<span class="event__offer-price">${price}</span>
     </li>`
   );
 };
 
 const getCheckedOffersTemplate = (offers) => {
+  if (!offers) {
+    return ``;
+  }
+
   const offersList = offers.map((offer) => {
     return getEventOfferMarkup(offer.name, offer.price);
   }).slice(0, 3).join(`\n`);
@@ -41,10 +45,10 @@ const getTripPointTemplate = (point) => {
         </div>
 
         <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">${price}</span>
+          &#8381;&nbsp;<span class="event__price-value">${price}</span>
         </p>
 
-        ${offers && getCheckedOffersTemplate(offers)}
+        ${getCheckedOffersTemplate(offers)}
 
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>

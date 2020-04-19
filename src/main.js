@@ -42,6 +42,5 @@ utils.getContainerClasses(secondaryClassNames, elem);
 renderTemplates(
     {container: elem[`trip-info`], render: getTripInfoCost},
     {container: elem[`trip-events`], render: getSortTemplate},
-    {container: elem[`trip-events`], render: getTripEditTemplate},
     {container: elem[`trip-events`], render: getTripDaysTemplate, data: dayGroups}
 );

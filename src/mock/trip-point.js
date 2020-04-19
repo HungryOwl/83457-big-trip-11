@@ -8,7 +8,7 @@ const MS_IN_DAY = MS_IN_SEC * SEC_IN_MIN * MIN_IN_HOUR * HOURS_IN_DAY;
 const MS_IN_HOUR = MIN_IN_HOUR * SEC_IN_MIN * MS_IN_SEC;
 const MS_IN_MIN = SEC_IN_MIN * MS_IN_SEC;
 
-const PHOTO_COUNT = 7;
+const PHOTO_COUNT = getRandomInteger(1, 7);
 const SENTENCE_COUNT = getRandomInteger(1, 5);
 
 const pointTypes = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`];
@@ -23,7 +23,7 @@ const prepositions = {
   Drive: `to`,
   Flight: `to`,
   [`Check-in`]: `at`,
-  Sightseeng: `at`,
+  Sightseeing: `at`,
   Restaurant: `at`
 };
 
@@ -150,12 +150,16 @@ const getPoint = () => {
   const destination = getDestination();
   const offers = offersMap.get(type);
   const description = getRandomDescription(SENTENCE_COUNT, descriptionArr);
+  const photos = getPhotos(PHOTO_COUNT);
+  const preposition = prepositions[type];
 
   return {
     type,
     destination,
     offers,
-    description
+    description,
+    photos,
+    preposition
   };
 };
 

@@ -200,6 +200,25 @@ const getPoint = () => {
   };
 };
 
-console.log(getPoint());
+const sortPoints = (point, nextPoint) => {
+  if (point.date.from.getTime() > nextPoint.date.from.getTime()) {
+    return 1;
+  }
+
+  if (point.date.from.getTime() === nextPoint.date.from.getTime()) {
+    return 0;
+  }
+
+  if (point.date.from.getTime() < nextPoint.date.from.getTime()) {
+    return -1;
+  }
+};
+
+const getPoints = (count) => {
+  return new Array(count)
+    .fill(``)
+    .map(getPoint)
+    .sort(sortPoints);
+};
 
 export {offersMap};

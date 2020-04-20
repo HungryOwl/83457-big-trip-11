@@ -66,54 +66,54 @@ const prices = {
 
 const offersMap = new Map([
   [`Taxi`, [
-    {name: `Order Uber`, price: getLowCost(), checked: isChecked()},
-    {name: `Order Uber Comfort`, price: getMiddleCost(), checked: isChecked()},
-    {name: `Order Uber VIP`, price: getMiddleCost(), checked: isChecked()},
+    {name: `Order Uber`, price: getLowCost(), label: `uber`, checked: isChecked()},
+    {name: `Order Uber Comfort`, price: getMiddleCost(), label: `comfort`, checked: isChecked()},
+    {name: `Order Uber VIP`, price: getMiddleCost(), label: `vip`, checked: isChecked()},
   ]],
   [`Bus`, [
-    {name: `City bus tour`, price: getMiddleCost(), checked: isChecked()},
-    {name: `Wifi`, price: getLowCost(), checked: isChecked()},
-    {name: `Air conditioning`, price: getLowCost(), checked: isChecked()},
+    {name: `City bus tour`, price: getMiddleCost(), label: `tour`, checked: isChecked()},
+    {name: `Wifi`, price: getLowCost(), label: `wifi`, checked: isChecked()},
+    {name: `Air conditioning`, price: getLowCost(), label: `conditioning`, checked: isChecked()},
   ]],
   [`Train`, [
-    {name: `Reserved seat`, price: getLowCost(), checked: isChecked()},
-    {name: `Сoupe`, price: getHighCost(), checked: isChecked()},
-    {name: `Restaurant car`, price: getHighCost(), checked: isChecked()},
-    {name: `Sleeping set`, price: getMiddleCost(), checked: isChecked()},
-    {name: `Wifi`, price: getLowCost(), checked: isChecked()},
+    {name: `Reserved seat`, price: getLowCost(), label: `seat`, checked: isChecked()},
+    {name: `Сoupe`, price: getHighCost(), label: `coupe`, checked: isChecked()},
+    {name: `Restaurant car`, price: getHighCost(), label: `restaurant`, checked: isChecked()},
+    {name: `Sleeping set`, price: getMiddleCost(), label: `sleeping`, checked: isChecked()},
+    {name: `Wifi`, price: getLowCost(), label: `wifi`, checked: isChecked()},
   ]],
   [`Flight`, [
-    {name: `Add luggage`, price: getLowCost(), checked: isChecked()},
-    {name: `Switch to comfort`, price: getMiddleCost(), checked: isChecked()},
-    {name: `Add meal`, price: getLowCost(), checked: isChecked()},
-    {name: `Choose seats`, price: getLowCost(), checked: isChecked()},
-    {name: `Travel by train`, price: getLowCost(), checked: isChecked()}
+    {name: `Add luggage`, price: getLowCost(), label: `luggage`, checked: isChecked()},
+    {name: `Switch to comfort`, price: getMiddleCost(), label: `comfort`, checked: isChecked()},
+    {name: `Add meal`, price: getLowCost(), label: `meal`, checked: isChecked()},
+    {name: `Choose seats`, price: getLowCost(), label: `seats`, checked: isChecked()},
+    {name: `Travel by train`, price: getLowCost(), label: `train`, checked: isChecked()}
   ]],
   [`Ship`, [
-    {name: `Full board meals`, price: getMiddleCost(), checked: isChecked()},
-    {name: `Teacher services`, price: getMiddleCost(), checked: isChecked()},
-    {name: `SPA treatments`, price: getMiddleCost(), checked: isChecked()}
+    {name: `Full board meals`, price: getMiddleCost(), label: `meals`, checked: isChecked()},
+    {name: `Babyseat services`, price: getMiddleCost(), label: `babyseat`, checked: isChecked()},
+    {name: `SPA treatments`, price: getMiddleCost(), label: `spa`, checked: isChecked()}
   ]],
   [`Drive`, [
-    {name: `Rent a car`, price: getMiddleCost(), checked: isChecked()},
-    {name: `Rent a bike`, price: getLowCost(), checked: isChecked()}
+    {name: `Rent a car`, price: getMiddleCost(), label: `car`, checked: isChecked()},
+    {name: `Rent a bike`, price: getLowCost(), label: `bike`, checked: isChecked()}
   ]],
   [`Check-in`, [
-    {name: `Add breakfast`, price: getLowCost(), checked: isChecked()},
-    {name: `Add lunch`, price: getLowCost(), checked: isChecked()},
-    {name: `Five stars`, price: getMiddleCost(), checked: isChecked()},
-    {name: `Room with minibar`, price: getMiddleCost(), checked: isChecked()},
-    {name: `Rooftop pool`, price: getMiddleCost(), checked: isChecked()},
+    {name: `Add breakfast`, price: getLowCost(), label: `breakfast`, checked: isChecked()},
+    {name: `Add lunch`, price: getLowCost(), label: `lunch`, checked: isChecked()},
+    {name: `Five stars`, price: getMiddleCost(), label: `stars`, checked: isChecked()},
+    {name: `Room with minibar`, price: getMiddleCost(), label: `minibar`, checked: isChecked()},
+    {name: `Rooftop pool`, price: getMiddleCost(), label: `pool`, checked: isChecked()},
   ]],
   [`Sightseeing`, [
-    {name: `Book excursion tickets`, price: getLowCost(), checked: isChecked()},
-    {name: `Lunch in city`, price: getLowCost(), checked: isChecked()},
-    {name: `Going to the theater`, price: getMiddleCost(), checked: isChecked()},
-    {name: `Trip to the exhibition of paintings`, price: getLowCost(), checked: isChecked()},
-    {name: `Tour of places of military glory`, price: getLowCost(), checked: isChecked()}
+    {name: `Book excursion tickets`, price: getLowCost(), label: `tickets`, checked: isChecked()},
+    {name: `Lunch in city`, price: getLowCost(), label: `lunch`, checked: isChecked()},
+    {name: `Going to the theater`, price: getMiddleCost(), label: `theater`, checked: isChecked()},
+    {name: `Trip to the exhibition of paintings`, price: getLowCost(), label: `exhibition`, checked: isChecked()},
+    {name: `Tour of places of military glory`, price: getLowCost(), label: `military`, checked: isChecked()}
   ]],
   [`Restaurant`, [
-    {name: `Five Stars`, price: getHighCost(), checked: isChecked()}
+    {name: `Five Stars`, price: getHighCost(), label: `stars`, checked: isChecked()}
   ]]
 ]);
 
@@ -171,15 +171,15 @@ const getEventDuration = (from, to) => {
 };
 
 const getRandomDescription = (count, descArr) => {
-  let initialArr = descArr;
+  let initialArr = descArr.slice();
   let descriptions = [];
 
   for (let i = 0; i < count; i++) {
     let index = Math.floor(Math.random() * initialArr.length);
-    descriptions.push(initialArr.splice(index, 1).join(``).trim());
+    descriptions.push(initialArr.splice(index, 1));
   }
 
-  return descriptions;
+  return descriptions.join(` `).trim();
 };
 
 const getPhotos = (count) => {
@@ -242,6 +242,7 @@ const getPoints = (count) => {
 };
 
 const points = getPoints(POINTS_COUNT);
+
 export {
   points,
   placeTypes,

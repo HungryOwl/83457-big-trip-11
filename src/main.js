@@ -9,8 +9,9 @@ import {getTripEditTemplate} from './components/edit-trip';
 import {getTripDaysTemplate} from './components/trip-days';
 import {filters as filtersArr} from './mock/filters';
 import {dayGroups as dayGroupsArr} from './mock/trip-days';
+import {points} from "./mock/trip-point";
 
-
+const editPoint = points.slice(0, 1)[0];
 const filters = filtersArr.slice();
 const dayGroups = dayGroupsArr.slice();
 
@@ -42,5 +43,6 @@ utils.getContainerClasses(secondaryClassNames, elem);
 renderTemplates(
     {container: elem[`trip-info`], render: getTripInfoCost},
     {container: elem[`trip-events`], render: getSortTemplate},
+    {container: elem[`trip-events`], render: getTripEditTemplate, data: editPoint},
     {container: elem[`trip-events`], render: getTripDaysTemplate, data: dayGroups}
 );

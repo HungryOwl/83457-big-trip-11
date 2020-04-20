@@ -24,7 +24,7 @@ const getCheckedOffersTemplate = (offers) => {
 };
 
 const getTripPointTemplate = (point) => {
-  const {type, price, destination, offers, description, preposition, photos, date} = point;
+  const {type, price, destination, offers, preposition, date} = point;
   const eventTime = date.eventTime;
   const eventDuration = date.eventDuration;
 

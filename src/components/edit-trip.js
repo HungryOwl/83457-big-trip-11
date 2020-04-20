@@ -1,4 +1,4 @@
-import {placeTypes, rideTypes, destinations} from '../mock/trip-days';
+import {placeTypes, rideTypes, destinations} from '../mock/trip-point';
 import {getFormattedDate} from '../utils';
 
 const eventTypeItems = (eventTypesArr, currentType, id) => {
@@ -47,25 +47,36 @@ const getDestinationList = (destinationsArr, id) => {
 };
 
 const getAvailableOffers = (offers, id) => {
+  if (!offers) {
+    return ``;
+  }
+
   return offers.map((offer) => {
+    const {name, label, price, checked: isChecked} = offer;
+
     return (
       `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${label}-${id}" type="checkbox" name="event-offer-${label}" checked="${isChecked}">
         <label class="event__offer-label" for="event-offer-luggage-1">
-          <span class="event__offer-title">Add luggage</span>
+          <span class="event__offer-title">${name}</span>
           &plus;
-          &euro;&nbsp;<span class="event__offer-price">30</span>
+          &#8381;&nbsp;<span class="event__offer-price">${price}</span>
         </label>
       </div>`
     );
   }).join(` `);
 };
 
+const getPhotosTemplate = (photos) => {
+  return photos.map((src) => `<img class="event__photo" src="${src}" alt="Event photo">`).join(` `);
+};
+
 const getTripEditTemplate = (point) => {
   const {type, price, destination, offers, description, preposition, photos, date, id} = point;
+
   const year = {
-    from: date.from.getFullYear().slice(1, 2),
-    to: date.to.getFullYear().slice(1, 2)
+    from: date.from.getFullYear() % 100,
+    to: date.to.getFullYear() % 100
   };
 
   const month = {
@@ -134,66 +145,17 @@ const getTripEditTemplate = (point) => {
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
             <div class="event__available-offers">
-
-              ${getAvailableOffers(offers)}
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-                <label class="event__offer-label" for="event-offer-luggage-1">
-                  <span class="event__offer-title">Add luggage</span>
-                  &plus;
-                  &euro;&nbsp;<span class="event__offer-price">30</span>
-                </label>
-              </div>
-
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked>
-                <label class="event__offer-label" for="event-offer-comfort-1">
-                  <span class="event__offer-title">Switch to comfort class</span>
-                  &plus;
-                  &euro;&nbsp;<span class="event__offer-price">100</span>
-                </label>
-              </div>
-
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-                <label class="event__offer-label" for="event-offer-meal-1">
-                  <span class="event__offer-title">Add meal</span>
-                  &plus;
-                  &euro;&nbsp;<span class="event__offer-price">15</span>
-                </label>
-              </div>
-
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
-                <label class="event__offer-label" for="event-offer-seats-1">
-                  <span class="event__offer-title">Choose seats</span>
-                  &plus;
-                  &euro;&nbsp;<span class="event__offer-price">5</span>
-                </label>
-              </div>
-
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
-                <label class="event__offer-label" for="event-offer-train-1">
-                  <span class="event__offer-title">Travel by train</span>
-                  &plus;
-                  &euro;&nbsp;<span class="event__offer-price">40</span>
-                </label>
-              </div>
+              ${getAvailableOffers(offers, id)}
             </div>
           </section>
 
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">Mordor is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Mordor). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.</p>
+            <p class="event__destination-description">${description}</p>
 
             <div class="event__photos-container">
               <div class="event__photos-tape">
-                <img class="event__photo" src="img/photos/1.jpg" alt="Event photo">
-                <img class="event__photo" src="img/photos/2.jpg" alt="Event photo">
-                <img class="event__photo" src="img/photos/3.jpg" alt="Event photo">
-                <img class="event__photo" src="img/photos/4.jpg" alt="Event photo">
-                <img class="event__photo" src="img/photos/5.jpg" alt="Event photo">
+                ${getPhotosTemplate(photos)}
               </div>
             </div>
           </section>

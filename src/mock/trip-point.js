@@ -7,7 +7,9 @@ const MS_IN_SEC = 1000;
 const MS_IN_DAY = MS_IN_SEC * SEC_IN_MIN * MIN_IN_HOUR * HOURS_IN_DAY;
 const MS_IN_HOUR = MIN_IN_HOUR * SEC_IN_MIN * MS_IN_SEC;
 
-const pointTypes = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`, `Check-in`, `Sightseeing`, `Restaurant`];
+const placeTypes = [`Check-in`, `Sightseeing`, `Restaurant`];
+const rideTypes = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`];
+const eventTypes = [...rideTypes, ...placeTypes];
 const destinations = [`Горький`, `Дзержинск`, `Сталинград`, `Ногинск`, `Ворошиловск`, `Ульяновск`, `Молотов`, `Орджоникидзе`];
 
 const prepositions = {
@@ -44,13 +46,13 @@ const PHOTO_COUNT = getRandomInteger(1, 7);
 const SENTENCE_COUNT = getRandomInteger(1, 5);
 const POINTS_COUNT = dates.length;
 
-const getLowCost = () => getRandomInteger(10, 60) * 100;
-const getMiddleCost = () => getRandomInteger(70, 140) * 100;
-const getHighCost = () => getRandomInteger(150, 600) * 100;
+const getLowCost = () => getRandomInteger(5, 20) * 100;
+const getMiddleCost = () => getRandomInteger(21, 140) * 100;
+const getHighCost = () => getRandomInteger(141, 600) * 100;
 const isChecked = () => Math.random() > 0.5;
 
 const prices = {
-  Taxi: getMiddleCost(),
+  Taxi: getLowCost(),
   Bus: getLowCost(),
   Train: getMiddleCost(),
   Ship: getMiddleCost(),
@@ -93,8 +95,8 @@ const offersMap = new Map([
     {name: `SPA treatments`, price: getMiddleCost(), checked: isChecked()}
   ]],
   [`Drive`, [
-    {name: `Rent a car`, price: getHighCost(), checked: isChecked()},
-    {name: `Rent a bike`, price: getHighCost(), checked: isChecked()}
+    {name: `Rent a car`, price: getMiddleCost(), checked: isChecked()},
+    {name: `Rent a bike`, price: getLowCost(), checked: isChecked()}
   ]],
   [`Check-in`, [
     {name: `Add breakfast`, price: getLowCost(), checked: isChecked()},
@@ -123,7 +125,7 @@ const descriptionArr = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac portadapibus.
   In rutrum ac purus sit amet tempus`.split(`.`);
 
-const getPointType = () => pointTypes[getRandomInteger(0, pointTypes.length - 1)];
+const getPointType = () => eventTypes[getRandomInteger(0, eventTypes.length - 1)];
 const getDestination = () => destinations[getRandomInteger(0, destinations.length - 1)];
 
 // По велению судьбы и дизайнера мы получаем дату из поля ввода в формате 18/03/19 00:00
@@ -191,7 +193,7 @@ const getPhotos = (count) => {
   return photoArr;
 };
 
-const getPoint = () => {
+const getPoint = (item, i) => {
   const type = getPointType();
   const destination = getDestination();
   const offers = offersMap.get(type);
@@ -200,6 +202,7 @@ const getPoint = () => {
   const preposition = prepositions[type];
   const date = getDate(dates);
   const price = prices[type];
+  const id = i;
   date.eventTime = getEventTime(date.from, date.to);
   date.eventDuration = getEventDuration(date.from, date.to);
 
@@ -211,7 +214,8 @@ const getPoint = () => {
     description,
     photos,
     preposition,
-    date
+    date,
+    id
   };
 };
 
@@ -238,7 +242,9 @@ const getPoints = (count) => {
 };
 
 const points = getPoints(POINTS_COUNT);
-
-console.log(points);
-
-export {points};
+export {
+  points,
+  placeTypes,
+  rideTypes,
+  destinations
+};

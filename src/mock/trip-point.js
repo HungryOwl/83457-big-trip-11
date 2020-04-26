@@ -147,8 +147,8 @@ const getDate = (datesArr) => {
 
 const getEventTime = (from, to) => {
   return {
-    from: {hours: from.getHours(), minutes: from.getMinutes()},
-    to: {hours: to.getHours(), minutes: to.getMinutes()}
+    from: {hours: getFormattedDate(from.getHours()), minutes: getFormattedDate(from.getMinutes())},
+    to: {hours: getFormattedDate(to.getHours()), minutes: getFormattedDate(to.getMinutes())}
   };
 };
 
@@ -242,6 +242,8 @@ const getPoints = (count) => {
 };
 
 const points = getPoints(POINTS_COUNT);
+
+console.log(points);
 
 export {
   points,

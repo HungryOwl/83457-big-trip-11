@@ -9,8 +9,8 @@ const eventTypeItems = (eventTypesArr, currentType, id) => {
 
       return (
         `<div class="event__type-item">
-          <input id="event-type-taxi-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" checked=${isChecked}>
-          <label class="event__type-label  event__type-label--${eventType.toLowerCase()}" for="event-type-${type}-${id}">${eventType}</label>
+          <input id="event-type-${type}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${isChecked ? `checked` : ``}>
+          <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${id}">${eventType}</label>
         </div>`
       );
     }).join(` `);

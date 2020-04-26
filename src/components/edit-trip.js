@@ -16,9 +16,7 @@ const eventTypeItems = (eventTypesArr, currentType, id) => {
     }).join(` `);
 };
 
-const getEventTypesList = (point) => {
-  const {type, id} = point;
-
+const getEventTypesList = (type, id) => {
   return (
     `<div class="event__type-list">
       <fieldset class="event__type-group">
@@ -30,6 +28,20 @@ const getEventTypesList = (point) => {
         <legend class="visually-hidden">Activity</legend>
         ${eventTypeItems(placeTypes, type, id)}
       </fieldset>
+    </div>`
+  );
+};
+
+const getEventType = (type, id) => {
+  return (
+    `<div class="event__type-wrapper">
+      <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
+        <span class="visually-hidden">Choose event type</span>
+        <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
+      </label>
+      <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
+
+      ${getEventTypesList(type, id)}
     </div>`
   );
 };
@@ -128,8 +140,38 @@ const getAvailableOffers = (offers, id) => {
   </section>`;
 };
 
+const getEventDescription = (description) => {
+  if (!description) {
+    return ``;
+  }
+
+  return (
+    `<h3 class="event__section-title  event__section-title--destination">Destination</h3>
+    <p class="event__destination-description">${description}</p>`
+  );
+};
+
 const getPhotosTemplate = (photos) => {
-  return photos.map((src) => `<img class="event__photo" src="${src}" alt="Event photo">`).join(` `);
+  if (!photos) {
+    return ``;
+  }
+
+  const photoMarkup = photos.map((src) => `<img class="event__photo" src="${src}" alt="Event photo">`).join(` `);
+
+  return (
+    `<div class="event__photos-container">
+       <div class="event__photos-tape">${photoMarkup}</div>
+    </div>`
+  );
+};
+
+const getEventDetails = (description, photos) => {
+  return (
+    `<section class="event__section  event__section--destination">
+      ${getEventDescription(description)}
+      ${getPhotosTemplate(photos)}
+    </section>`
+  );
 };
 
 const getTripEditTemplate = (point) => {
@@ -140,16 +182,8 @@ const getTripEditTemplate = (point) => {
       <!-- Cоздание/редактирование маршрута -->
       <form class="trip-events__item  event  event--edit" action="#" method="post">
         <header class="event__header">
-          <div class="event__type-wrapper">
-            <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
-              <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
-            </label>
-            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
 
-            ${getEventTypesList(point)}
-          </div>
-
+          ${getEventType(type, id)}
           ${getDestinationList(destinations, destination, id, type, preposition)}
           ${getEventTime(date, id)}
           ${getBasePrice(price, id)}
@@ -157,19 +191,10 @@ const getTripEditTemplate = (point) => {
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
           <button class="event__reset-btn" type="reset">Cancel</button>
         </header>
+
         <section class="event__details">
           ${getAvailableOffers(offers, id)}
-
-          <section class="event__section  event__section--destination">
-            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${description}</p>
-
-            <div class="event__photos-container">
-              <div class="event__photos-tape">
-                ${getPhotosTemplate(photos)}
-              </div>
-            </div>
-          </section>
+          ${getEventDetails(description, photos)}
         </section>
       </form>
     `

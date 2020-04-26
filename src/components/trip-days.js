@@ -13,7 +13,7 @@ const getTripsDay = (dayGroup, dayNumber) => {
     `<li class="trip-days__item day">
       <div class="day__info">
         <span class="day__counter">${dayNumber}</span>
-        <time class="day__date" datetime=${dayGroup.date}>${dayGroup.month.slice(0, 2)} ${dayGroup.day}</time>
+        <time class="day__date" datetime=${dayGroup.date}>${dayGroup.month.slice(0, 3)} ${dayGroup.day}</time>
       </div>
 
       ${getTripEventsList(dayGroup.points)}

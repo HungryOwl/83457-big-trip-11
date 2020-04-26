@@ -54,8 +54,6 @@ const getAvailableOffers = (offers, id) => {
   const offersMock = offers.map((offer) => {
     const {name, label, price, checked: isChecked} = offer;
 
-    console.log('offer', offer);
-
     return (
       `<div class="event__offer-selector">
         <input class="event__offer-checkbox  visually-hidden" id="event-offer-${label}-${id}" type="checkbox" name="event-offer-${label}" ${isChecked ? `checked` : ``}>
@@ -142,7 +140,7 @@ const getTripEditTemplate = (point) => {
           <div class="event__field-group  event__field-group--price">
             <label class="event__label" for="event-price-${id}">
               <span class="visually-hidden">Price</span>
-              &euro;
+              &#8381;
             </label>
             <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}">
           </div>

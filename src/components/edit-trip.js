@@ -34,15 +34,56 @@ const getEventTypesList = (point) => {
   );
 };
 
-const getDestinationList = (destinationsArr, id) => {
+const getDestinationList = (destinationsArr, destination, id, type, preposition) => {
   const options = destinationsArr.map((dest) => {
     return `<option value="${dest}"></option>`;
   }).join(` `);
+  const datalist = `<datalist id="destination-list-${id}">${options}</datalist>`;
 
   return (
-    `<datalist id="destination-list-${id}">
-        ${options}
-    </datalist>`
+    `<div class="event__field-group  event__field-group--destination">
+        <label class="event__label  event__type-output" for="event-destination-${id}">
+        ${type} ${preposition}
+        </label>
+        <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value=${destination} list="destination-list-${id}">
+
+        ${datalist}
+    </div>`
+  );
+};
+
+const getEventTime = (date, id) => {
+  const year = {
+    from: date.from.getFullYear() % 100,
+    to: date.to.getFullYear() % 100
+  };
+
+  const month = {
+    from: getFormattedDate(date.from.getMonth()),
+    to: getFormattedDate(date.to.getMonth())
+  };
+
+  const day = {
+    from: getFormattedDate(date.from.getDate()),
+    to: getFormattedDate(date.from.getDate())
+  };
+
+  const eventTime = date.eventTime;
+  const startTime = `${day.from}/${month.from}/${year.from} ${eventTime.from.hours}:${eventTime.from.minutes}`;
+  const endTime = `${day.to}/${month.to}/${year.to} ${eventTime.to.hours}:${eventTime.to.minutes}`;
+
+  return (
+    `<div class="event__field-group  event__field-group--time">
+      <label class="visually-hidden" for="event-start-time-${id}">
+        From
+      </label>
+      <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${startTime}">
+      &mdash;
+      <label class="visually-hidden" for="event-end-time-${id}">
+        To
+      </label>
+      <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${endTime}">
+    </div>`
   );
 };
 
@@ -82,25 +123,6 @@ const getPhotosTemplate = (photos) => {
 const getTripEditTemplate = (point) => {
   const {type, price, destination, offers, description, preposition, photos, date, id} = point;
 
-  const year = {
-    from: date.from.getFullYear() % 100,
-    to: date.to.getFullYear() % 100
-  };
-
-  const month = {
-    from: getFormattedDate(date.from.getMonth()),
-    to: getFormattedDate(date.to.getMonth())
-  };
-
-  const day = {
-    from: getFormattedDate(date.from.getDate()),
-    to: getFormattedDate(date.from.getDate())
-  };
-  const eventTime = date.eventTime;
-
-  const startTime = `${year.from}/${month.from}/${day.from} ${eventTime.from.hours}:${eventTime.from.minutes}`;
-  const endTime = `${year.to}/${month.to}/${day.to} ${eventTime.to.hours}:${eventTime.to.minutes}`;
-
   return (
     `
       <!-- Cоздание/редактирование маршрута -->
@@ -116,26 +138,9 @@ const getTripEditTemplate = (point) => {
             ${getEventTypesList(point)}
           </div>
 
-          <div class="event__field-group  event__field-group--destination">
-            <label class="event__label  event__type-output" for="event-destination-${id}">
-              ${type} ${preposition}
-            </label>
-            <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value=${destination} list="destination-list-${id}">
+          ${getDestinationList(destinations, destination, id, type, preposition)}
+          ${getEventTime(date, id)}
 
-            ${getDestinationList(destinations, id)}
-          </div>
-
-          <div class="event__field-group  event__field-group--time">
-            <label class="visually-hidden" for="event-start-time-${id}">
-              From
-            </label>
-            <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${startTime}">
-            &mdash;
-            <label class="visually-hidden" for="event-end-time-${id}">
-              To
-            </label>
-            <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${endTime}">
-          </div>
 
           <div class="event__field-group  event__field-group--price">
             <label class="event__label" for="event-price-${id}">

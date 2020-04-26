@@ -51,13 +51,13 @@ const getAvailableOffers = (offers, id) => {
     return ``;
   }
 
-  return offers.map((offer) => {
+  const offersMock = offers.map((offer) => {
     const {name, label, price, checked: isChecked} = offer;
 
     return (
       `<div class="event__offer-selector">
         <input class="event__offer-checkbox  visually-hidden" id="event-offer-${label}-${id}" type="checkbox" name="event-offer-${label}" checked="${isChecked}">
-        <label class="event__offer-label" for="event-offer-luggage-1">
+        <label class="event__offer-label" for="event-offer-${label}-${id}">
           <span class="event__offer-title">${name}</span>
           &plus;
           &#8381;&nbsp;<span class="event__offer-price">${price}</span>
@@ -65,6 +65,14 @@ const getAvailableOffers = (offers, id) => {
       </div>`
     );
   }).join(` `);
+
+  return `<section class="event__section  event__section--offers">
+      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+
+      <div class="event__available-offers">
+        ${offersMock}
+      </div>
+  </section>`;
 };
 
 const getPhotosTemplate = (photos) => {
@@ -141,13 +149,7 @@ const getTripEditTemplate = (point) => {
           <button class="event__reset-btn" type="reset">Cancel</button>
         </header>
         <section class="event__details">
-          <section class="event__section  event__section--offers">
-            <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-            <div class="event__available-offers">
-              ${getAvailableOffers(offers, id)}
-            </div>
-          </section>
+          ${getAvailableOffers(offers, id)}
 
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>

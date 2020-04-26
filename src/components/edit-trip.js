@@ -65,7 +65,6 @@ const getDestinationList = (destinationsArr, destination, id, type, preposition)
   );
 };
 
-
 const getEventTime = (date) => {
   const tripTime = {
     from: ``,

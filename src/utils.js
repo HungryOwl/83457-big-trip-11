@@ -19,6 +19,10 @@ const getRandomInteger = (min = 1, max) => {
   return Math.round(rand);
 };
 
+const flipCoin = () => {
+  return Boolean(getRandomInteger(0, 1));
+};
+
 const getFormattedDate = (value) => {
   const digits = `` + value;
   return `00`.substring(digits.length) + digits;
@@ -26,6 +30,7 @@ const getFormattedDate = (value) => {
 
 export {
   getRandomInteger,
+  flipCoin,
   getHtmlElement,
   getContainerClasses,
   getFormattedDate

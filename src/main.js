@@ -1,6 +1,6 @@
 import * as utils from './utils';
 
-import {getRandomInteger} from './utils';
+import {flipCoin} from './utils';
 import {getMenuTemplate} from './components/menu';
 import {getFiltersTemplate} from './components/filters';
 import {getTripInfoTemplate} from './components/trip-info';
@@ -15,18 +15,16 @@ import {points} from "./mock/trip-point";
 let editPoint = points.slice(0, 1)[0];
 
 const pointRandomReset = (point) => {
-  const isReset = !!getRandomInteger(0, 1);
+  const newPoint = {};
+  const isReset = flipCoin();
 
-  if (isReset) {
-    point.date = ``;
-    point.destination = ``;
-    point.price = ``;
-    point.offers = ``;
-    point.description = ``;
-    point.photos = ``;
+  for (let field in point) {
+    if (point.hasOwnProperty(field)) {
+      newPoint[field] = (isReset || field === `type`) ? point[field] : ``;
+    }
   }
 
-  return point;
+  return newPoint;
 };
 
 editPoint = pointRandomReset(editPoint);

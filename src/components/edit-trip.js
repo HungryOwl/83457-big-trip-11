@@ -50,6 +50,7 @@ const getDestinationList = (destinationsArr, destination, id, type, preposition)
   const options = destinationsArr.map((dest) => {
     return `<option value="${dest}"></option>`;
   }).join(` `);
+
   const datalist = `<datalist id="destination-list-${id}">${options}</datalist>`;
 
   return (
@@ -57,14 +58,26 @@ const getDestinationList = (destinationsArr, destination, id, type, preposition)
         <label class="event__label  event__type-output" for="event-destination-${id}">
         ${type} ${preposition}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value=${destination} list="destination-list-${id}">
+        <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination}" list="destination-list-${id}">
 
         ${datalist}
     </div>`
   );
 };
 
-const getEventTime = (date, id) => {
+
+const getEventTime = (date) => {
+  const tripTime = {
+    from: ``,
+    to: ``
+  };
+
+  if (!date) {
+    return tripTime;
+  }
+
+  const eventTime = date.eventTime;
+
   const year = {
     from: date.from.getFullYear() % 100,
     to: date.to.getFullYear() % 100
@@ -80,21 +93,36 @@ const getEventTime = (date, id) => {
     to: getFormattedDate(date.from.getDate())
   };
 
-  const eventTime = date.eventTime;
-  const startTime = `${day.from}/${month.from}/${year.from} ${eventTime.from.hours}:${eventTime.from.minutes}`;
-  const endTime = `${day.to}/${month.to}/${year.to} ${eventTime.to.hours}:${eventTime.to.minutes}`;
+  const hours = {
+    from: eventTime.from.hours,
+    to: eventTime.to.hours
+  };
+
+  const minutes = {
+    from: eventTime.from.minutes,
+    to: eventTime.to.minutes
+  };
+
+  tripTime.from = `${day.from}/${month.from}/${year.from} ${hours.from}:${minutes.from}`;
+  tripTime.to = `${day.to}/${month.to}/${year.to} ${hours.to}:${minutes.to}`;
+
+  return tripTime;
+};
+
+const getEventTimeMarkup = (date, id) => {
+  const time = getEventTime(date);
 
   return (
     `<div class="event__field-group  event__field-group--time">
       <label class="visually-hidden" for="event-start-time-${id}">
         From
       </label>
-      <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${startTime}">
+      <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${time.from}">
       &mdash;
       <label class="visually-hidden" for="event-end-time-${id}">
         To
       </label>
-      <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${endTime}">
+      <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${time.to}">
     </div>`
   );
 };
@@ -174,6 +202,21 @@ const getEventDetails = (description, photos) => {
   );
 };
 
+const getEventDetailsMarkup = (offers, id, description, photos) => {
+  const isEventDetails = offers || description || photos;
+
+  if (!isEventDetails) {
+    return ``;
+  }
+
+  return (
+    `<section class="event__details">
+      ${getAvailableOffers(offers, id)}
+      ${getEventDetails(description, photos)}
+    </section>`
+  );
+};
+
 const getTripEditTemplate = (point) => {
   const {type, price, destination, offers, description, preposition, photos, date, id} = point;
 
@@ -182,20 +225,16 @@ const getTripEditTemplate = (point) => {
       <!-- Cоздание/редактирование маршрута -->
       <form class="trip-events__item  event  event--edit" action="#" method="post">
         <header class="event__header">
-
           ${getEventType(type, id)}
           ${getDestinationList(destinations, destination, id, type, preposition)}
-          ${getEventTime(date, id)}
+          ${getEventTimeMarkup(date, id)}
           ${getBasePrice(price, id)}
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
           <button class="event__reset-btn" type="reset">Cancel</button>
         </header>
 
-        <section class="event__details">
-          ${getAvailableOffers(offers, id)}
-          ${getEventDetails(description, photos)}
-        </section>
+        ${getEventDetailsMarkup(offers, id, description, photos)}
       </form>
     `
   );

@@ -26,7 +26,7 @@ const prepositions = {
 };
 
 const dates = [
-  {from: `16/03/21 10:10`, to: `16/03/21 13:00`},
+  {from: `16/03/21 15:15`, to: `16/03/21 18:05`},
   {from: `16/03/21 19:19`, to: `17/03/21 06:15`},
   {from: `17/03/21 11:11`, to: `17/03/21 12:00`},
   {from: `18/03/21 18:16`, to: `19/03/21 05:25`},
@@ -130,6 +130,10 @@ const getDestination = () => destinations[getRandomInteger(0, destinations.lengt
 
 // По велению судьбы и дизайнера мы получаем дату из поля ввода в формате 18/03/19 00:00
 const parseDate = (value) => {
+  if (!value) {
+    return ``;
+  }
+
   let [day, month, year] = value.split(` `)[0].split(`/`);
   const [hours, minutes] = value.split(` `)[1].split(`:`);
   year = 20 + year;
@@ -146,9 +150,14 @@ const getDate = (datesArr) => {
 };
 
 const getEventTime = (from, to) => {
+  const hoursFrom = from ? getFormattedDate(from.getHours()) : ``;
+  const minutesFrom = from ? getFormattedDate(from.getMinutes()) : ``;
+  const hoursTo = to ? getFormattedDate(to.getHours()) : ``;
+  const minutesTo = to ? getFormattedDate(to.getMinutes()) : ``;
+
   return {
-    from: {hours: getFormattedDate(from.getHours()), minutes: getFormattedDate(from.getMinutes())},
-    to: {hours: getFormattedDate(to.getHours()), minutes: getFormattedDate(to.getMinutes())}
+    from: {hours: hoursFrom, minutes: minutesFrom},
+    to: {hours: hoursTo, minutes: minutesTo}
   };
 };
 

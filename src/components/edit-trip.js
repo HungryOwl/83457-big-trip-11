@@ -87,6 +87,18 @@ const getEventTime = (date, id) => {
   );
 };
 
+const getBasePrice = (price, id) => {
+  return (
+    `<div class="event__field-group  event__field-group--price">
+      <label class="event__label" for="event-price-${id}">
+        <span class="visually-hidden">Price</span>
+        &#8381;
+      </label>
+      <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}">
+    </div>`
+  );
+};
+
 const getAvailableOffers = (offers, id) => {
   if (!offers) {
     return ``;
@@ -140,15 +152,7 @@ const getTripEditTemplate = (point) => {
 
           ${getDestinationList(destinations, destination, id, type, preposition)}
           ${getEventTime(date, id)}
-
-
-          <div class="event__field-group  event__field-group--price">
-            <label class="event__label" for="event-price-${id}">
-              <span class="visually-hidden">Price</span>
-              &#8381;
-            </label>
-            <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}">
-          </div>
+          ${getBasePrice(price, id)}
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
           <button class="event__reset-btn" type="reset">Cancel</button>

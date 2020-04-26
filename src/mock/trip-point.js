@@ -224,7 +224,18 @@ const getPoint = (item, i) => {
     photos,
     preposition,
     date,
-    id
+    id,
+    getFullPrice() {
+      let fullPrice = this.price;
+
+      if (this.offers) {
+        for (let offer of this.offers) {
+          fullPrice += offer.price;
+        }
+      }
+
+      return fullPrice;
+    }
   };
 };
 

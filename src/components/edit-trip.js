@@ -54,9 +54,11 @@ const getAvailableOffers = (offers, id) => {
   const offersMock = offers.map((offer) => {
     const {name, label, price, checked: isChecked} = offer;
 
+    console.log('offer', offer);
+
     return (
       `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${label}-${id}" type="checkbox" name="event-offer-${label}" checked="${isChecked}">
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${label}-${id}" type="checkbox" name="event-offer-${label}" ${isChecked ? `checked` : ``}>
         <label class="event__offer-label" for="event-offer-${label}-${id}">
           <span class="event__offer-title">${name}</span>
           &plus;

@@ -1,4 +1,4 @@
-import {getRandomInteger, getFormattedDate, sortPoints} from '../utils';
+import {getRandomInteger, getFormattedDate, sortPointsByDate} from '../utils';
 
 const MIN_IN_HOUR = 60;
 const HOURS_IN_DAY = 24;
@@ -210,7 +210,7 @@ const getPhotos = (count) => {
   return photoArr;
 };
 
-const getPoint = (item, i) => {
+const getPoint = (i) => {
   const type = getPointType();
   const destination = getDestination();
   const offers = offersMap.get(type);
@@ -248,10 +248,15 @@ const getPoint = (item, i) => {
 };
 
 const getPoints = (count) => {
-  return new Array(count)
-    .fill(``)
-    .map(getPoint)
-    .sort(sortPoints);
+  const points = [];
+
+  for (let i = 0; i < count; i++) {
+    points.push(getPoint(i));
+  }
+
+  points.sort(sortPointsByDate);
+
+  return points;
 };
 
 const points = getPoints(POINTS_COUNT);

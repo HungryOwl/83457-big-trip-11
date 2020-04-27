@@ -28,7 +28,7 @@ const getFormattedDate = (value) => {
   return `00`.substring(digits.length) + digits;
 };
 
-const sortPoints = (point, nextPoint) => {
+const sortPointsByDate = (point, nextPoint) => {
   const prevTimestamp = point.date.from.getTime();
   const nextTimestamp = nextPoint.date.from.getTime();
 
@@ -50,5 +50,5 @@ export {
   getHtmlElement,
   getContainerClasses,
   getFormattedDate,
-  sortPoints
+  sortPointsByDate
 };

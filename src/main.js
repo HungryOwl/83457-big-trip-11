@@ -1,5 +1,4 @@
 import * as utils from './utils';
-
 import {flipCoin} from './utils';
 import {getMenuTemplate} from './components/menu';
 import {getFiltersTemplate} from './components/filters';
@@ -8,13 +7,13 @@ import {getTripInfoCost} from './components/trip-info-cost';
 import {getSortTemplate} from './components/sort-trip';
 import {getTripEditTemplate} from './components/edit-trip';
 import {getTripDaysTemplate} from './components/trip-days';
+import {getFullStatistics} from './components/statistics';
+import {statNames} from './mock/statistics';
 import {fullCost} from './mock/trip-info-cost';
 import {filters as filtersArr} from './mock/filters';
 import {sortItems as sortItemsArr} from './mock/sort-trip';
 import {dayGroups as dayGroupsArr} from './mock/trip-days';
 import {points} from "./mock/trip-point";
-
-console.log('points', points);
 
 let editPoint = points.slice(0, 1)[0];
 
@@ -66,5 +65,6 @@ renderTemplates(
     {container: elem[`trip-info`], render: getTripInfoCost, data: fullCost},
     {container: elem[`trip-events`], render: getSortTemplate, data: sortItems},
     {container: elem[`trip-events`], render: getTripEditTemplate, data: editPoint},
-    {container: elem[`trip-events`], render: getTripDaysTemplate, data: dayGroups}
+    {container: elem[`trip-events`], render: getTripDaysTemplate, data: dayGroups},
+    {container: elem[`trip-events`], render: getFullStatistics, data: statNames, place: `afterEnd`},
 );

@@ -4,6 +4,7 @@ const MIN_IN_HOUR = 60;
 const HOURS_IN_DAY = 24;
 const SEC_IN_MIN = 60;
 const MS_IN_SEC = 1000;
+const MS_IN_MIN = MS_IN_SEC * SEC_IN_MIN;
 const MS_IN_DAY = MS_IN_SEC * SEC_IN_MIN * MIN_IN_HOUR * HOURS_IN_DAY;
 const MS_IN_HOUR = MIN_IN_HOUR * SEC_IN_MIN * MS_IN_SEC;
 
@@ -175,14 +176,9 @@ const getEventTime = (from, to) => {
 
 const getEventDuration = (from, to) => {
   let timeDuration = to - from;
-  let days;
-  let hours;
-  let minutes;
-
-  minutes = new Date(timeDuration).getMinutes();
-  days = Math.floor(timeDuration / MS_IN_DAY);
-  timeDuration = timeDuration - days * MS_IN_DAY;
-  hours = Math.floor(timeDuration / MS_IN_HOUR);
+  const days = Math.floor(timeDuration / MS_IN_DAY);
+  const hours = Math.floor((timeDuration % MS_IN_DAY) / MS_IN_HOUR);
+  const minutes = Math.floor((timeDuration % MS_IN_HOUR) / MS_IN_MIN);
 
   return `
     ${days ? getFormattedDate(days) + `D` : ``}

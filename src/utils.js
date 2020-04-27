@@ -28,10 +28,27 @@ const getFormattedDate = (value) => {
   return `00`.substring(digits.length) + digits;
 };
 
+const sortPoints = (point, nextPoint) => {
+  const prevTimestamp = point.date.from.getTime();
+  const nextTimestamp = nextPoint.date.from.getTime();
+
+  if (prevTimestamp > nextTimestamp) {
+    return 1;
+  }
+
+  if (prevTimestamp === nextTimestamp) {
+    return 0;
+  }
+
+  return -1;
+};
+
+
 export {
   getRandomInteger,
   flipCoin,
   getHtmlElement,
   getContainerClasses,
-  getFormattedDate
+  getFormattedDate,
+  sortPoints
 };

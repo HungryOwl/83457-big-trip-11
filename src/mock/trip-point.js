@@ -1,4 +1,4 @@
-import {getRandomInteger, getFormattedDate} from '../utils';
+import {getRandomInteger, getFormattedDate, sortPoints} from '../utils';
 
 const MIN_IN_HOUR = 60;
 const HOURS_IN_DAY = 24;
@@ -245,21 +245,6 @@ const getPoint = (item, i) => {
       return fullPrice;
     }
   };
-};
-
-const sortPoints = (point, nextPoint) => {
-  const prevTimestamp = point.date.from.getTime();
-  const nextTimestamp = nextPoint.date.from.getTime();
-
-  if (prevTimestamp > nextTimestamp) {
-    return 1;
-  }
-
-  if (prevTimestamp === nextTimestamp) {
-    return 0;
-  }
-
-  return -1;
 };
 
 const getPoints = (count) => {

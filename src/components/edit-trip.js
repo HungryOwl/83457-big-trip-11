@@ -1,7 +1,7 @@
 import {placeTypes, rideTypes, destinations} from '../mock/trip-point';
 import {getFormattedDate} from '../utils';
 
-const eventTypeItems = (eventTypesArr, currentType, id) => {
+const getEventTypeItems = (eventTypesArr, currentType, id) => {
   return eventTypesArr
     .map((eventType) => {
       const isChecked = eventType === currentType;
@@ -21,12 +21,12 @@ const getEventTypesList = (type, id) => {
     `<div class="event__type-list">
       <fieldset class="event__type-group">
         <legend class="visually-hidden">Transfer</legend>
-        ${eventTypeItems(rideTypes, type, id)}
+        ${getEventTypeItems(rideTypes, type, id)}
       </fieldset>
 
       <fieldset class="event__type-group">
         <legend class="visually-hidden">Activity</legend>
-        ${eventTypeItems(placeTypes, type, id)}
+        ${getEventTypeItems(placeTypes, type, id)}
       </fieldset>
     </div>`
   );

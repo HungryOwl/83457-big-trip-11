@@ -144,9 +144,11 @@ const parseDate = (value) => {
     return ``;
   }
 
+  const THRESHOLD_YEAR = 30;
   let [day, month, year] = value.split(` `)[0].split(`/`);
   const [hours, minutes] = value.split(` `)[1].split(`:`);
-  year = 20 + year;
+
+  year = year < THRESHOLD_YEAR ? `20` + year : `19` + year;
 
   return new Date(year, month, day, hours, minutes);
 };

@@ -23,7 +23,7 @@ const pointRandomReset = (point) => {
 
   for (let field in point) {
     if (point.hasOwnProperty(field)) {
-      newPoint[field] = (isReset || field === `type`) ? point[field] : ``;
+      newPoint[field] = (!isReset || field === `type`) ? point[field] : ``;
     }
   }
 

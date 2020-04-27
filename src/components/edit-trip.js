@@ -13,8 +13,6 @@ for (const {event, type} of eventTypes) {
 }
 
 const getEventTypeItems = (eventTypesArr, currentType, id) => {
-  debugger;
-
   return eventTypesArr
     .map((eventType) => {
       const isChecked = eventType === currentType;
@@ -26,7 +24,7 @@ const getEventTypeItems = (eventTypesArr, currentType, id) => {
           <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${id}">${eventType}</label>
         </div>`
       );
-    }).join(` `);
+    }).join(``);
 };
 
 const getEventTypesList = (type, id) => {
@@ -152,7 +150,7 @@ const getBasePrice = (price, id) => {
 };
 
 const getAvailableOffers = (offers, id) => {
-  if (!offers) {
+  if (!offers || offers.length === 0) {
     return ``;
   }
 
@@ -169,7 +167,7 @@ const getAvailableOffers = (offers, id) => {
         </label>
       </div>`
     );
-  }).join(` `);
+  }).join(``);
 
   return `<section class="event__section  event__section--offers">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -230,25 +228,33 @@ const getEventDetailsMarkup = (offers, id, description, photos) => {
 };
 
 const getTripEditTemplate = (point) => {
-  const {type, price, destination, offers, description, preposition, photos, date, id} = point;
+  const {
+    type = `flight`,
+    price = ``,
+    destination = `Горький`,
+    offers = [],
+    description = ``,
+    preposition = `to`,
+    photos = ``,
+    date = new Date(),
+    id = `0`
+  } = point;
 
   return (
-    `
-      <!-- Cоздание/редактирование маршрута -->
-      <form class="trip-events__item  event  event--edit" action="#" method="post">
-        <header class="event__header">
-          ${getEventType(type, id)}
-          ${getDestinationList(destinations, destination, id, type, preposition)}
-          ${getEventTimeMarkup(date, id)}
-          ${getBasePrice(price, id)}
+    `<!-- Cоздание/редактирование маршрута -->
+    <form class="trip-events__item  event  event--edit" action="#" method="post">
+      <header class="event__header">
+        ${getEventType(type, id)}
+        ${getDestinationList(destinations, destination, id, type, preposition)}
+        ${getEventTimeMarkup(date, id)}
+        ${getBasePrice(price, id)}
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Cancel</button>
-        </header>
+        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+        <button class="event__reset-btn" type="reset">Cancel</button>
+      </header>
 
-        ${getEventDetailsMarkup(offers, id, description, photos)}
-      </form>
-    `
+      ${getEventDetailsMarkup(offers, id, description, photos)}
+    </form>`
   );
 };
 

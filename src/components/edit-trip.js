@@ -1,7 +1,20 @@
-import {placeTypes, rideTypes, destinations} from '../mock/trip-point';
+import {eventTypes, destinations} from '../mock/trip-point';
 import {getFormattedDate} from '../utils';
 
+const rideTypes = [];
+const placeTypes = [];
+
+for (const {event, type} of eventTypes) {
+  if (type === `ride`) {
+    rideTypes.push(event);
+  } else if (type === `place`) {
+    placeTypes.push(event);
+  }
+}
+
 const getEventTypeItems = (eventTypesArr, currentType, id) => {
+  debugger;
+
   return eventTypesArr
     .map((eventType) => {
       const isChecked = eventType === currentType;

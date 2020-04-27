@@ -7,9 +7,19 @@ const MS_IN_SEC = 1000;
 const MS_IN_DAY = MS_IN_SEC * SEC_IN_MIN * MIN_IN_HOUR * HOURS_IN_DAY;
 const MS_IN_HOUR = MIN_IN_HOUR * SEC_IN_MIN * MS_IN_SEC;
 
-const placeTypes = [`Check-in`, `Sightseeing`, `Restaurant`];
-const rideTypes = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Drive`, `Flight`];
-const eventTypes = [...rideTypes, ...placeTypes];
+const eventTypes = [
+  {event: `Taxi`, type: `ride`},
+  {event: `Bus`, type: `ride`},
+  {event: `Train`, type: `ride`},
+  {event: `Ship`, type: `ride`},
+  {event: `Transport`, type: `ride`},
+  {event: `Drive`, type: `ride`},
+  {event: `Flight`, type: `ride`},
+  {event: `Check-in`, type: `place`},
+  {event: `Sightseeing`, type: `place`},
+  {event: `Restaurant`, type: `place`},
+];
+
 const destinations = [`Горький`, `Дзержинск`, `Сталинград`, `Ногинск`, `Ворошиловск`, `Ульяновск`, `Молотов`, `Орджоникидзе`];
 
 const prepositions = {
@@ -125,7 +135,7 @@ const descriptionArr = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac portadapibus.
   In rutrum ac purus sit amet tempus`.split(`.`);
 
-const getPointType = () => eventTypes[getRandomInteger(0, eventTypes.length - 1)];
+const getPointType = () => eventTypes[getRandomInteger(0, eventTypes.length - 1)].event;
 const getDestination = () => destinations[getRandomInteger(0, destinations.length - 1)];
 
 // По велению судьбы и дизайнера мы получаем дату из поля ввода в формате 18/03/19 00:00
@@ -265,7 +275,6 @@ const points = getPoints(POINTS_COUNT);
 
 export {
   points,
-  placeTypes,
-  rideTypes,
+  eventTypes,
   destinations
 };

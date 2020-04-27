@@ -66,5 +66,5 @@ renderTemplates(
     {container: elem[`trip-events`], render: getSortTemplate, data: sortItems},
     {container: elem[`trip-events`], render: getTripEditTemplate, data: editPoint},
     {container: elem[`trip-events`], render: getTripDaysTemplate, data: dayGroups},
-    {container: elem[`trip-events`], render: getFullStatistics, data: statNames, place: `afterEnd`},
+    {container: elem[`trip-events`], render: getFullStatistics, data: statNames, place: `afterEnd`}
 );

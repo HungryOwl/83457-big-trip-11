@@ -1,34 +1,34 @@
 import {getTripPointTemplate} from './trip-point';
 
-const TRIPS_COUNT = 3;
+const getTripEventsList = (points) => {
+  const tripPoints = points
+    .map((point) => `<li class="trip-events__item">${getTripPointTemplate(point)}</li>`)
+    .join(` `);
 
-const getTripEventsList = (tripsCount, pointTemplate) => {
-  let tripEvents = ``;
-  let tripEventsList;
-
-  for (let i = 0; i < tripsCount; i++) {
-    tripEvents += `<li class="trip-events__item">${pointTemplate}</li>`;
-  }
-
-  tripEventsList = `<ul class="trip-events__list">${tripEvents}</ul>`;
-  return tripEventsList;
+  return `<ul class="trip-events__list">${tripPoints}</ul>`;
 };
 
-const tripEventsList = getTripEventsList(TRIPS_COUNT, getTripPointTemplate());
+const getTripsDay = (dayGroup, dayNumber) => {
+  return (
+    `<li class="trip-days__item day">
+      <div class="day__info">
+        <span class="day__counter">${dayNumber}</span>
+        <time class="day__date" datetime=${dayGroup.date}>${dayGroup.month.slice(0, 3)} ${dayGroup.day}</time>
+      </div>
 
-const getTripDaysTemplate = () => (
-  `
-    <ul class="trip-days">
-      <li class="trip-days__item day">
-        <div class="day__info">
-          <span class="day__counter">1</span>
-          <time class="day__date" datetime="2019-03-18">MAR 18</time>
-        </div>
+      ${getTripEventsList(dayGroup.points)}
+    </li>`
+  );
+};
 
-        ${tripEventsList}
-      </li>
-    </ul>
-  `
-);
+const getTripDaysTemplate = (dayGroups) => {
+  const days = dayGroups
+    .map((dayGroup, i) => getTripsDay(dayGroup, i + 1))
+    .join(` `);
+
+  return (
+    `<ul class="trip-days">${days}</ul>`
+  );
+};
 
 export {getTripDaysTemplate};

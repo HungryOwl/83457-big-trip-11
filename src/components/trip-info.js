@@ -1,4 +1,4 @@
-const getTripInfoTemplate = () => (
+export const getTripInfoTemplate = () => (
   `
     <!-- Информация о маршруте -->
     <section class="trip-main__trip-info  trip-info">
@@ -10,5 +10,3 @@ const getTripInfoTemplate = () => (
     </section>
   `
 );
-
-export {getTripInfoTemplate};

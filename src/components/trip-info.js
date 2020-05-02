@@ -1,12 +1,40 @@
-export const getTripInfoTemplate = () => (
-  `
-    <!-- Информация о маршруте -->
+import {getFormattedDate} from '../utils';
+
+const getDatesFromTo = ([from, to] = [``, ``]) => {
+  const monthFrom = (from) ? from.monthName : from;
+  const dayFrom = (from) ? getFormattedDate(from.day) : from;
+  const monthTo = (to && to.monthName !== from.monthName) ? to.monthName : ``;
+  const dayTo = (to) ? getFormattedDate(to.day) : to;
+
+  return (
+    `<p class="trip-info__dates">${monthFrom} ${dayFrom}&nbsp;&mdash;&nbsp;${monthTo} ${dayTo}</p>`
+  );
+};
+
+const getSequenceOfCities = (cities) => {
+  let cityChain = [];
+
+  if (cities.length > 3) {
+    cityChain = [cities[0], `...`, cities[cities.length - 1]];
+  } else {
+    cityChain = [...cities];
+  }
+
+  cityChain = cityChain.join(` &mdash; `);
+
+  return (
+    `<h1 class="trip-info__title">${cityChain}</h1>`
+  );
+};
+
+export const getTripInfoTemplate = ({cities, dates}) => {
+  return (
+    `<!-- Информация о маршруте -->
     <section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
-        <h1 class="trip-info__title">Amsterdam &mdash; Chamonix &mdash; Mordor</h1>
-
-        <p class="trip-info__dates">Mar 18&nbsp;&mdash;&nbsp;20</p>
+        ${getSequenceOfCities(cities)}
+        ${getDatesFromTo(dates)}
       </div>
-    </section>
-  `
-);
+    </section>`
+  );
+};

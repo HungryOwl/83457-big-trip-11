@@ -8,12 +8,13 @@ import {getSortTemplate} from './components/sort-trip';
 import {getTripEditTemplate} from './components/edit-trip';
 import {getTripDaysTemplate} from './components/trip-days';
 import {getFullStatistics} from './components/statistics';
-import {statNames} from './mock/statistics';
-import {fullCost} from './mock/trip-info-cost';
+import {points} from './mock/trip-point';
+import {dayGroups as dayGroupsArr} from './mock/trip-days';
 import {filters as filtersArr} from './mock/filters';
 import {sortItems as sortItemsArr} from './mock/sort-trip';
-import {dayGroups as dayGroupsArr} from './mock/trip-days';
-import {points} from "./mock/trip-point";
+import {statNames} from './mock/statistics';
+import {fullCost} from './mock/trip-info-cost';
+import {tripInfo} from './mock/trip-info';
 
 let editPoint = points.slice(0, 1)[0];
 
@@ -55,7 +56,7 @@ const renderTemplates = (...templates) => {
 
 utils.getContainerClasses(mainClassNames, elem);
 renderTemplates(
-    {container: elem[`trip-main`], render: getTripInfoTemplate, place: `afterBegin`},
+    {container: elem[`trip-main`], render: getTripInfoTemplate, data: tripInfo, place: `afterBegin`},
     {container: elem[`trip-controls`], render: getMenuTemplate},
     {container: elem[`trip-controls`], render: getFiltersTemplate, data: filters}
 );

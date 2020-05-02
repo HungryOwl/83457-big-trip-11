@@ -1,3 +1,5 @@
+const monthNames = [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`];
+
 const getHtmlElement = (className) => {
   const element = document.querySelector(`.${className}`);
 
@@ -43,6 +45,19 @@ const sortPointsByDate = (point, nextPoint) => {
   return -1;
 };
 
+const getDateObj = (timestamp) => {
+  const date = timestamp;
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const day = date.getDate();
+
+  return {
+    year,
+    month,
+    monthName: monthNames[month],
+    day
+  };
+};
 
 export {
   getRandomInteger,
@@ -50,5 +65,7 @@ export {
   getHtmlElement,
   getContainerClasses,
   getFormattedDate,
-  sortPointsByDate
+  sortPointsByDate,
+  getDateObj,
+  monthNames
 };

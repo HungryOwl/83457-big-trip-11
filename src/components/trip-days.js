@@ -1,4 +1,5 @@
 import {getTripPointTemplate} from './trip-point';
+import {createElement} from '../utils';
 
 const getTripEventsList = (points) => {
   const tripPoints = points
@@ -31,4 +32,26 @@ const getTripDaysTemplate = (dayGroups) => {
   );
 };
 
-export {getTripDaysTemplate};
+export default class TripDays {
+  constructor(dayGroups) {
+    this._dayGroups = dayGroups;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return getTripDaysTemplate(this._dayGroups);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -15,6 +15,7 @@ import {sortItems as sortItemsArr} from './mock/sort-trip';
 import {statNames} from './mock/statistics';
 import {fullCost} from './mock/trip-info-cost';
 import {tripInfo} from './mock/trip-info';
+import {tabs} from './mock/menu';
 
 let editPoint = points.slice(0, 1)[0];
 
@@ -57,7 +58,7 @@ const renderTemplates = (...templates) => {
 utils.getContainerClasses(mainClassNames, elem);
 renderTemplates(
     {container: elem[`trip-main`], render: getTripInfoTemplate, data: tripInfo, place: `afterBegin`},
-    {container: elem[`trip-controls`], render: getMenuTemplate},
+    {container: elem[`trip-controls`], render: getMenuTemplate, data: tabs},
     {container: elem[`trip-controls`], render: getFiltersTemplate, data: filters}
 );
 

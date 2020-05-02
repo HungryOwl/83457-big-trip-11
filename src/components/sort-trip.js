@@ -1,8 +1,11 @@
+import {createElement} from '../utils';
+
 const getSortMarkup = (sortName, isChecked) => {
   const icon = (sortName === `time` || sortName === `price`) ?
     `<svg class="trip-sort__direction-icon" width="8" height="10" viewBox="0 0 8 10">
       <path d="M2.888 4.852V9.694H5.588V4.852L7.91 5.068L4.238 0.00999987L0.548 5.068L2.888 4.852Z"/>
-    </svg>` : ``;
+    </svg>`
+    : ``;
 
   return (
     `<div class="trip-sort__item  trip-sort__item--${sortName.toLowerCase()}">
@@ -37,4 +40,26 @@ const getSortTemplate = (sortItems) => {
   );
 };
 
-export {getSortTemplate};
+export default class Sort {
+  constructor(sortItems) {
+    this._sortItems = sortItems;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return getSortTemplate(this._sortItems);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

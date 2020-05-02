@@ -1,5 +1,5 @@
 import {eventTypes, destinations} from '../mock/trip-point';
-import {getFormattedDate} from '../utils';
+import {createElement, getFormattedDate} from '../utils';
 
 const rideTypes = [];
 const placeTypes = [];
@@ -76,6 +76,8 @@ const getDestinationList = (destinationsArr, destination, id, type, preposition)
   );
 };
 
+
+// @TODO не забыть вынести в utils
 const getEventTime = (date) => {
   const tripTime = {
     from: ``,
@@ -258,4 +260,26 @@ const getTripEditTemplate = (point) => {
   );
 };
 
-export {getTripEditTemplate};
+export default class EditTrip {
+  constructor(point) {
+    this._point = point;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return getTripEditTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

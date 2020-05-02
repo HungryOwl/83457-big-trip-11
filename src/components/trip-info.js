@@ -1,4 +1,4 @@
-import {getFormattedDate} from '../utils';
+import {createElement, getFormattedDate} from '../utils';
 
 const getDatesFromTo = ([from, to] = [``, ``]) => {
   const monthFrom = (from) ? from.monthName : from;
@@ -27,7 +27,7 @@ const getSequenceOfCities = (cities) => {
   );
 };
 
-export const getTripInfoTemplate = ({cities, dates}) => {
+const getTripInfoTemplate = ({cities, dates}) => {
   return (
     `<!-- Информация о маршруте -->
     <section class="trip-main__trip-info  trip-info">
@@ -38,3 +38,27 @@ export const getTripInfoTemplate = ({cities, dates}) => {
     </section>`
   );
 };
+
+export default class TripInfo {
+  constructor(tripInfo) {
+    this._info = tripInfo;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return getTripInfoTemplate(this._info);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

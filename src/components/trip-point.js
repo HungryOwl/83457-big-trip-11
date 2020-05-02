@@ -1,3 +1,5 @@
+import {createElement} from '../utils.js';
+
 const getEventOfferMarkup = (name, price) => {
   return (
     `<li class="event__offer">
@@ -57,4 +59,26 @@ const getTripPointTemplate = (point) => {
    `;
 };
 
-export {getTripPointTemplate};
+export default class TripPoint {
+  constructor(point) {
+    this._point = point;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return getTripPointTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

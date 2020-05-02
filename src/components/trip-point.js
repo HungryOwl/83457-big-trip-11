@@ -25,7 +25,7 @@ const getCheckedOffersTemplate = (offers) => {
   );
 };
 
-const getTripPointTemplate = (point) => {
+export const getTripPointTemplate = (point) => {
   const {type, price, destination, offers, preposition, date} = point;
   const eventTime = date.eventTime;
   const eventDuration = date.eventDuration;
@@ -59,7 +59,7 @@ const getTripPointTemplate = (point) => {
    `;
 };
 
-export default class TripPoint {
+export class TripPoint {
   constructor(point) {
     this._point = point;
 

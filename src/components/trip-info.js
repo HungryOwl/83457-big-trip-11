@@ -29,8 +29,7 @@ const getSequenceOfCities = (cities) => {
 
 const getTripInfoTemplate = ({cities, dates}) => {
   return (
-    `<!-- Информация о маршруте -->
-    <section class="trip-main__trip-info  trip-info">
+    `<section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
         ${getSequenceOfCities(cities)}
         ${getDatesFromTo(dates)}

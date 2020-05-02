@@ -60,10 +60,27 @@ const getDateObj = (timestamp) => {
 };
 
 const createElement = (template) => {
+  let fragment = new DocumentFragment();
   const newElement = document.createElement(`div`);
   newElement.innerHTML = template;
 
-  return newElement.firstChild;
+  if (newElement.childNodes.length > 1) {
+    for (let i = 0; i < newElement.childNodes.length; i++) {
+      fragment.append(newElement.childNodes[i]);
+    }
+
+    return fragment;
+  } else {
+    return newElement.firstChild;
+  }
+
+  // for(let i=1; i<=3; i++) {
+  //   let li = document.createElement('li');
+  //   li.append(i);
+  //   fragment.append(li);
+  // }
+  //
+  // return fragment;
 };
 
 const RenderPosition = {

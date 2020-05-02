@@ -22,8 +22,7 @@ const getTabsTemplate = (tabs) => {
 
 const getMenuTemplate = (tabs) => {
   return (
-    ` <!-- Меню -->
-    <h2 class="visually-hidden">Switch trip view</h2>
+    `<h2 class="visually-hidden">Switch trip view</h2>
     ${getTabsTemplate(tabs)}`
   );
 };

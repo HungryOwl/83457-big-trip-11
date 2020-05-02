@@ -1,13 +1,15 @@
-import * as utils from './utils';
+import {getContainerClasses, renderTemplate, RenderPosition} from './utils';
 import {flipCoin} from './utils';
-import {getMenuTemplate} from './components/menu';
-import {getFiltersTemplate} from './components/filters';
-import {getTripInfoTemplate} from './components/trip-info';
-import {getTripInfoCost} from './components/trip-info-cost';
-import {getSortTemplate} from './components/sort-trip';
-import {getTripEditTemplate} from './components/edit-trip';
-import {getTripDaysTemplate} from './components/trip-days';
-import {getFullStatistics} from './components/statistics';
+import TripMain from './components/trip-main';
+import Navigation from './components/menu';
+import Filters from './components/filters';
+import TripControls from './components/trip-controls';
+import TripInfo from './components/trip-info';
+import TripInfoCost from './components/trip-info-cost';
+import Sort from './components/sort-trip';
+import EditTrip from './components/edit-trip';
+import TripDays from './components/trip-days';
+import Statistics from './components/statistics';
 import {points} from './mock/trip-point';
 import {dayGroups as dayGroupsArr} from './mock/trip-days';
 import {filters as filtersArr} from './mock/filters';
@@ -15,8 +17,9 @@ import {sortItems as sortItemsArr} from './mock/sort-trip';
 import {statNames} from './mock/statistics';
 import {fullCost} from './mock/trip-info-cost';
 import {tripInfo} from './mock/trip-info';
-import {tabs} from './mock/menu';
+import {tabs as tabsArr} from './mock/menu';
 
+let pointsArr = points.slice(1);
 let editPoint = points.slice(0, 1)[0];
 
 const pointRandomReset = (point) => {
@@ -34,35 +37,37 @@ const pointRandomReset = (point) => {
 
 editPoint = pointRandomReset(editPoint);
 
-const filters = filtersArr.slice();
 const sortItems = sortItemsArr.slice();
 const dayGroups = dayGroupsArr.slice();
 
-const mainClassNames = [`trip-main`, `trip-controls`];
-const secondaryClassNames = [`trip-info`, `trip-events`];
+const mainClassNames = [`page-header__container`];
 const elem = {};
 
-const renderTemplates = (...templates) => {
-  templates.forEach((template) => {
-    const {container} = template;
-    const {data} = template;
+getContainerClasses(mainClassNames, elem);
 
-    renderTemplate(container, template.render(data), template.place);
-  });
+const TripMainComponent = new TripMain();
+renderTemplate(elem[`page-header__container`], TripMainComponent.getElement(), RenderPosition.BEFOREEND);
+
+const renderTripMain = (mainComponent, info, cost, tabs, filters) => {
+  const tripInfoComponent = new TripInfo(info);
+  const tripInfoCostComponent = new TripInfoCost(cost);
+  const tripControlsComponent = new TripControls();
+  const navigationComponent = new Navigation(tabs);
+  const filtersComponent = new Filters(filters);
+
+
+  renderTemplate(tripControlsComponent.getElement(), navigationComponent.getElement(), RenderPosition.AFTERBEGIN);
+  renderTemplate(tripControlsComponent.getElement(), filtersComponent.getElement(), RenderPosition.BEFOREEND);
+  renderTemplate(mainComponent.getElement(), tripControlsComponent.getElement(), RenderPosition.AFTERBEGIN);
+
+  renderTemplate(mainComponent.getElement(), tripInfoComponent.getElement(), RenderPosition.AFTERBEGIN);
+  renderTemplate(tripInfoComponent.getElement(), tripInfoCostComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
-utils.getContainerClasses(mainClassNames, elem);
-renderTemplates(
-    {container: elem[`trip-main`], render: getTripInfoTemplate, data: tripInfo, place: `afterBegin`},
-    {container: elem[`trip-controls`], render: getMenuTemplate, data: tabs},
-    {container: elem[`trip-controls`], render: getFiltersTemplate, data: filters}
-);
+const renderTripEvents = (TripEventsComponent, points) => {
 
-utils.getContainerClasses(secondaryClassNames, elem);
-renderTemplates(
-    {container: elem[`trip-info`], render: getTripInfoCost, data: fullCost},
-    {container: elem[`trip-events`], render: getSortTemplate, data: sortItems},
-    {container: elem[`trip-events`], render: getTripEditTemplate, data: editPoint},
-    {container: elem[`trip-events`], render: getTripDaysTemplate, data: dayGroups},
-    {container: elem[`trip-events`], render: getFullStatistics, data: statNames, place: `afterEnd`}
-);
+};
+
+renderTripMain(TripMainComponent, tripInfo, fullCost, tabsArr.slice(), filtersArr.slice());
+
+

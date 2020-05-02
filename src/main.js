@@ -42,10 +42,6 @@ const mainClassNames = [`trip-main`, `trip-controls`];
 const secondaryClassNames = [`trip-info`, `trip-events`];
 const elem = {};
 
-const renderTemplate = (container, template, place = `beforeEnd`) => {
-  container.insertAdjacentHTML(place, template);
-};
-
 const renderTemplates = (...templates) => {
   templates.forEach((template) => {
     const {container} = template;

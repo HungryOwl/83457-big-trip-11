@@ -45,6 +45,18 @@ const sortPointsByDate = (point, nextPoint) => {
   return -1;
 };
 
+const getEventTime = (from, to) => {
+  const hoursFrom = from ? getFormattedDate(from.getHours()) : ``;
+  const minutesFrom = from ? getFormattedDate(from.getMinutes()) : ``;
+  const hoursTo = to ? getFormattedDate(to.getHours()) : ``;
+  const minutesTo = to ? getFormattedDate(to.getMinutes()) : ``;
+
+  return {
+    from: {hours: hoursFrom, minutes: minutesFrom},
+    to: {hours: hoursTo, minutes: minutesTo}
+  };
+};
+
 const getDateObj = (timestamp) => {
   const date = timestamp;
   const year = date.getFullYear();
@@ -123,6 +135,7 @@ export {
   getContainerClasses,
   getFormattedDate,
   sortPointsByDate,
+  getEventTime,
   getDateObj,
   pointRandomReset,
   createElement,

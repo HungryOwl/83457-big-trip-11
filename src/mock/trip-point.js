@@ -1,4 +1,4 @@
-import {getRandomInteger, getFormattedDate, sortPointsByDate} from '../utils';
+import {getRandomInteger, getFormattedDate, getEventTime, sortPointsByDate} from '../utils';
 
 const MIN_IN_HOUR = 60;
 const HOURS_IN_DAY = 24;
@@ -160,18 +160,6 @@ const getDate = (datesArr) => {
   date.to = parseDate(date.to);
 
   return date;
-};
-
-const getEventTime = (from, to) => {
-  const hoursFrom = from ? getFormattedDate(from.getHours()) : ``;
-  const minutesFrom = from ? getFormattedDate(from.getMinutes()) : ``;
-  const hoursTo = to ? getFormattedDate(to.getHours()) : ``;
-  const minutesTo = to ? getFormattedDate(to.getMinutes()) : ``;
-
-  return {
-    from: {hours: hoursFrom, minutes: minutesFrom},
-    to: {hours: hoursTo, minutes: minutesTo}
-  };
 };
 
 const getEventDuration = (from, to) => {

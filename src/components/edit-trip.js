@@ -1,5 +1,5 @@
 import {eventTypes, destinations} from '../mock/trip-point';
-import {createElement, getFormattedDate} from '../utils';
+import {createElement, getEventTime, getFormattedDate} from '../utils';
 
 const rideTypes = [];
 const placeTypes = [];
@@ -76,9 +76,8 @@ const getDestinationList = (destinationsArr, destination, id, type, preposition)
   );
 };
 
-
 // @TODO не забыть вынести в utils
-const getEventTime = (date) => {
+const getFormattedEventTime = (date) => {
   const tripTime = {
     from: ``,
     to: ``
@@ -92,37 +91,37 @@ const getEventTime = (date) => {
 
   const year = {
     from: date.from.getFullYear() % 100,
-    to: date.to.getFullYear() % 100
+    to: (date.to) ? date.to.getFullYear() % 100 : ``
   };
 
   const month = {
     from: getFormattedDate(date.from.getMonth()),
-    to: getFormattedDate(date.to.getMonth())
+    to: (date.to) ? getFormattedDate(date.to.getMonth()) : ``
   };
 
   const day = {
     from: getFormattedDate(date.from.getDate()),
-    to: getFormattedDate(date.from.getDate())
+    to: (date.to) ? getFormattedDate(date.to.getDate()) : ``
   };
 
   const hours = {
     from: eventTime.from.hours,
-    to: eventTime.to.hours
+    to: (eventTime.to) ? eventTime.to.hours : ``
   };
 
   const minutes = {
     from: eventTime.from.minutes,
-    to: eventTime.to.minutes
+    to: eventTime.to ? eventTime.to.minutes : ``
   };
 
   tripTime.from = `${day.from}/${month.from}/${year.from} ${hours.from}:${minutes.from}`;
-  tripTime.to = `${day.to}/${month.to}/${year.to} ${hours.to}:${minutes.to}`;
+  tripTime.to = date.to ? `${day.to}/${month.to}/${year.to} ${hours.to}:${minutes.to}` : ``;
 
   return tripTime;
 };
 
 const getEventTimeMarkup = (date, id) => {
-  const time = getEventTime(date);
+  const time = getFormattedEventTime(date);
 
   return (
     `<div class="event__field-group  event__field-group--time">
@@ -229,16 +228,21 @@ const getEventDetailsMarkup = (offers, id, description, photos) => {
   );
 };
 
-const getTripEditTemplate = (point) => {
+const getTripEditTemplate = (point = {}) => {
+  const dateNow = new Date();
+
   const {
     type = `flight`,
     price = ``,
-    destination = `Горький`,
-    offers = [],
+    destination = ``,
+    offers = ``,
     description = ``,
     preposition = `to`,
     photos = ``,
-    date = new Date(),
+    date = {
+      from: dateNow,
+      eventTime: getEventTime(dateNow)
+    },
     id = `0`
   } = point;
 

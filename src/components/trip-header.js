@@ -3,7 +3,7 @@ import {createElement} from '../utils.js';
 const getNewEventBtnTemplate = () => `<button class="trip-main__event-add-btn  btn  btn--big  btn--yellow" type="button">New event</button>`;
 const getTripMainTemplate = () => `<div class="trip-main">${getNewEventBtnTemplate()}</div>`;
 
-export default class TripMain {
+export default class TripHeader {
   constructor() {
     this._element = null;
   }

@@ -88,7 +88,7 @@ const RenderPosition = {
   BEFOREEND: `beforeend`
 };
 
-const renderTemplate = (container, element, place) => {
+const renderTemplate = (container, element, place = `beforeend`) => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);

@@ -1,6 +1,6 @@
 import {getContainerClasses, renderTemplate, RenderPosition} from './utils';
 import {flipCoin} from './utils';
-import TripMain from './components/trip-main';
+import TripHeader from './components/trip-header';
 import Navigation from './components/menu';
 import Filters from './components/filters';
 import TripControls from './components/trip-controls';
@@ -45,29 +45,36 @@ const elem = {};
 
 getContainerClasses(mainClassNames, elem);
 
-const TripMainComponent = new TripMain();
-renderTemplate(elem[`page-header__container`], TripMainComponent.getElement(), RenderPosition.BEFOREEND);
+const TripHeaderComponent = new TripHeader();
+renderTemplate(elem[`page-header__container`], TripHeaderComponent.getElement());
 
-const renderTripMain = (mainComponent, info, cost, tabs, filters) => {
-  const tripInfoComponent = new TripInfo(info);
-  const tripInfoCostComponent = new TripInfoCost(cost);
+const renderTripControls = (mainComponent, tabs, filters) => {
   const tripControlsComponent = new TripControls();
   const navigationComponent = new Navigation(tabs);
   const filtersComponent = new Filters(filters);
 
-
-  renderTemplate(tripControlsComponent.getElement(), navigationComponent.getElement(), RenderPosition.AFTERBEGIN);
-  renderTemplate(tripControlsComponent.getElement(), filtersComponent.getElement(), RenderPosition.BEFOREEND);
+  renderTemplate(tripControlsComponent.getElement(), navigationComponent.getElement());
+  renderTemplate(tripControlsComponent.getElement(), filtersComponent.getElement());
   renderTemplate(mainComponent.getElement(), tripControlsComponent.getElement(), RenderPosition.AFTERBEGIN);
+};
 
+const renderTripInfoCost = (mainComponent, info, cost) => {
+  const tripInfoComponent = new TripInfo(info);
+  const tripInfoCostComponent = new TripInfoCost(cost);
+
+  renderTemplate(tripInfoComponent.getElement(), tripInfoCostComponent.getElement());
   renderTemplate(mainComponent.getElement(), tripInfoComponent.getElement(), RenderPosition.AFTERBEGIN);
-  renderTemplate(tripInfoComponent.getElement(), tripInfoCostComponent.getElement(), RenderPosition.BEFOREEND);
+};
+
+const renderTripMain = (mainComponent, info, cost, tabs, filters) => {
+  renderTripControls(mainComponent, tabs, filters);
+  renderTripInfoCost(mainComponent, info, cost);
 };
 
 const renderTripEvents = (TripEventsComponent, points) => {
 
 };
 
-renderTripMain(TripMainComponent, tripInfo, fullCost, tabsArr.slice(), filtersArr.slice());
+renderTripMain(TripHeaderComponent, tripInfo, fullCost, tabsArr.slice(), filtersArr.slice());
 
 

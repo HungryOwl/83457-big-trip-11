@@ -7,6 +7,7 @@ import TripControls from './components/trip-controls';
 import TripInfo from './components/trip-info';
 import TripInfoCost from './components/trip-info-cost';
 import Sort from './components/sort-trip';
+import TripEvents from './components/trip-events';
 import EditTrip from './components/edit-trip';
 import TripDays from './components/trip-days';
 import Statistics from './components/statistics';
@@ -40,13 +41,13 @@ editPoint = pointRandomReset(editPoint);
 const sortItems = sortItemsArr.slice();
 const dayGroups = dayGroupsArr.slice();
 
-const mainClassNames = [`page-header__container`];
-const elem = {};
-
-getContainerClasses(mainClassNames, elem);
+const headerContainer = document.querySelector(`.page-header__container`);
+const eventsContainer = document.querySelector(`.page-main .page-body__container`);
 
 const TripHeaderComponent = new TripHeader();
-renderTemplate(elem[`page-header__container`], TripHeaderComponent.getElement());
+const TripEventsComponent = new TripEvents();
+renderTemplate(headerContainer, TripHeaderComponent.getElement());
+renderTemplate(eventsContainer, TripEventsComponent.getElement());
 
 const renderTripControls = (mainComponent, tabs, filters) => {
   const tripControlsComponent = new TripControls();
@@ -71,10 +72,13 @@ const renderTripMain = (mainComponent, info, cost, tabs, filters) => {
   renderTripInfoCost(mainComponent, info, cost);
 };
 
-const renderTripEvents = (TripEventsComponent, points) => {
+const renderTripEvents = (tripEventsComponent, points, sortItems) => {
+  const sortComponent = new Sort(sortItems);
 
+  renderTemplate(tripEventsComponent.getElement(), sortComponent.getElement());
 };
 
 renderTripMain(TripHeaderComponent, tripInfo, fullCost, tabsArr.slice(), filtersArr.slice());
+renderTripEvents(TripEventsComponent, points, sortItems);
 
 

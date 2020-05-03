@@ -1,6 +1,5 @@
 import {createElement} from '../utils.js';
 
-
 const getTripEventsTemplate = () => {
   return (
     `<section class="trip-events">

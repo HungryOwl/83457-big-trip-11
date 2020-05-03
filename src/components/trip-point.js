@@ -62,7 +62,6 @@ export const getTripPointTemplate = (point) => {
 export class TripPoint {
   constructor(point) {
     this._point = point;
-
     this._element = null;
   }
 

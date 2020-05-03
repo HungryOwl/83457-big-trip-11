@@ -85,11 +85,12 @@ const pointRandomReset = (point) => {
 };
 
 const createElement = (template) => {
-  let fragment = new DocumentFragment();
   const newElement = document.createElement(`div`);
   newElement.innerHTML = template;
 
   if (newElement.childNodes.length > 1) {
+    let fragment = new DocumentFragment();
+
     for (let i = 0; i < newElement.childNodes.length; i++) {
       fragment.append(newElement.childNodes[i]);
     }

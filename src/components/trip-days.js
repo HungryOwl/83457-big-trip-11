@@ -1,46 +1,60 @@
 import {getTripPointTemplate} from './trip-point';
 import {createElement} from '../utils';
 
-const getTripEventsList = (points) => {
-  const tripPoints = points
-    .map((point) => `<li class="trip-events__item">${getTripPointTemplate(point)}</li>`)
-    .join(` `);
-
-  return `<ul class="trip-events__list">${tripPoints}</ul>`;
-};
-
-const getTripsDay = (dayGroup, dayNumber) => {
-  return (
-    `<li class="trip-days__item day">
-      <div class="day__info">
-        <span class="day__counter">${dayNumber}</span>
-        <time class="day__date" datetime=${dayGroup.date}>${dayGroup.month.slice(0, 3)} ${dayGroup.day}</time>
-      </div>
-
-      ${getTripEventsList(dayGroup.points)}
-    </li>`
-  );
-};
-
-const getTripDaysTemplate = (dayGroups) => {
-  const days = dayGroups
-    .map((dayGroup, i) => getTripsDay(dayGroup, i + 1))
-    .join(` `);
-
-  return (
-    `<ul class="trip-days">${days}</ul>`
-  );
-};
-
-export default class TripDays {
-  constructor(dayGroups) {
-    this._dayGroups = dayGroups;
-
-    this._element = null;
+class TripEventsList {
+  constructor(points) {
+    this._points = points;
   }
 
   getTemplate() {
-    return getTripDaysTemplate(this._dayGroups);
+    const tripPoints = this._points
+      .map((point) => `<li class="trip-events__item">${getTripPointTemplate(point)}</li>`)
+      .join(` `);
+
+    return `<ul class="trip-events__list">${tripPoints}</ul>`;
+  }
+}
+
+class TripDay {
+  constructor(dayGroup, dayNumber) {
+    this._dayGroup = dayGroup;
+    this._dayNumber = dayNumber;
+    this._tripEventsList = new TripEventsList(this._dayGroup.points);
+  }
+
+  getTemplate() {
+    return (
+      `<li class="trip-days__item day">
+        <div class="day__info">
+          <span class="day__counter">${(this._dayNumber)}</span>
+          <time class="day__date" datetime=${this._dayGroup.date}>${this._dayGroup.month.slice(0, 3)} ${this._dayGroup.day}</time>
+        </div>
+
+        ${this._tripEventsList.getTemplate()}
+      </li>`
+    );
+  }
+}
+
+export default class TripDays {
+  constructor(dayGroups) {
+    this._element = null;
+    this._tripDays = this._getTripDays(dayGroups);
+  }
+
+  // @TODO геттер или нет?
+  _getTripDays(dayGroups) {
+    return dayGroups.map((dayGroup, day) => new TripDay(dayGroup, day + 1));
+  }
+
+  getTemplate() {
+    const days = this._tripDays
+      .map((tripDay) => tripDay.getTemplate())
+      .join(` `);
+
+    return (
+      `<ul class="trip-days">${days}</ul>`
+    );
   }
 
   getElement() {

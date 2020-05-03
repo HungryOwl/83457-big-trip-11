@@ -70,3 +70,4 @@ renderTemplate(eventsContainer, TripEventsComponent.getElement());
 
 renderTripHeader(TripHeaderComponent, SortComponent, tripInfo, fullCost, tabs.slice(), filters.slice());
 renderTripEvents(TripEventsComponent, SortComponent, points.slice(), sortItems.slice(), dayGroups.slice());
+

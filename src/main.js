@@ -1,5 +1,4 @@
-import {getContainerClasses, renderTemplate, RenderPosition} from './utils';
-import {flipCoin} from './utils';
+import {flipCoin, pointRandomReset, renderTemplate, RenderPosition} from './utils';
 import TripHeader from './components/trip-header';
 import Navigation from './components/menu';
 import Filters from './components/filters';
@@ -22,19 +21,6 @@ import {tabs as tabsArr} from './mock/menu';
 
 let pointsArr = points.slice(1);
 let editPoint = points.slice(0, 1)[0];
-
-const pointRandomReset = (point) => {
-  const newPoint = {};
-  const isReset = flipCoin();
-
-  for (let field in point) {
-    if (point.hasOwnProperty(field)) {
-      newPoint[field] = (!isReset || field === `type`) ? point[field] : ``;
-    }
-  }
-
-  return newPoint;
-};
 
 editPoint = pointRandomReset(editPoint);
 
@@ -81,6 +67,6 @@ const renderTripEvents = (tripEventsComponent, points, sortItems, dayGroups) => 
 };
 
 renderTripMain(TripHeaderComponent, tripInfo, fullCost, tabsArr.slice(), filtersArr.slice());
-renderTripEvents(TripEventsComponent, points, sortItems, dayGroups);
+renderTripEvents(TripEventsComponent, pointsArr, sortItems, dayGroups);
 
 

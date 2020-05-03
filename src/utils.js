@@ -59,6 +59,19 @@ const getDateObj = (timestamp) => {
   };
 };
 
+const pointRandomReset = (point) => {
+  const newPoint = {};
+  const isReset = flipCoin();
+
+  for (let field in point) {
+    if (point.hasOwnProperty(field)) {
+      newPoint[field] = (!isReset || field === `type`) ? point[field] : ``;
+    }
+  }
+
+  return newPoint;
+};
+
 const createElement = (template) => {
   let fragment = new DocumentFragment();
   const newElement = document.createElement(`div`);
@@ -73,19 +86,14 @@ const createElement = (template) => {
   } else {
     return newElement.firstChild;
   }
-
-  // for(let i=1; i<=3; i++) {
-  //   let li = document.createElement('li');
-  //   li.append(i);
-  //   fragment.append(li);
-  // }
-  //
-  // return fragment;
 };
 
 const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`
+  BEFOREEND: `beforeend`,
+  BEFOREBEGIN: `beforebegin`,
+  AFTEREND: `afterend`,
+  REPLACE: `replace`
 };
 
 const renderTemplate = (container, element, place = `beforeend`) => {
@@ -95,6 +103,15 @@ const renderTemplate = (container, element, place = `beforeend`) => {
       break;
     case RenderPosition.BEFOREEND:
       container.append(element);
+      break;
+    case RenderPosition.BEFOREBEGIN:
+      container.before(element);
+      break;
+    case RenderPosition.AFTEREND:
+      container.after(element);
+      break;
+    case RenderPosition.REPLACE:
+      container.replaceWith(element);
       break;
   }
 };
@@ -107,6 +124,7 @@ export {
   getFormattedDate,
   sortPointsByDate,
   getDateObj,
+  pointRandomReset,
   createElement,
   renderTemplate,
   RenderPosition,

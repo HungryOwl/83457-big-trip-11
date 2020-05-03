@@ -264,7 +264,7 @@ const getTripEditTemplate = (point = {}) => {
 };
 
 export default class EditTrip {
-  constructor(point = {}, showBtn) {
+  constructor(point = {}, showBtn = null) {
     this._point = point;
 
     this._element = null;
@@ -303,6 +303,7 @@ export default class EditTrip {
   }
 
   removeElements() {
+    this._element.remove();
     this._element = null;
     this._saveBtn = null;
     this._cancelBtn = null;
@@ -310,7 +311,10 @@ export default class EditTrip {
 
   onCancelButtonClick() {
     this.showBtn.disabled = false;
-    this._element.remove();
+    this.removeElements();
+  }
+
+  onDeleteButtonClick() {
     this.removeElements();
   }
 

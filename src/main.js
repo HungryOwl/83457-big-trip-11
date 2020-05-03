@@ -17,10 +17,11 @@ import {fullCost} from './mock/trip-info-cost';
 import {tripInfo} from './mock/trip-info';
 import {tabs} from './mock/menu';
 
-const onEditButtonClick = (sortComponent, editTripComponent) => {
+const onEditButtonClick = (sortComponent) => {
   return (evt) => {
     evt.target.disabled = true;
-    renderTemplate(sortComponent.getElement(), editTripComponent.getElement(), RenderPosition.AFTEREND);
+    const EditTripComponent = new EditTrip({}, evt.target);
+    renderTemplate(sortComponent.getElement(), EditTripComponent.getElement(), RenderPosition.AFTEREND);
   };
 };
 
@@ -47,9 +48,8 @@ const renderTripHeader = (mainComponent, sortComponent, info, cost, tabsArr, fil
   renderTripInfoCost(mainComponent, info, cost);
 
   const editTripBtn = mainComponent.getElement().querySelector(`.trip-main__event-add-btn`);
-  const EditTripComponent = new EditTrip();
 
-  editTripBtn.addEventListener(`click`, onEditButtonClick(sortComponent, EditTripComponent));
+  editTripBtn.addEventListener(`click`, onEditButtonClick(sortComponent));
 };
 
 const renderTripEvents = (tripEventsComponent, sortComponent, pointsArr, sortItemsArr, dayGroupsArr) => {

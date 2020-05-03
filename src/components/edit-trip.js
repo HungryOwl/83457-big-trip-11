@@ -247,8 +247,7 @@ const getTripEditTemplate = (point = {}) => {
   } = point;
 
   return (
-    `<!-- Cоздание/редактирование маршрута -->
-    <form class="trip-events__item  event  event--edit" action="#" method="post">
+    `<form class="trip-events__item  event  event--edit" action="#" method="post">
       <header class="event__header">
         ${getEventType(type, id)}
         ${getDestinationList(destinations, destination, id, type, preposition)}
@@ -265,10 +264,16 @@ const getTripEditTemplate = (point = {}) => {
 };
 
 export default class EditTrip {
-  constructor(point) {
+  constructor(point = {}, showBtn) {
     this._point = point;
 
     this._element = null;
+    this._saveBtn = null;
+    this._cancelBtn = null;
+    this.showBtn = showBtn;
+
+    this.collectElements();
+    this.addListeners();
   }
 
   getTemplate() {
@@ -283,7 +288,33 @@ export default class EditTrip {
     return this._element;
   }
 
-  removeElement() {
+  collectElements() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    this._saveBtn = this._element.querySelector(`.event__save-btn`);
+    this._cancelBtn = this._element.querySelector(`.event__reset-btn`);
+  }
+
+  remove() {
+    this._element.remove();
+    this.removeElements();
+  }
+
+  removeElements() {
     this._element = null;
+    this._saveBtn = null;
+    this._cancelBtn = null;
+  }
+
+  onCancelButtonClick() {
+    this.showBtn.disabled = false;
+    this._element.remove();
+    this.removeElements();
+  }
+
+  addListeners() {
+    this._cancelBtn.addEventListener(`click`, this.onCancelButtonClick.bind(this));
   }
 }

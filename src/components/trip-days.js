@@ -1,14 +1,19 @@
-import {getTripPointTemplate} from './trip-point';
+import {TripPoint, getTripPointTemplate} from './trip-point';
 import {createElement} from '../utils';
 
 class TripEventsList {
   constructor(points) {
     this._points = points;
+    this._pointElems = this.getPoints();
+  }
+
+  getPoints() {
+    return this._points.map((point) => new TripPoint(point));
   }
 
   getTemplate() {
-    const tripPoints = this._points
-      .map((point) => `<li class="trip-events__item">${getTripPointTemplate(point)}</li>`)
+    const tripPoints = this._pointElems
+      .map((point) => `<li class="trip-events__item">${point.getTemplate()}</li>`)
       .join(` `);
 
     return `<ul class="trip-events__list">${tripPoints}</ul>`;
@@ -22,6 +27,7 @@ class TripDay {
     this._tripEventsList = new TripEventsList(this._dayGroup.points);
   }
 
+  // @TODO добавить генерацию элемента и вставку в него другого элемента
   getTemplate() {
     return (
       `<li class="trip-days__item day">

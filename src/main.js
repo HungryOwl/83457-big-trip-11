@@ -1,4 +1,4 @@
-import {flipCoin, pointRandomReset, renderTemplate, RenderPosition} from './utils';
+import {renderTemplate, RenderPosition} from './utils';
 import TripHeader from './components/trip-header';
 import Navigation from './components/menu';
 import Filters from './components/filters';
@@ -7,25 +7,15 @@ import TripInfo from './components/trip-info';
 import TripInfoCost from './components/trip-info-cost';
 import Sort from './components/sort-trip';
 import TripEvents from './components/trip-events';
-import EditTrip from './components/edit-trip';
 import TripDays from './components/trip-days';
-import Statistics from './components/statistics';
 import {points} from './mock/trip-point';
-import {dayGroups as dayGroupsArr} from './mock/trip-days';
-import {filters as filtersArr} from './mock/filters';
-import {sortItems as sortItemsArr} from './mock/sort-trip';
-import {statNames} from './mock/statistics';
+import {dayGroups} from './mock/trip-days';
+import {filters} from './mock/filters';
+import {sortItems} from './mock/sort-trip';
 import {fullCost} from './mock/trip-info-cost';
 import {tripInfo} from './mock/trip-info';
-import {tabs as tabsArr} from './mock/menu';
+import {tabs} from './mock/menu';
 
-let pointsArr = points.slice(1);
-let editPoint = points.slice(0, 1)[0];
-
-editPoint = pointRandomReset(editPoint);
-
-const sortItems = sortItemsArr.slice();
-const dayGroups = dayGroupsArr.slice();
 
 const headerContainer = document.querySelector(`.page-header__container`);
 const eventsContainer = document.querySelector(`.page-main .page-body__container`);
@@ -35,10 +25,10 @@ const TripEventsComponent = new TripEvents();
 renderTemplate(headerContainer, TripHeaderComponent.getElement());
 renderTemplate(eventsContainer, TripEventsComponent.getElement());
 
-const renderTripControls = (mainComponent, tabs, filters) => {
+const renderTripControls = (mainComponent, tabsArr, filtersArr) => {
   const tripControlsComponent = new TripControls();
-  const navigationComponent = new Navigation(tabs);
-  const filtersComponent = new Filters(filters);
+  const navigationComponent = new Navigation(tabsArr);
+  const filtersComponent = new Filters(filtersArr);
 
   renderTemplate(tripControlsComponent.getElement(), navigationComponent.getElement());
   renderTemplate(tripControlsComponent.getElement(), filtersComponent.getElement());
@@ -53,20 +43,20 @@ const renderTripInfoCost = (mainComponent, info, cost) => {
   renderTemplate(mainComponent.getElement(), tripInfoComponent.getElement(), RenderPosition.AFTERBEGIN);
 };
 
-const renderTripMain = (mainComponent, info, cost, tabs, filters) => {
-  renderTripControls(mainComponent, tabs, filters);
+const renderTripMain = (mainComponent, info, cost, tabsArr, filtersArr) => {
+  renderTripControls(mainComponent, tabsArr, filtersArr);
   renderTripInfoCost(mainComponent, info, cost);
 };
 
-const renderTripEvents = (tripEventsComponent, points, sortItems, dayGroups) => {
-  const sortComponent = new Sort(sortItems);
-  const tripDaysComponent = new TripDays(dayGroups);
+const renderTripEvents = (tripEventsComponent, pointsArr, sortItemsArr, dayGroupsArr) => {
+  const sortComponent = new Sort(sortItemsArr);
+  const tripDaysComponent = new TripDays(dayGroupsArr);
 
   renderTemplate(tripEventsComponent.getElement(), sortComponent.getElement());
   renderTemplate(tripEventsComponent.getElement(), tripDaysComponent.getElement());
 };
 
-renderTripMain(TripHeaderComponent, tripInfo, fullCost, tabsArr.slice(), filtersArr.slice());
-renderTripEvents(TripEventsComponent, pointsArr, sortItems, dayGroups);
+renderTripMain(TripHeaderComponent, tripInfo, fullCost, tabs.slice(), filters.slice());
+renderTripEvents(TripEventsComponent, points.slice(), sortItems.slice(), dayGroups.slice());
 
 

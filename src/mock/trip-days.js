@@ -1,7 +1,7 @@
 import {points} from './trip-point';
 import {monthNames, getDateObj, getFormattedDate} from '../utils';
 
-const pointsArr = points.slice(1);
+const pointsArr = points.slice();
 
 const getTripDayGroups = () => {
   const dayGroups = [];

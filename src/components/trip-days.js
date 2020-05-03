@@ -1,4 +1,4 @@
-import {TripPoint, getTripPointTemplate} from './trip-point';
+import {TripPoint} from './trip-point';
 import {createElement} from '../utils';
 
 class TripEventsList {

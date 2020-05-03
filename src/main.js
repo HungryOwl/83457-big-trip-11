@@ -72,13 +72,15 @@ const renderTripMain = (mainComponent, info, cost, tabs, filters) => {
   renderTripInfoCost(mainComponent, info, cost);
 };
 
-const renderTripEvents = (tripEventsComponent, points, sortItems) => {
+const renderTripEvents = (tripEventsComponent, points, sortItems, dayGroups) => {
   const sortComponent = new Sort(sortItems);
+  const tripDaysComponent = new TripDays(dayGroups);
 
   renderTemplate(tripEventsComponent.getElement(), sortComponent.getElement());
+  renderTemplate(tripEventsComponent.getElement(), tripDaysComponent.getElement());
 };
 
 renderTripMain(TripHeaderComponent, tripInfo, fullCost, tabsArr.slice(), filtersArr.slice());
-renderTripEvents(TripEventsComponent, points, sortItems);
+renderTripEvents(TripEventsComponent, points, sortItems, dayGroups);
 
 

@@ -352,27 +352,38 @@ export default class EditTrip {
     this._cancelBtn = null;
   }
 
+  getTripPoint() {
+    const tripPointElem = new TripPoint(this._point).getElement();
+    this._element.replaceWith(tripPointElem);
+  }
+
   onCancelButtonClick() {
     this._showBtn.disabled = false;
-    this.removeElements();
+    this.remove();
   }
 
   onRollupButtonClick() {
-    const tripPointElem = new TripPoint(this._point).getElement();
-    this._element.replaceWith(tripPointElem);
+    this.getTripPoint();
   }
 
   onSubmitButtonClick(evt) {
     evt.preventDefault();
-    const tripPointElem = new TripPoint(this._point).getElement();
-    this._element.replaceWith(tripPointElem);
+    this.getTripPoint();
   }
 
   onDeleteButtonClick() {
     this.remove();
   }
+  onEscKeyDown(evt) {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      this.getTripPoint();
+    }
+  }
 
   addListeners() {
+    document.addEventListener(`keydown`, this.onEscKeyDown.bind(this));
     this._submitBtn.addEventListener(`click`, this.onSubmitButtonClick.bind(this));
 
     if (this._editing) {

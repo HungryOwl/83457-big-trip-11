@@ -11,14 +11,6 @@ class TripEventsList {
     return this._points.map((point) => new TripPoint(point));
   }
 
-  getTemplate() {
-    const tripPoints = this._pointElems
-      .map((point) => `<li class="trip-events__item">${point.getTemplate()}</li>`)
-      .join(` `);
-
-    return `<ul class="trip-events__list">${tripPoints}</ul>`;
-  }
-
   getElement() {
     const container = this.getElemFromTemplate(`<ul class="trip-events__list"></ul>`);
     const fragment = new DocumentFragment();
@@ -118,16 +110,6 @@ export default class TripDays {
   // @TODO геттер или нет?
   _getTripDays(dayGroups) {
     return dayGroups.map((dayGroup, day) => new TripDay(dayGroup, day + 1));
-  }
-
-  getTemplate() {
-    const days = this._tripDays
-      .map((tripDay) => tripDay.getTemplate())
-      .join(` `);
-
-    return (
-      `<ul class="trip-days">${days}</ul>`
-    );
   }
 
   getElement() {

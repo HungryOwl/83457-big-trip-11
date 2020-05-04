@@ -36,10 +36,6 @@ class TripEventsList {
   }
 
   getElement(template) {
-    return createElement(template);
-  }
-
-  createElement(template) {
     const newElement = document.createElement(`div`);
     newElement.innerHTML = template;
 

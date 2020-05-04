@@ -12,19 +12,21 @@ class TripEventsList {
   }
 
   getElement() {
-    const container = this.getElemFromTemplate(`<ul class="trip-events__list"></ul>`);
-    const fragment = new DocumentFragment();
+    if (!this._element) {
+      const container = this.getElemFromTemplate(`<ul class="trip-events__list"></ul>`);
+      const fragment = new DocumentFragment();
 
-    this._pointElems.forEach((point) => {
-      const pointElem = point.getElement();
-      const listElem = this.getElemFromTemplate(`<li class="trip-events__item"></li>`);
+      this._pointElems.forEach((point) => {
+        const pointElem = point.getElement();
+        const listElem = this.getElemFromTemplate(`<li class="trip-events__item"></li>`);
 
-      listElem.append(pointElem);
-      fragment.append(listElem);
-    });
+        listElem.append(pointElem);
+        fragment.append(listElem);
+      });
 
-    container.append(fragment);
-    this._element = container;
+      container.append(fragment);
+      this._element = container;
+    }
 
     return this._element;
   }
@@ -72,9 +74,11 @@ class TripDay {
   }
 
   getElement() {
-    const container = this.getElemFromTemplate(this._template);
-    container.append(this._tripEventsList.getElement());
-    this._element = container;
+    if (!this._element) {
+      const container = this.getElemFromTemplate(this._template);
+      container.append(this._tripEventsList.getElement());
+      this._element = container;
+    }
 
     return this._element;
   }
@@ -113,14 +117,16 @@ export default class TripDays {
   }
 
   getElement() {
-    const container = this.getElemFromTemplate(`<ul class="trip-days"></ul>`);
+    if (!this._element) {
+      const container = this.getElemFromTemplate(`<ul class="trip-days"></ul>`);
 
-    this._tripDays.forEach((tripDay) => {
-      const tripDayElem = tripDay.getElement();
-      container.append(tripDayElem);
-    });
+      this._tripDays.forEach((tripDay) => {
+        const tripDayElem = tripDay.getElement();
+        container.append(tripDayElem);
+      });
 
-    this._element = container;
+      this._element = container;
+    }
 
     return this._element;
   }

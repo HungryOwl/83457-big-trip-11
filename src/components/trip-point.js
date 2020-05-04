@@ -1,5 +1,3 @@
-import {createElement} from '../utils.js';
-
 const getEventOfferMarkup = (name, price) => {
   return (
     `<li class="event__offer">
@@ -25,7 +23,7 @@ const getCheckedOffersTemplate = (offers) => {
   );
 };
 
-export const getTripPointTemplate = (point) => {
+const getTripPointTemplate = (point) => {
   const {type, price, destination, offers, preposition, date} = point;
   const eventTime = date.eventTime;
   const eventDuration = date.eventDuration;
@@ -63,6 +61,7 @@ export class TripPoint {
   constructor(point) {
     this._point = point;
     this._element = null;
+    this._template = this.getTemplate();
   }
 
   getTemplate() {
@@ -71,7 +70,7 @@ export class TripPoint {
 
   getElement() {
     if (!this._element) {
-      this._element = createElement(this.getTemplate());
+      this._element = this.getElemFromTemplate(this._template);
     }
 
     return this._element;

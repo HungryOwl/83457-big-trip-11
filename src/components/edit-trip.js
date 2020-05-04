@@ -266,6 +266,7 @@ const getTripEditTemplate = (point = {}) => {
 export default class EditTrip {
   constructor(point = {}, showBtn = null) {
     this._point = point;
+    this._template = this.getTemplate();
 
     this._element = null;
     this._saveBtn = null;
@@ -282,7 +283,7 @@ export default class EditTrip {
 
   getElement() {
     if (!this._element) {
-      this._element = createElement(this.getTemplate());
+      this._element = this.getElemFromTemplate(this._template);
     }
 
     return this._element;
@@ -295,6 +296,23 @@ export default class EditTrip {
 
     this._saveBtn = this._element.querySelector(`.event__save-btn`);
     this._cancelBtn = this._element.querySelector(`.event__reset-btn`);
+  }
+
+  getElemFromTemplate(template) {
+    const newElement = document.createElement(`div`);
+    newElement.innerHTML = template;
+
+    if (newElement.childNodes.length > 1) {
+      const fragment = new DocumentFragment();
+
+      for (let i = 0; i < newElement.childNodes.length; i++) {
+        fragment.append(newElement.childNodes[i]);
+      }
+
+      return fragment;
+    } else {
+      return newElement.firstChild;
+    }
   }
 
   remove() {

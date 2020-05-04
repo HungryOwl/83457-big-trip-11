@@ -1,15 +1,17 @@
+import {createElement} from '../utils';
+
 const getFilterMarkup = (filterName, isChecked) => {
   return (
     ` <div class="trip-filters__filter">
-        <input
-            id="filter-${filterName}"
-            class="trip-filters__filter-input  visually-hidden"
-            type="radio"
-            name="trip-filter"
-            value=${filterName}
-            ${isChecked ? `checked` : ``}
-        />
-        <label class="trip-filters__filter-label" for="filter-${filterName}">${filterName}</label>
+      <input
+        id="filter-${filterName}"
+        class="trip-filters__filter-input  visually-hidden"
+        type="radio"
+        name="trip-filter"
+        value=${filterName}
+        ${isChecked ? `checked` : ``}
+      />
+      <label class="trip-filters__filter-label" for="filter-${filterName}">${filterName}</label>
     </div>`
   );
 };
@@ -29,4 +31,26 @@ const getFiltersTemplate = (filters) => {
   );
 };
 
-export {getFiltersTemplate};
+export default class Filters {
+  constructor(filters) {
+    this._filters = filters;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return getFiltersTemplate(this._filters);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

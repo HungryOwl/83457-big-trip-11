@@ -1,4 +1,4 @@
-import {getRandomInteger, getFormattedDate, sortPointsByDate} from '../utils';
+import {getRandomInteger, getFormattedDate, getEventTime, sortPointsByDate} from '../utils';
 
 const MIN_IN_HOUR = 60;
 const HOURS_IN_DAY = 24;
@@ -50,7 +50,7 @@ const dates = [
   {from: `18/03/21 13:45`, to: `18/03/21 16:05`},
   {from: `16/03/21 13:05`, to: `16/03/21 13:55`},
   {from: `19/03/21 15:00`, to: `19/03/21 19:55`},
-  {from: `19/03/21 21:45`, to: `21/03/21 23:00`},
+  {from: `19/03/21 21:45`, to: `01/04/21 07:00`},
 ];
 
 const PHOTO_COUNT = getRandomInteger(1, 7);
@@ -160,18 +160,6 @@ const getDate = (datesArr) => {
   date.to = parseDate(date.to);
 
   return date;
-};
-
-const getEventTime = (from, to) => {
-  const hoursFrom = from ? getFormattedDate(from.getHours()) : ``;
-  const minutesFrom = from ? getFormattedDate(from.getMinutes()) : ``;
-  const hoursTo = to ? getFormattedDate(to.getHours()) : ``;
-  const minutesTo = to ? getFormattedDate(to.getMinutes()) : ``;
-
-  return {
-    from: {hours: hoursFrom, minutes: minutesFrom},
-    to: {hours: hoursTo, minutes: minutesTo}
-  };
 };
 
 const getEventDuration = (from, to) => {

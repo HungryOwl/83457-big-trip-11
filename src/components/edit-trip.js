@@ -1,5 +1,6 @@
 import {eventTypes, destinations} from '../mock/trip-point';
-import {getFormattedDate} from '../utils';
+import {getEventTime, getFormattedDate} from '../utils';
+import TripPoint from './trip-point';
 
 const rideTypes = [];
 const placeTypes = [];
@@ -76,7 +77,8 @@ const getDestinationList = (destinationsArr, destination, id, type, preposition)
   );
 };
 
-const getEventTime = (date) => {
+// @TODO не забыть вынести в utils
+const getFormattedEventTime = (date) => {
   const tripTime = {
     from: ``,
     to: ``
@@ -90,37 +92,37 @@ const getEventTime = (date) => {
 
   const year = {
     from: date.from.getFullYear() % 100,
-    to: date.to.getFullYear() % 100
+    to: (date.to) ? date.to.getFullYear() % 100 : ``
   };
 
   const month = {
     from: getFormattedDate(date.from.getMonth()),
-    to: getFormattedDate(date.to.getMonth())
+    to: (date.to) ? getFormattedDate(date.to.getMonth()) : ``
   };
 
   const day = {
     from: getFormattedDate(date.from.getDate()),
-    to: getFormattedDate(date.from.getDate())
+    to: (date.to) ? getFormattedDate(date.to.getDate()) : ``
   };
 
   const hours = {
     from: eventTime.from.hours,
-    to: eventTime.to.hours
+    to: (eventTime.to) ? eventTime.to.hours : ``
   };
 
   const minutes = {
     from: eventTime.from.minutes,
-    to: eventTime.to.minutes
+    to: eventTime.to ? eventTime.to.minutes : ``
   };
 
   tripTime.from = `${day.from}/${month.from}/${year.from} ${hours.from}:${minutes.from}`;
-  tripTime.to = `${day.to}/${month.to}/${year.to} ${hours.to}:${minutes.to}`;
+  tripTime.to = date.to ? `${day.to}/${month.to}/${year.to} ${hours.to}:${minutes.to}` : ``;
 
   return tripTime;
 };
 
 const getEventTimeMarkup = (date, id) => {
-  const time = getEventTime(date);
+  const time = getFormattedEventTime(date);
 
   return (
     `<div class="event__field-group  event__field-group--time">
@@ -227,22 +229,44 @@ const getEventDetailsMarkup = (offers, id, description, photos) => {
   );
 };
 
-const getTripEditTemplate = (point) => {
+const getEditingControls = (isEditing, id) => {
+  return isEditing ?
+    `<input id="event-favorite-${id}" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" checked>
+      <label class="event__favorite-btn" for="event-favorite-${id}">
+        <span class="visually-hidden">Add to favorite</span>
+        <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
+          <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
+        </svg>
+      </label>
+
+      <button class="event__rollup-btn" type="button">
+        <span class="visually-hidden">Open event</span>
+      </button>`
+    : ``;
+};
+
+const getTripEditTemplate = (point = {}, isEditing = false) => {
+  const dateNow = new Date();
+
   const {
     type = `flight`,
     price = ``,
-    destination = `Горький`,
-    offers = [],
+    destination = ``,
+    offers = ``,
     description = ``,
     preposition = `to`,
     photos = ``,
-    date = new Date(),
+    date = {
+      from: dateNow,
+      eventTime: getEventTime(dateNow)
+    },
     id = `0`
   } = point;
 
+  const resetBtnCaption = isEditing ? `Delete` : `Cancel`;
+
   return (
-    `<!-- Cоздание/редактирование маршрута -->
-    <form class="trip-events__item  event  event--edit" action="#" method="post">
+    `<form class="trip-events__item  event  event--edit" action="#" method="post">
       <header class="event__header">
         ${getEventType(type, id)}
         ${getDestinationList(destinations, destination, id, type, preposition)}
@@ -250,7 +274,8 @@ const getTripEditTemplate = (point) => {
         ${getBasePrice(price, id)}
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Cancel</button>
+        <button class="event__reset-btn" type="reset">${resetBtnCaption}</button>
+        ${getEditingControls(isEditing, id)}
       </header>
 
       ${getEventDetailsMarkup(offers, id, description, photos)}
@@ -258,4 +283,105 @@ const getTripEditTemplate = (point) => {
   );
 };
 
-export {getTripEditTemplate};
+export default class EditTrip {
+  constructor(point = {}, showBtn = null) {
+    this._point = point;
+    this._showBtn = showBtn;
+    this._editing = !this._showBtn;
+    this._template = this.getTemplate();
+
+    this._element = null;
+    this._submitBtn = null;
+    this._cancelBtn = null;
+    this._rollupBtn = null;
+
+    this
+      .collectElements()
+      .addListeners();
+  }
+
+  getTemplate() {
+    return getTripEditTemplate(this._point, this._editing);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = this.getElemFromTemplate(this._template);
+    }
+
+    return this._element;
+  }
+
+  collectElements() {
+    if (!this._element) {
+      this._element = this.getElemFromTemplate(this._template);
+    }
+
+    this._submitBtn = this._element.querySelector(`.event__save-btn`);
+    this._cancelBtn = this._element.querySelector(`.event__reset-btn`);
+    this._rollupBtn = this._element.querySelector(`.event__rollup-btn`);
+
+    return this;
+  }
+
+  getElemFromTemplate(template) {
+    const newElement = document.createElement(`div`);
+    newElement.innerHTML = template;
+
+    if (newElement.childNodes.length > 1) {
+      const fragment = new DocumentFragment();
+
+      for (let i = 0; i < newElement.childNodes.length; i++) {
+        fragment.append(newElement.childNodes[i]);
+      }
+
+      return fragment;
+    } else {
+      return newElement.firstChild;
+    }
+  }
+
+  remove() {
+    this._element.remove();
+    this.removeElements();
+  }
+
+  removeElements() {
+    this._element = null;
+    this._submitBtn = null;
+    this._cancelBtn = null;
+  }
+
+  onCancelButtonClick() {
+    this._showBtn.disabled = false;
+    this.removeElements();
+  }
+
+  onRollupButtonClick() {
+    const tripPointElem = new TripPoint(this._point).getElement();
+    this._element.replaceWith(tripPointElem);
+  }
+
+  onSubmitButtonClick(evt) {
+    evt.preventDefault();
+    const tripPointElem = new TripPoint(this._point).getElement();
+    this._element.replaceWith(tripPointElem);
+  }
+
+  onDeleteButtonClick() {
+    this.remove();
+  }
+
+  addListeners() {
+    this._submitBtn.addEventListener(`click`, this.onSubmitButtonClick.bind(this));
+
+    if (this._editing) {
+      this._cancelBtn.addEventListener(`click`, this.onDeleteButtonClick.bind(this));
+      this._rollupBtn.addEventListener(`click`, this.onRollupButtonClick.bind(this));
+    } else {
+      this._cancelBtn.addEventListener(`click`, this.onCancelButtonClick.bind(this));
+    }
+
+    return this;
+  }
+}

@@ -1,3 +1,5 @@
+import {createElement} from '../utils';
+
 const getStatistics = (statType, statName) => {
 
   return (
@@ -7,7 +9,7 @@ const getStatistics = (statType, statName) => {
   );
 };
 
-const getFullStatistics = (stats) => {
+const getFullStatisticsTemplate = (stats) => {
   let statMarkup = ``;
 
   for (const [key, value] of stats) {
@@ -24,5 +26,27 @@ const getFullStatistics = (stats) => {
   );
 };
 
-export {getFullStatistics};
+export default class Statistics {
+  constructor(stats) {
+    this._stats = stats;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return getFullStatisticsTemplate(this._stats);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
 

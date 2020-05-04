@@ -1,21 +1,21 @@
 import {points} from './trip-point';
-import {getFormattedDate} from '../utils';
+import {monthNames, getDateObj, getFormattedDate} from '../utils';
 
-const pointsArr = points.slice(1);
-const monthNames = [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`];
+const pointsArr = points.slice();
 
-const getTripDays = () => {
+const getTripDayGroups = () => {
   const dayGroups = [];
   const daysMap = {};
 
   pointsArr.forEach((point) => {
     const dateFrom = point.date.from;
-    const year = dateFrom.getFullYear();
-    const month = dateFrom.getMonth();
-    const day = dateFrom.getDate();
-    const formattedDay = getFormattedDate(day);
+    const dateObj = getDateObj(dateFrom);
+    const year = dateObj.year;
+    const month = dateObj.month;
+    const day = getFormattedDate(dateObj.day);
 
-    const date = `${year}-${getFormattedDate(month)}-${formattedDay}`;
+    const date = `${year}-${getFormattedDate(month)}-${day}`;
+
     let group = daysMap[date];
 
     if (!group) {
@@ -23,7 +23,7 @@ const getTripDays = () => {
         date,
         points: [point],
         month: monthNames[month],
-        day: formattedDay
+        day
       };
 
       daysMap[date] = group;
@@ -36,7 +36,7 @@ const getTripDays = () => {
   return dayGroups;
 };
 
-const dayGroups = getTripDays();
+const dayGroups = getTripDayGroups();
 
 export {dayGroups};
 

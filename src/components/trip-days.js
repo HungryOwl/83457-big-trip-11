@@ -1,34 +1,154 @@
-import {getTripPointTemplate} from './trip-point';
+import TripPoint from './trip-point';
 
-const getTripEventsList = (points) => {
-  const tripPoints = points
-    .map((point) => `<li class="trip-events__item">${getTripPointTemplate(point)}</li>`)
-    .join(` `);
+class TripEventsList {
+  constructor(points) {
+    this._element = null;
+    this._points = points;
+    this._pointElems = this.getPoints();
+  }
 
-  return `<ul class="trip-events__list">${tripPoints}</ul>`;
-};
+  getPoints() {
+    return this._points.map((point) => new TripPoint(point));
+  }
 
-const getTripsDay = (dayGroup, dayNumber) => {
-  return (
-    `<li class="trip-days__item day">
-      <div class="day__info">
-        <span class="day__counter">${dayNumber}</span>
-        <time class="day__date" datetime=${dayGroup.date}>${dayGroup.month.slice(0, 3)} ${dayGroup.day}</time>
-      </div>
+  getElement() {
+    if (!this._element) {
+      const container = this.getElemFromTemplate(`<ul class="trip-events__list"></ul>`);
+      const fragment = new DocumentFragment();
 
-      ${getTripEventsList(dayGroup.points)}
-    </li>`
-  );
-};
+      this._pointElems.forEach((point) => {
+        const pointElem = point.getElement();
+        const listElem = this.getElemFromTemplate(`<li class="trip-events__item"></li>`);
 
-const getTripDaysTemplate = (dayGroups) => {
-  const days = dayGroups
-    .map((dayGroup, i) => getTripsDay(dayGroup, i + 1))
-    .join(` `);
+        listElem.append(pointElem);
+        fragment.append(listElem);
+      });
 
-  return (
-    `<ul class="trip-days">${days}</ul>`
-  );
-};
+      container.append(fragment);
+      this._element = container;
+    }
 
-export {getTripDaysTemplate};
+    return this._element;
+  }
+
+  getElemFromTemplate(template) {
+    const newElement = document.createElement(`div`);
+    newElement.innerHTML = template;
+
+    if (newElement.childNodes.length > 1) {
+      const fragment = new DocumentFragment();
+
+      for (let i = 0; i < newElement.childNodes.length; i++) {
+        fragment.append(newElement.childNodes[i]);
+      }
+
+      return fragment;
+    } else {
+      return newElement.firstChild;
+    }
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+class TripDay {
+  constructor(dayGroup, dayNumber) {
+    this._dayGroup = dayGroup;
+    this._dayNumber = dayNumber;
+    this._template = this.getTemplate();
+    this._element = null;
+    this._tripEventsList = new TripEventsList(this._dayGroup.points);
+  }
+
+  getTemplate() {
+    return (
+      `<li class="trip-days__item day">
+        <div class="day__info">
+          <span class="day__counter">${(this._dayNumber)}</span>
+          <time class="day__date" datetime=${this._dayGroup.date}>${this._dayGroup.month.slice(0, 3)} ${this._dayGroup.day}</time>
+        </div>
+      </li>`
+    );
+  }
+
+  getElement() {
+    if (!this._element) {
+      const container = this.getElemFromTemplate(this._template);
+      container.append(this._tripEventsList.getElement());
+      this._element = container;
+    }
+
+    return this._element;
+  }
+
+  getElemFromTemplate(template) {
+    const newElement = document.createElement(`div`);
+    newElement.innerHTML = template;
+
+    if (newElement.childNodes.length > 1) {
+      const fragment = new DocumentFragment();
+
+      for (let i = 0; i < newElement.childNodes.length; i++) {
+        fragment.append(newElement.childNodes[i]);
+      }
+
+      return fragment;
+    } else {
+      return newElement.firstChild;
+    }
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default class TripDays {
+  constructor(dayGroups) {
+    this._element = null;
+    this._tripDays = this._getTripDays(dayGroups);
+  }
+
+  // @TODO геттер или нет?
+  _getTripDays(dayGroups) {
+    return dayGroups.map((dayGroup, day) => new TripDay(dayGroup, day + 1));
+  }
+
+  getElement() {
+    if (!this._element) {
+      const container = this.getElemFromTemplate(`<ul class="trip-days"></ul>`);
+
+      this._tripDays.forEach((tripDay) => {
+        const tripDayElem = tripDay.getElement();
+        container.append(tripDayElem);
+      });
+
+      this._element = container;
+    }
+
+    return this._element;
+  }
+
+  getElemFromTemplate(template) {
+    const newElement = document.createElement(`div`);
+    newElement.innerHTML = template;
+
+    if (newElement.childNodes.length > 1) {
+      const fragment = new DocumentFragment();
+
+      for (let i = 0; i < newElement.childNodes.length; i++) {
+        fragment.append(newElement.childNodes[i]);
+      }
+
+      return fragment;
+    } else {
+      return newElement.firstChild;
+    }
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

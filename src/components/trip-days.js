@@ -53,6 +53,10 @@ class TripEventsList {
       return newElement.firstChild;
     }
   }
+
+  removeElement() {
+    this._element = null;
+  }
 }
 
 class TripDay {
@@ -98,6 +102,10 @@ class TripDay {
     } else {
       return newElement.firstChild;
     }
+  }
+
+  removeElement() {
+    this._element = null;
   }
 }
 

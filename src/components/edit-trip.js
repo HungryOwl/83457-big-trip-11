@@ -1,5 +1,6 @@
 import {eventTypes, destinations} from '../mock/trip-point';
-import {createElement, getEventTime, getFormattedDate} from '../utils';
+import {getEventTime, getFormattedDate} from '../utils';
+import TripPoint from './trip-point';
 
 const rideTypes = [];
 const placeTypes = [];
@@ -292,6 +293,7 @@ export default class EditTrip {
     this._element = null;
     this._saveBtn = null;
     this._cancelBtn = null;
+    this._rollupBtn = null;
 
     this
       .collectElements()
@@ -317,6 +319,7 @@ export default class EditTrip {
 
     this._saveBtn = this._element.querySelector(`.event__save-btn`);
     this._cancelBtn = this._element.querySelector(`.event__reset-btn`);
+    this._rollupBtn = this._element.querySelector(`.event__rollup-btn`);
 
     return this;
   }
@@ -355,12 +358,22 @@ export default class EditTrip {
     this.removeElements();
   }
 
+  onRollupButtonClick() {
+    const tripPointElem = new TripPoint(this._point).getElement();
+    this._element.replaceWith(tripPointElem);
+  }
+
+
   onDeleteButtonClick() {
     this.removeElements();
   }
 
   addListeners() {
     this._cancelBtn.addEventListener(`click`, this.onCancelButtonClick.bind(this));
+
+    if (this._editing) {
+      this._rollupBtn.addEventListener(`click`, this.onRollupButtonClick.bind(this));
+    }
 
     return this;
   }

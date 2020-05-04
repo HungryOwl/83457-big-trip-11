@@ -1,4 +1,4 @@
-import {TripPoint} from './trip-point';
+import TripPoint from './trip-point';
 
 class TripEventsList {
   constructor(points) {

@@ -228,7 +228,23 @@ const getEventDetailsMarkup = (offers, id, description, photos) => {
   );
 };
 
-const getTripEditTemplate = (point = {}) => {
+const getEditingControls = (isEditing, id) => {
+  return isEditing ?
+    `<input id="event-favorite-${id}" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" checked>
+      <label class="event__favorite-btn" for="event-favorite-${id}">
+        <span class="visually-hidden">Add to favorite</span>
+        <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
+          <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
+        </svg>
+      </label>
+
+      <button class="event__rollup-btn" type="button">
+        <span class="visually-hidden">Open event</span>
+      </button>`
+    : ``;
+};
+
+const getTripEditTemplate = (point = {}, isEditing = false) => {
   const dateNow = new Date();
 
   const {
@@ -246,6 +262,8 @@ const getTripEditTemplate = (point = {}) => {
     id = `0`
   } = point;
 
+  const resetBtnCaption = isEditing ? `Delete` : `Cancel`;
+
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
       <header class="event__header">
@@ -255,7 +273,8 @@ const getTripEditTemplate = (point = {}) => {
         ${getBasePrice(price, id)}
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Cancel</button>
+        <button class="event__reset-btn" type="reset">${resetBtnCaption}</button>
+        ${getEditingControls(isEditing, id)}
       </header>
 
       ${getEventDetailsMarkup(offers, id, description, photos)}
@@ -266,19 +285,21 @@ const getTripEditTemplate = (point = {}) => {
 export default class EditTrip {
   constructor(point = {}, showBtn = null) {
     this._point = point;
+    this._showBtn = showBtn;
+    this._editing = !this._showBtn;
     this._template = this.getTemplate();
 
     this._element = null;
     this._saveBtn = null;
     this._cancelBtn = null;
-    this.showBtn = showBtn;
 
-    this.collectElements();
-    this.addListeners();
+    this
+      .collectElements()
+      .addListeners();
   }
 
   getTemplate() {
-    return getTripEditTemplate(this._point);
+    return getTripEditTemplate(this._point, this._editing);
   }
 
   getElement() {
@@ -291,11 +312,13 @@ export default class EditTrip {
 
   collectElements() {
     if (!this._element) {
-      this._element = createElement(this.getTemplate());
+      this._element = this.getElemFromTemplate(this._template);
     }
 
     this._saveBtn = this._element.querySelector(`.event__save-btn`);
     this._cancelBtn = this._element.querySelector(`.event__reset-btn`);
+
+    return this;
   }
 
   getElemFromTemplate(template) {
@@ -328,7 +351,7 @@ export default class EditTrip {
   }
 
   onCancelButtonClick() {
-    this.showBtn.disabled = false;
+    this._showBtn.disabled = false;
     this.removeElements();
   }
 
@@ -338,5 +361,7 @@ export default class EditTrip {
 
   addListeners() {
     this._cancelBtn.addEventListener(`click`, this.onCancelButtonClick.bind(this));
+
+    return this;
   }
 }

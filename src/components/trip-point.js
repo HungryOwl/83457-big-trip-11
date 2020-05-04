@@ -1,3 +1,5 @@
+import EditTrip from './edit-trip';
+
 const getEventOfferMarkup = (name, price) => {
   return (
     `<li class="event__offer">
@@ -57,11 +59,18 @@ const getTripPointTemplate = (point) => {
   );
 };
 
-export class TripPoint {
+export default class TripPoint {
   constructor(point) {
     this._point = point;
-    this._element = null;
     this._template = this.getTemplate();
+
+    this._element = null;
+    this._rollupBtn = null;
+    this._isEdit = false;
+
+    this
+      .collectElements()
+      .addListeners();
   }
 
   getTemplate() {
@@ -74,6 +83,16 @@ export class TripPoint {
     }
 
     return this._element;
+  }
+
+  collectElements() {
+    if (!this._element) {
+      this._element = this.getElemFromTemplate(this._template);
+    }
+
+    this._rollupBtn = this._element.querySelector(`.event__rollup-btn`);
+
+    return this;
   }
 
   getElemFromTemplate(template) {
@@ -95,5 +114,15 @@ export class TripPoint {
 
   removeElement() {
     this._element = null;
+  }
+
+  onRollupButtonClick() {
+    const editTripElem = new EditTrip(this._point).getElement();
+    this._element.replaceWith(editTripElem);
+  }
+
+  addListeners() {
+    this._rollupBtn.addEventListener(`click`, this.onRollupButtonClick.bind(this));
+    return this;
   }
 }

@@ -291,7 +291,7 @@ export default class EditTrip {
     this._template = this.getTemplate();
 
     this._element = null;
-    this._saveBtn = null;
+    this._submitBtn = null;
     this._cancelBtn = null;
     this._rollupBtn = null;
 
@@ -317,7 +317,7 @@ export default class EditTrip {
       this._element = this.getElemFromTemplate(this._template);
     }
 
-    this._saveBtn = this._element.querySelector(`.event__save-btn`);
+    this._submitBtn = this._element.querySelector(`.event__save-btn`);
     this._cancelBtn = this._element.querySelector(`.event__reset-btn`);
     this._rollupBtn = this._element.querySelector(`.event__rollup-btn`);
 
@@ -347,9 +347,8 @@ export default class EditTrip {
   }
 
   removeElements() {
-    this._element.remove();
     this._element = null;
-    this._saveBtn = null;
+    this._submitBtn = null;
     this._cancelBtn = null;
   }
 
@@ -363,16 +362,24 @@ export default class EditTrip {
     this._element.replaceWith(tripPointElem);
   }
 
+  onSubmitButtonClick(evt) {
+    evt.preventDefault();
+    const tripPointElem = new TripPoint(this._point).getElement();
+    this._element.replaceWith(tripPointElem);
+  }
 
   onDeleteButtonClick() {
-    this.removeElements();
+    this.remove();
   }
 
   addListeners() {
-    this._cancelBtn.addEventListener(`click`, this.onCancelButtonClick.bind(this));
+    this._submitBtn.addEventListener(`click`, this.onSubmitButtonClick.bind(this));
 
     if (this._editing) {
+      this._cancelBtn.addEventListener(`click`, this.onDeleteButtonClick.bind(this));
       this._rollupBtn.addEventListener(`click`, this.onRollupButtonClick.bind(this));
+    } else {
+      this._cancelBtn.addEventListener(`click`, this.onCancelButtonClick.bind(this));
     }
 
     return this;

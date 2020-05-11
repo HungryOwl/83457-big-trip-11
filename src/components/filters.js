@@ -22,8 +22,7 @@ const getFiltersTemplate = (filters) => {
   }).join(`\n`);
 
   return (
-    `<!-- Фильтры -->
-    <h2 class="visually-hidden">Filter events</h2>
+    `<h2 class="visually-hidden">Filter events</h2>
     <form class="trip-filters" action="#" method="get">
       ${filtersMarkup}
       <button class="visually-hidden" type="submit">Accept filter</button>

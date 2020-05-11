@@ -334,43 +334,36 @@ export default class EditTrip extends AbstractComponent {
     this._element.replaceWith(tripPointElem);
   }
 
-  onCancelButtonClick() {
-    this._showBtn.disabled = false;
-    this.remove();
+  setCancelButtonClick(handler) {
+    // this._showBtn.disabled = false;
+    // this.remove();
+
+    this._cancelBtn.addEventListener(`click`, handler);
   }
 
-  onRollupButtonClick() {
-    this.getTripPoint();
+  setRollupButtonClick(handler) {
+    // this.getTripPoint();
+    this._rollupBtn.addEventListener(`click`, handler);
   }
 
-  onSubmitButtonClick(evt) {
-    evt.preventDefault();
-    this.getTripPoint();
+  setSubmitButtonClick(handler) {
+    // this.getTripPoint();
+    this._submitBtn.addEventListener(`click`, handler);
   }
 
-  onDeleteButtonClick() {
-    this.remove();
-  }
-
-  onEscKeyDown(evt) {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-    if (isEscKey) {
-      this.getTripPoint();
-    }
-  }
-
-  addListeners() {
-    document.addEventListener(`keydown`, this.onEscKeyDown.bind(this));
-    this._submitBtn.addEventListener(`click`, this.onSubmitButtonClick.bind(this));
+  setDeleteButtonClick(handler) {
+    // this.remove();
 
     if (this._editing) {
-      this._cancelBtn.addEventListener(`click`, this.onDeleteButtonClick.bind(this));
-      this._rollupBtn.addEventListener(`click`, this.onRollupButtonClick.bind(this));
-    } else {
-      this._cancelBtn.addEventListener(`click`, this.onCancelButtonClick.bind(this));
+      this._cancelBtn.addEventListener(`click`, handler);
     }
-
-    return this;
   }
+
+  // onEscKeyDown(evt) {
+  //   const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+  //
+  //   if (isEscKey) {
+  //     this.getTripPoint();
+  //   }
+  // }
 }

@@ -76,10 +76,7 @@ export default class TripPoint extends AbstractComponent {
 
   getElement() {
     super.getElement();
-
-    this
-      .collectElements()
-      .addListeners();
+    this.collectElements();
 
     return this._element;
   }
@@ -90,13 +87,16 @@ export default class TripPoint extends AbstractComponent {
     return this;
   }
 
-  onRollupButtonClick() {
+  setRollupButtonClick(handler) {
     const editTripElem = new EditTrip(this._point).getElement();
     this._element.replaceWith(editTripElem);
+
+    this._rollupBtn.addEventListener(`click`, handler);
   }
 
-  addListeners() {
-    this._rollupBtn.addEventListener(`click`, this.onRollupButtonClick.bind(this));
-    return this;
-  }
+  // addListeners() {
+  //   // this._rollupBtn.addEventListener(`click`, this.onRollupButtonClick.bind(this));
+  //   this._rollupBtn.addEventListener(`click`, this.onRollupButtonClick.bind(this));
+  //   return this;
+  // }
 }

@@ -17,8 +17,7 @@ const getFullStatisticsTemplate = (stats) => {
   }
 
   return (
-    `<!-- Статистика путешествий -->
-    <section class="statistics">
+    `<section class="statistics">
       <h2 class="visually-hidden">Trip statistics</h2>
 
       ${statMarkup}

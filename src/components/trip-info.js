@@ -1,5 +1,5 @@
-import {createElement} from '../utils/render';
 import {getFormattedDate} from '../utils/common';
+import AbstractComponent from './abstract-component';
 
 const getDatesFromTo = ([from, to] = [``, ``]) => {
   const monthFrom = (from) ? from.monthName : from;
@@ -39,26 +39,13 @@ const getTripInfoTemplate = ({cities, dates}) => {
   );
 };
 
-export default class TripInfo {
+export default class TripInfo extends AbstractComponent {
   constructor(tripInfo) {
+    super();
     this._info = tripInfo;
-
-    this._element = null;
   }
 
   getTemplate() {
     return getTripInfoTemplate(this._info);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

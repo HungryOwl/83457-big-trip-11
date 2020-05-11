@@ -1,4 +1,4 @@
-import {createElement} from '../utils/render';
+import AbstractComponent from './abstract-component';
 
 const getSortMarkup = (sortName, isChecked) => {
   const icon = (sortName === `time` || sortName === `price`) ?
@@ -39,26 +39,13 @@ const getSortTemplate = (sortItems) => {
   );
 };
 
-export default class Sort {
+export default class Sort extends AbstractComponent {
   constructor(sortItems) {
+    super();
     this._sortItems = sortItems;
-
-    this._element = null;
   }
 
   getTemplate() {
     return getSortTemplate(this._sortItems);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

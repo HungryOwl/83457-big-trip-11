@@ -1,5 +1,6 @@
 import {eventTypes, destinations} from '../mock/trip-point';
 import {getEventTime, getFormattedDate} from '../utils/common';
+import AbstractComponent from './abstract-component';
 import TripPoint from './trip-point';
 
 const rideTypes = [];
@@ -283,8 +284,9 @@ const getTripEditTemplate = (point = {}, isEditing = false) => {
   );
 };
 
-export default class EditTrip {
+export default class EditTrip extends AbstractComponent {
   constructor(point = {}, showBtn = null) {
+    super();
     this._point = point;
     this._showBtn = showBtn;
     this._editing = !this._showBtn;
@@ -304,17 +306,9 @@ export default class EditTrip {
     return getTripEditTemplate(this._point, this._editing);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = this.getElemFromTemplate(this._template);
-    }
-
-    return this._element;
-  }
-
   collectElements() {
     if (!this._element) {
-      this._element = this.getElemFromTemplate(this._template);
+      this._element = this.createElement(this._template);
     }
 
     this._submitBtn = this._element.querySelector(`.event__save-btn`);
@@ -324,30 +318,13 @@ export default class EditTrip {
     return this;
   }
 
-  getElemFromTemplate(template) {
-    const newElement = document.createElement(`div`);
-    newElement.innerHTML = template;
-
-    if (newElement.childNodes.length > 1) {
-      const fragment = new DocumentFragment();
-
-      for (let i = 0; i < newElement.childNodes.length; i++) {
-        fragment.append(newElement.childNodes[i]);
-      }
-
-      return fragment;
-    } else {
-      return newElement.firstChild;
-    }
-  }
-
   remove() {
     this._element.remove();
     this.removeElements();
   }
 
   removeElements() {
-    this._element = null;
+    super.removeElement();
     this._submitBtn = null;
     this._cancelBtn = null;
   }
@@ -374,6 +351,7 @@ export default class EditTrip {
   onDeleteButtonClick() {
     this.remove();
   }
+
   onEscKeyDown(evt) {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
 

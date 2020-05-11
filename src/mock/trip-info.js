@@ -1,5 +1,5 @@
 import {points} from './trip-point';
-import {getDateObj} from '../utils';
+import {getDateObj} from '../utils/common';
 
 const pointsCopy = points.slice(1);
 const tripInfo = {};

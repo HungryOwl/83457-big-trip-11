@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import {createElement} from '../utils/render';
 
 const getTabTemplate = (tab, isActive) => {
   const activeClass = isActive ? `trip-tabs__btn--active` : ``;

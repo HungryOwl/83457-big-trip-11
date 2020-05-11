@@ -1,4 +1,4 @@
-import {renderTemplate, RenderPosition} from './utils';
+import {renderTemplate, RenderPosition} from './utils/render';
 import Message from './components/messages';
 import TripHeader from './components/trip-header';
 import Navigation from './components/menu';

@@ -1,5 +1,5 @@
 import {eventTypes, destinations} from '../mock/trip-point';
-import {getEventTime, getFormattedDate} from '../utils';
+import {getEventTime, getFormattedDate} from '../utils/common';
 import TripPoint from './trip-point';
 
 const rideTypes = [];

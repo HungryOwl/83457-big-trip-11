@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import {createElement} from '../utils/render';
 
 const getTripInfoCost = (price) => (
   `<p class="trip-info__cost">

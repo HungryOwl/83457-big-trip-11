@@ -1,4 +1,4 @@
-import {getRandomInteger, getFormattedDate, getEventTime, sortPointsByDate} from '../utils';
+import {getRandomInteger, getFormattedDate, getEventTime, sortPointsByDate} from '../utils/common';
 
 const MIN_IN_HOUR = 60;
 const HOURS_IN_DAY = 24;

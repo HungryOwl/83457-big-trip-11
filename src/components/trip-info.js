@@ -1,4 +1,5 @@
-import {createElement, getFormattedDate} from '../utils';
+import {createElement} from '../utils/render';
+import {getFormattedDate} from '../utils/common';
 
 const getDatesFromTo = ([from, to] = [``, ``]) => {
   const monthFrom = (from) ? from.monthName : from;

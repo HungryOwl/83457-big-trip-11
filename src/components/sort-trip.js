@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import {createElement} from '../utils/render';
 
 const getSortMarkup = (sortName, isChecked) => {
   const icon = (sortName === `time` || sortName === `price`) ?

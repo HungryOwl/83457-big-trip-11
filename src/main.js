@@ -1,4 +1,5 @@
 import {renderTemplate, RenderPosition} from './utils';
+import Message from './components/messages';
 import TripHeader from './components/trip-header';
 import Navigation from './components/menu';
 import Filters from './components/filters';
@@ -52,11 +53,17 @@ const renderTripHeader = (mainComponent, sortComponent, info, cost, tabsArr, fil
   editTripBtn.addEventListener(`click`, onEditButtonClick(sortComponent));
 };
 
-const renderTripEvents = (tripEventsComponent, sortComponent, pointsArr, sortItemsArr, dayGroupsArr) => {
-  const tripDaysComponent = new TripDays(dayGroupsArr);
+const renderTripEvents = (tripEventsComponent, sortComponent, pointsArr = [], sortItemsArr, dayGroupsArr) => {
+  const isPoints = pointsArr.length > 0;
 
-  renderTemplate(tripEventsComponent.getElement(), sortComponent.getElement());
-  renderTemplate(tripEventsComponent.getElement(), tripDaysComponent.getElement());
+  if (isPoints) {
+    const tripDaysComponent = new TripDays(dayGroupsArr);
+    renderTemplate(tripEventsComponent.getElement(), sortComponent.getElement());
+    renderTemplate(tripEventsComponent.getElement(), tripDaysComponent.getElement());
+  } else {
+    const noPointsMessage = new Message(`Click New Event to create your first point`);
+    renderTemplate(tripEventsComponent.getElement(), noPointsMessage.getElement());
+  }
 };
 
 const headerContainer = document.querySelector(`.page-header__container`);

@@ -54,7 +54,7 @@ const renderTripHeader = (mainComponent, sortComponent, info, cost, tabsArr, fil
 };
 
 const renderTripEvents = (tripEventsComponent, sortComponent, pointsArr = [], sortItemsArr, dayGroupsArr) => {
-  const isPoints = pointsArr && pointsArr.length > 0;
+  const isPoints = pointsArr.length > 0;
 
   if (isPoints) {
     const tripDaysComponent = new TripDays(dayGroupsArr);

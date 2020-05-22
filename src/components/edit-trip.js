@@ -1,3 +1,4 @@
+import {createElement} from '../utils/render.js';
 import {eventTypes, destinations} from '../mock/trip-point';
 import {getEventTime, getFormattedDate} from '../utils/common';
 import AbstractComponent from './abstract-component';
@@ -289,7 +290,7 @@ export default class EditTrip extends AbstractComponent {
     super();
     this._point = point;
     this._showBtn = showBtn;
-    this._editing = !this._showBtn;
+    this._editing = this._point.length > 0;
     this._template = this.getTemplate();
 
     this._element = null;
@@ -297,9 +298,9 @@ export default class EditTrip extends AbstractComponent {
     this._cancelBtn = null;
     this._rollupBtn = null;
 
-    this
-      .collectElements()
-      .addListeners();
+    // this
+    //   .collectElements();
+    //   // .addListeners();
   }
 
   getTemplate() {
@@ -308,7 +309,7 @@ export default class EditTrip extends AbstractComponent {
 
   collectElements() {
     if (!this._element) {
-      this._element = this.createElement(this._template);
+      this._element = createElement(this._template);
     }
 
     this._submitBtn = this._element.querySelector(`.event__save-btn`);
@@ -329,10 +330,10 @@ export default class EditTrip extends AbstractComponent {
     this._cancelBtn = null;
   }
 
-  getTripPoint() {
-    const tripPointElem = new TripPoint(this._point).getElement();
-    this._element.replaceWith(tripPointElem);
-  }
+  // getTripPoint() {
+  //   const tripPointElem = new TripPoint(this._point).getElement();
+  //   this._element.replaceWith(tripPointElem);
+  // }
 
   setCancelButtonClick(handler) {
     // this._showBtn.disabled = false;

@@ -1,6 +1,9 @@
 import AbstractComponent from './abstract-component';
 
-const getSortMarkup = (sortName, isChecked) => {
+const getSortMarkup = (sortObj, isChecked) => {
+  const {name: sortName} = sortObj;
+  const dataAttr = sortObj[`${sortName.toUpperCase()}`];
+
   const icon = (sortName === `time` || sortName === `price`) ?
     `<svg class="trip-sort__direction-icon" width="8" height="10" viewBox="0 0 8 10">
       <path d="M2.888 4.852V9.694H5.588V4.852L7.91 5.068L4.238 0.00999987L0.548 5.068L2.888 4.852Z"/>
@@ -8,7 +11,7 @@ const getSortMarkup = (sortName, isChecked) => {
     : ``;
 
   return (
-    `<div class="trip-sort__item  trip-sort__item--${sortName.toLowerCase()}">
+    `<div class="trip-sort__item trip-sort__item--${sortName.toLowerCase()} data-sort-type="${dataAttr}">
       <input
         id="sort-${sortName}"
         class="trip-sort__input  visually-hidden"
@@ -27,7 +30,7 @@ const getSortMarkup = (sortName, isChecked) => {
 
 const getSortTemplate = (sortItems) => {
   const sortMarkup = sortItems.map((sortObj, i) => {
-    return getSortMarkup(sortObj.name, i === 0);
+    return getSortMarkup(sortObj, i === 0);
   }).join(`\n`);
 
   return (

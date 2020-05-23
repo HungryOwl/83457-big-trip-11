@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import AbstractComponent from './abstract-component';
 
 const getFilterMarkup = (filterName, isChecked) => {
   return (
@@ -22,8 +22,7 @@ const getFiltersTemplate = (filters) => {
   }).join(`\n`);
 
   return (
-    `<!-- Фильтры -->
-    <h2 class="visually-hidden">Filter events</h2>
+    `<h2 class="visually-hidden">Filter events</h2>
     <form class="trip-filters" action="#" method="get">
       ${filtersMarkup}
       <button class="visually-hidden" type="submit">Accept filter</button>
@@ -31,26 +30,13 @@ const getFiltersTemplate = (filters) => {
   );
 };
 
-export default class Filters {
+export default class Filters extends AbstractComponent {
   constructor(filters) {
+    super();
     this._filters = filters;
-
-    this._element = null;
   }
 
   getTemplate() {
     return getFiltersTemplate(this._filters);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

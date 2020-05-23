@@ -1,5 +1,5 @@
 import {points} from './trip-point';
-import {monthNames, getDateObj, getFormattedDate} from '../utils';
+import {monthNames, getDateObj, getFormattedDate} from '../utils/common';
 
 const pointsArr = points.slice();
 

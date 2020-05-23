@@ -1,4 +1,4 @@
-import EditTrip from './edit-trip';
+import AbstractComponent from './abstract-component';
 
 const getEventOfferMarkup = (name, price) => {
   return (
@@ -59,70 +59,31 @@ const getTripPointTemplate = (point) => {
   );
 };
 
-export default class TripPoint {
+export default class TripPoint extends AbstractComponent {
   constructor(point) {
+    super();
     this._point = point;
-    this._template = this.getTemplate();
-
-    this._element = null;
     this._rollupBtn = null;
-    this._isEdit = false;
 
-    this
-      .collectElements()
-      .addListeners();
+    this.collectElements();
   }
 
   getTemplate() {
     return getTripPointTemplate(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = this.getElemFromTemplate(this._template);
-    }
-
-    return this._element;
+  getPointData() {
+    return this._point;
   }
 
   collectElements() {
-    if (!this._element) {
-      this._element = this.getElemFromTemplate(this._template);
-    }
-
+    super.getElement();
     this._rollupBtn = this._element.querySelector(`.event__rollup-btn`);
 
     return this;
   }
 
-  getElemFromTemplate(template) {
-    const newElement = document.createElement(`div`);
-    newElement.innerHTML = template;
-
-    if (newElement.childNodes.length > 1) {
-      const fragment = new DocumentFragment();
-
-      for (let i = 0; i < newElement.childNodes.length; i++) {
-        fragment.append(newElement.childNodes[i]);
-      }
-
-      return fragment;
-    } else {
-      return newElement.firstChild;
-    }
-  }
-
-  removeElement() {
-    this._element = null;
-  }
-
-  onRollupButtonClick() {
-    const editTripElem = new EditTrip(this._point).getElement();
-    this._element.replaceWith(editTripElem);
-  }
-
-  addListeners() {
-    this._rollupBtn.addEventListener(`click`, this.onRollupButtonClick.bind(this));
-    return this;
+  setRollupBtnClickHandler(handler) {
+    this._rollupBtn.addEventListener(`click`, handler);
   }
 }

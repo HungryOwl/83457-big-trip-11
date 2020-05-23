@@ -1,4 +1,4 @@
-import {getRandomInteger, getFormattedDate, getEventTime, sortPointsByDate} from '../utils';
+import {getRandomInteger, getFormattedDate, getEventTime, sortPointsByDate} from '../utils/common';
 
 const MIN_IN_HOUR = 60;
 const HOURS_IN_DAY = 24;
@@ -209,6 +209,7 @@ const getPoint = (i) => {
   const price = prices[type];
   const id = i;
   date.eventTime = getEventTime(date.from, date.to);
+  date.timeDuration = date.to - date.from;
   date.eventDuration = getEventDuration(date.from, date.to);
 
   return {

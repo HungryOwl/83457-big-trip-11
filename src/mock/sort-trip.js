@@ -5,7 +5,7 @@ const sortNames = [
 const getSortItems = () => {
   return sortNames.map((name) => {
     return {
-      name
+      name,
     };
   });
 };

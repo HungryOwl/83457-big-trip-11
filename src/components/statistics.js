@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import AbstractComponent from './abstract-component';
 
 const getStatistics = (statType, statName) => {
 
@@ -17,8 +17,7 @@ const getFullStatisticsTemplate = (stats) => {
   }
 
   return (
-    `<!-- Статистика путешествий -->
-    <section class="statistics">
+    `<section class="statistics">
       <h2 class="visually-hidden">Trip statistics</h2>
 
       ${statMarkup}
@@ -26,27 +25,14 @@ const getFullStatisticsTemplate = (stats) => {
   );
 };
 
-export default class Statistics {
+export default class Statistics extends AbstractComponent {
   constructor(stats) {
+    super();
     this._stats = stats;
-
-    this._element = null;
   }
 
   getTemplate() {
     return getFullStatisticsTemplate(this._stats);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

@@ -1,6 +1,7 @@
 import {eventTypes, destinations} from '../mock/trip-point';
-import {getEventTime, getFormattedDate} from '../utils';
-import TripPoint from './trip-point';
+import {getEventTime, getFormattedDate} from '../utils/common';
+import AbstractComponent from './abstract-component';
+import _ from 'lodash';
 
 const rideTypes = [];
 const placeTypes = [];
@@ -283,39 +284,25 @@ const getTripEditTemplate = (point = {}, isEditing = false) => {
   );
 };
 
-export default class EditTrip {
-  constructor(point = {}, showBtn = null) {
+export default class EditTrip extends AbstractComponent {
+  constructor(point = {}) {
+    super();
     this._point = point;
-    this._showBtn = showBtn;
-    this._editing = !this._showBtn;
-    this._template = this.getTemplate();
-
+    this._editing = !(_.isEmpty(this._point));
     this._element = null;
     this._submitBtn = null;
     this._cancelBtn = null;
     this._rollupBtn = null;
 
-    this
-      .collectElements()
-      .addListeners();
+    this.collectElements();
   }
 
   getTemplate() {
     return getTripEditTemplate(this._point, this._editing);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = this.getElemFromTemplate(this._template);
-    }
-
-    return this._element;
-  }
-
   collectElements() {
-    if (!this._element) {
-      this._element = this.getElemFromTemplate(this._template);
-    }
+    super.getElement();
 
     this._submitBtn = this._element.querySelector(`.event__save-btn`);
     this._cancelBtn = this._element.querySelector(`.event__reset-btn`);
@@ -324,75 +311,27 @@ export default class EditTrip {
     return this;
   }
 
-  getElemFromTemplate(template) {
-    const newElement = document.createElement(`div`);
-    newElement.innerHTML = template;
-
-    if (newElement.childNodes.length > 1) {
-      const fragment = new DocumentFragment();
-
-      for (let i = 0; i < newElement.childNodes.length; i++) {
-        fragment.append(newElement.childNodes[i]);
-      }
-
-      return fragment;
-    } else {
-      return newElement.firstChild;
-    }
-  }
-
-  remove() {
-    this._element.remove();
-    this.removeElements();
-  }
-
-  removeElements() {
-    this._element = null;
+  removeElement() {
+    super.removeElement();
     this._submitBtn = null;
     this._cancelBtn = null;
   }
 
-  getTripPoint() {
-    const tripPointElem = new TripPoint(this._point).getElement();
-    this._element.replaceWith(tripPointElem);
+  setCancelButtonClickHandler(handler) {
+    this._cancelBtn.addEventListener(`click`, handler);
   }
 
-  onCancelButtonClick() {
-    this._showBtn.disabled = false;
-    this.remove();
+  setRollupButtonClickHandler(handler) {
+    this._rollupBtn.addEventListener(`click`, handler);
   }
 
-  onRollupButtonClick() {
-    this.getTripPoint();
+  setSubmitButtonClickHandler(handler) {
+    this._submitBtn.addEventListener(`click`, handler);
   }
 
-  onSubmitButtonClick(evt) {
-    evt.preventDefault();
-    this.getTripPoint();
-  }
-
-  onDeleteButtonClick() {
-    this.remove();
-  }
-  onEscKeyDown(evt) {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-    if (isEscKey) {
-      this.getTripPoint();
-    }
-  }
-
-  addListeners() {
-    document.addEventListener(`keydown`, this.onEscKeyDown.bind(this));
-    this._submitBtn.addEventListener(`click`, this.onSubmitButtonClick.bind(this));
-
+  setDeleteButtonClickHandler(handler) {
     if (this._editing) {
-      this._cancelBtn.addEventListener(`click`, this.onDeleteButtonClick.bind(this));
-      this._rollupBtn.addEventListener(`click`, this.onRollupButtonClick.bind(this));
-    } else {
-      this._cancelBtn.addEventListener(`click`, this.onCancelButtonClick.bind(this));
+      this._cancelBtn.addEventListener(`click`, handler);
     }
-
-    return this;
   }
 }

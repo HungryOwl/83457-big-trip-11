@@ -1,24 +1,33 @@
-import {createElement} from '../utils';
+import AbstractComponent from './abstract-component';
+
+export const SortType = {
+  TIME: `time`,
+  PRICE: `price`,
+  EVENT: `event`,
+};
 
 const getSortMarkup = (sortName, isChecked) => {
-  const icon = (sortName === `time` || sortName === `price`) ?
+  let {name} = sortName;
+  name = name.toLowerCase();
+
+  const icon = (name === `time` || name === `price`) ?
     `<svg class="trip-sort__direction-icon" width="8" height="10" viewBox="0 0 8 10">
       <path d="M2.888 4.852V9.694H5.588V4.852L7.91 5.068L4.238 0.00999987L0.548 5.068L2.888 4.852Z"/>
     </svg>`
     : ``;
 
   return (
-    `<div class="trip-sort__item  trip-sort__item--${sortName.toLowerCase()}">
+    `<div class="trip-sort__item trip-sort__item--${name}">
       <input
-        id="sort-${sortName}"
+        id="sort-${name}"
         class="trip-sort__input  visually-hidden"
         type="radio"
         name="trip-sort"
-        value="sort-${sortName}"
+        value="sort-${name}"
         ${isChecked ? `checked` : ``}
       >
-      <label class="trip-sort__btn" for="sort-${sortName}">
-        ${sortName}
+      <label class="trip-sort__btn" for="sort-${name}" data-sort-type="${SortType[name.toUpperCase()]}">
+        ${name}
         ${icon}
       </label>
     </div>`
@@ -27,7 +36,7 @@ const getSortMarkup = (sortName, isChecked) => {
 
 const getSortTemplate = (sortItems) => {
   const sortMarkup = sortItems.map((sortObj, i) => {
-    return getSortMarkup(sortObj.name, i === 0);
+    return getSortMarkup(sortObj, i === 0);
   }).join(`\n`);
 
   return (
@@ -39,26 +48,32 @@ const getSortTemplate = (sortItems) => {
   );
 };
 
-export default class Sort {
+export default class Sort extends AbstractComponent {
   constructor(sortItems) {
+    super();
     this._sortItems = sortItems;
-
-    this._element = null;
+    this._currenSortType = SortType.EVENT;
   }
 
   getTemplate() {
     return getSortTemplate(this._sortItems);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
+  setSortTypeChangeHandler(handler) {
+    this.getElement().addEventListener(`click`, (evt) => {
+      if (!evt.target.classList.contains(`trip-sort__btn`)) {
+        return;
+      }
 
-    return this._element;
-  }
+      const sortType = evt.target.dataset.sortType;
 
-  removeElement() {
-    this._element = null;
+      if (this._currenSortType === sortType) {
+        return;
+      }
+
+      this._currenSortType = sortType;
+
+      handler(this._currenSortType);
+    });
   }
 }

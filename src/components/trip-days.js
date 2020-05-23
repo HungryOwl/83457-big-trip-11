@@ -1,154 +1,152 @@
+import {createElement, replaceComponent} from '../utils/render.js';
 import TripPoint from './trip-point';
+import EditTrip from './edit-trip';
+import AbstractComponent from './abstract-component';
 
-class TripEventsList {
+const getTripDayTemplate = (dayGroup, dayNumber) => {
+  const dayInfo = dayNumber
+    ? `<span class="day__counter">${dayNumber}</span>
+       <time class="day__date" datetime=${dayGroup.date}>${dayGroup.month.slice(0, 3)} ${dayGroup.day}</time>`
+    : ``;
+
+  return (
+    `<li class="trip-days__item day">
+      <div class="day__info">${dayInfo}</div>
+    </li>`
+  );
+};
+
+const getTripDaysTemplate = () => (
+  `<ul class="trip-days"></ul>`
+);
+
+const getTripEventsListTemplate = () => (
+  `<ul class="trip-events__list"></ul>`
+);
+
+const getTripEventsItemTemplate = () => (
+  `<li class="trip-events__item"></li>`
+);
+
+class TripEventsList extends AbstractComponent {
   constructor(points) {
-    this._element = null;
+    super();
     this._points = points;
-    this._pointElems = this.getPoints();
+    this._pointComponents = this._getPointComponents();
   }
 
-  getPoints() {
-    return this._points.map((point) => new TripPoint(point));
+  _getPointComponents() {
+    return this._points.map((point) => {
+      const tripPointComponent = new TripPoint(point);
+      const editTripComponent = new EditTrip(point);
+
+      const replacePointToEdit = () => {
+        replaceComponent(tripPointComponent, editTripComponent);
+        document.addEventListener(`keydown`, onEscKeyDown);
+      };
+
+      const replaceEditToPoint = () => {
+        replaceComponent(editTripComponent, tripPointComponent);
+        document.removeEventListener(`keydown`, onEscKeyDown);
+      };
+
+      const onEscKeyDown = (evt) => {
+        const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+        if (isEscKey) {
+          replaceEditToPoint();
+        }
+      };
+
+      const onEditTripRollupBtnClick = () => {
+        replaceComponent(editTripComponent, tripPointComponent);
+      };
+      const onPointRollupBtnClick = () => {
+        editTripComponent.setSubmitButtonClickHandler(onEditTripRollupBtnClick);
+        editTripComponent.setRollupButtonClickHandler(onEditTripRollupBtnClick);
+        replacePointToEdit();
+      };
+
+      tripPointComponent.setRollupBtnClickHandler(onPointRollupBtnClick);
+
+      return tripPointComponent;
+    });
   }
 
-  getElement() {
-    if (!this._element) {
-      const container = this.getElemFromTemplate(`<ul class="trip-events__list"></ul>`);
-      const fragment = new DocumentFragment();
+  _renderTripPoint() {
+    this._pointComponents.forEach((pointComponent) => {
+      const pointElem = pointComponent.getElement();
+      const listElem = createElement(getTripEventsItemTemplate());
 
-      this._pointElems.forEach((point) => {
-        const pointElem = point.getElement();
-        const listElem = this.getElemFromTemplate(`<li class="trip-events__item"></li>`);
-
-        listElem.append(pointElem);
-        fragment.append(listElem);
-      });
-
-      container.append(fragment);
-      this._element = container;
-    }
-
-    return this._element;
-  }
-
-  getElemFromTemplate(template) {
-    const newElement = document.createElement(`div`);
-    newElement.innerHTML = template;
-
-    if (newElement.childNodes.length > 1) {
-      const fragment = new DocumentFragment();
-
-      for (let i = 0; i < newElement.childNodes.length; i++) {
-        fragment.append(newElement.childNodes[i]);
-      }
-
-      return fragment;
-    } else {
-      return newElement.firstChild;
-    }
-  }
-
-  removeElement() {
-    this._element = null;
-  }
-}
-
-class TripDay {
-  constructor(dayGroup, dayNumber) {
-    this._dayGroup = dayGroup;
-    this._dayNumber = dayNumber;
-    this._template = this.getTemplate();
-    this._element = null;
-    this._tripEventsList = new TripEventsList(this._dayGroup.points);
+      listElem.append(pointElem);
+      this._element.append(listElem);
+    });
   }
 
   getTemplate() {
-    return (
-      `<li class="trip-days__item day">
-        <div class="day__info">
-          <span class="day__counter">${(this._dayNumber)}</span>
-          <time class="day__date" datetime=${this._dayGroup.date}>${this._dayGroup.month.slice(0, 3)} ${this._dayGroup.day}</time>
-        </div>
-      </li>`
-    );
+    return getTripEventsListTemplate();
   }
 
   getElement() {
-    if (!this._element) {
-      const container = this.getElemFromTemplate(this._template);
-      container.append(this._tripEventsList.getElement());
-      this._element = container;
-    }
+    super.getElement();
+    this._renderTripPoint();
 
     return this._element;
-  }
-
-  getElemFromTemplate(template) {
-    const newElement = document.createElement(`div`);
-    newElement.innerHTML = template;
-
-    if (newElement.childNodes.length > 1) {
-      const fragment = new DocumentFragment();
-
-      for (let i = 0; i < newElement.childNodes.length; i++) {
-        fragment.append(newElement.childNodes[i]);
-      }
-
-      return fragment;
-    } else {
-      return newElement.firstChild;
-    }
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 
-export default class TripDays {
-  constructor(dayGroups) {
-    this._element = null;
-    this._tripDays = this._getTripDays(dayGroups);
+class TripDay extends AbstractComponent {
+  constructor(dayGroup, dayNumber) {
+    super();
+    this._dayGroup = dayGroup;
+    this._dayNumber = dayNumber;
+    this._tripEventsListComponent = new TripEventsList(this._dayGroup.points);
   }
 
-  // @TODO геттер или нет?
-  _getTripDays(dayGroups) {
-    return dayGroups.map((dayGroup, day) => new TripDay(dayGroup, day + 1));
+  _renderTripDay() {
+    this._element.append(this._tripEventsListComponent.getElement());
+  }
+
+  getTemplate() {
+    return getTripDayTemplate(this._dayGroup, this._dayNumber);
   }
 
   getElement() {
-    if (!this._element) {
-      const container = this.getElemFromTemplate(`<ul class="trip-days"></ul>`);
-
-      this._tripDays.forEach((tripDay) => {
-        const tripDayElem = tripDay.getElement();
-        container.append(tripDayElem);
-      });
-
-      this._element = container;
-    }
+    super.getElement();
+    this._renderTripDay();
 
     return this._element;
   }
+}
 
-  getElemFromTemplate(template) {
-    const newElement = document.createElement(`div`);
-    newElement.innerHTML = template;
-
-    if (newElement.childNodes.length > 1) {
-      const fragment = new DocumentFragment();
-
-      for (let i = 0; i < newElement.childNodes.length; i++) {
-        fragment.append(newElement.childNodes[i]);
-      }
-
-      return fragment;
-    } else {
-      return newElement.firstChild;
-    }
+export default class TripDays extends AbstractComponent {
+  constructor(dayGroups) {
+    super();
+    this._tripDaysComponents = this._getTripDays(dayGroups);
   }
 
-  removeElement() {
-    this._element = null;
+  _getTripDays(dayGroups) {
+    return dayGroups.map((dayGroup, day, arr) => {
+      const groupDay = (arr.length > 1) ? day + 1 : null;
+      return new TripDay(dayGroup, groupDay);
+    });
+  }
+
+  _renderTripDays() {
+    this._tripDaysComponents.forEach((tripDay) => {
+      const tripDayElem = tripDay.getElement();
+      this._element.append(tripDayElem);
+    });
+  }
+
+  getTemplate() {
+    return getTripDaysTemplate(this._message);
+  }
+
+  getElement() {
+    super.getElement();
+    this._renderTripDays();
+
+    return this._element;
   }
 }

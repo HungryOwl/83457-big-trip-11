@@ -26,7 +26,7 @@ export default class TripController {
     this._filtersComponent = new Filters(filters.slice());
     this._tripControlsComponent = new TripControls();
     this._navigationComponent = new Navigation(tabs.slice());
-    this._addTripComponent = null;
+    this._addTripComponent = new EditTrip();
   }
 
   _getTripDayGroups() {
@@ -106,12 +106,19 @@ export default class TripController {
     return fullCost;
   }
 
+  _onAddTripCancelBtnClick() {
+    return () => {
+      this._newEventBtnComponent.enable();
+      removeElement(this._addTripComponent);
+    };
+  }
+
   _onEditButtonClick() {
     return (evt) => {
       evt.target.disabled = true;
-      this._addTripComponent = new EditTrip();
-
       renderTemplate(this._sortComponent.getElement(), this._addTripComponent, RenderPosition.AFTEREND);
+
+      this._addTripComponent.setCancelButtonClick(this._onAddTripCancelBtnClick());
     };
   }
 

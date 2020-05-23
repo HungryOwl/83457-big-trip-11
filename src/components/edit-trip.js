@@ -298,8 +298,8 @@ export default class EditTrip extends AbstractComponent {
     this._cancelBtn = null;
     this._rollupBtn = null;
 
-    // this
-    //   .collectElements();
+    this
+      .collectElements();
     //   // .addListeners();
   }
 

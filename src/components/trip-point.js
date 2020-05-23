@@ -1,5 +1,6 @@
 import AbstractComponent from './abstract-component';
 import EditTrip from './edit-trip';
+import {createElement, replaceComponent} from "../utils/render";
 
 const getEventOfferMarkup = (name, price) => {
   return (
@@ -68,29 +69,26 @@ export default class TripPoint extends AbstractComponent {
 
     this._rollupBtn = null;
     this._isEdit = false;
+
+    this.collectElements();
   }
 
   getTemplate() {
     return getTripPointTemplate(this._point);
   }
 
-  getElement() {
-    super.getElement();
-    this.collectElements();
-
-    return this._element;
+  getPointData() {
+    return this._point;
   }
 
   collectElements() {
+    super.getElement();
     this._rollupBtn = this._element.querySelector(`.event__rollup-btn`);
 
     return this;
   }
 
-  setRollupButtonClick(handler) {
-    const editTripElem = new EditTrip(this._point).getElement();
-    this._element.replaceWith(editTripElem);
-
+  setRollupBtnClickHandler(handler) {
     this._rollupBtn.addEventListener(`click`, handler);
   }
 

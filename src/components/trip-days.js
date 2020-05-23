@@ -1,5 +1,6 @@
-import {createElement} from '../utils/render.js';
+import {createElement, replaceComponent} from '../utils/render.js';
 import TripPoint from './trip-point';
+import EditTrip from './edit-trip';
 import AbstractComponent from './abstract-component';
 
 const getTripDaysemplate = (dayGroup, dayNumber) => (
@@ -27,7 +28,7 @@ class TripEventsList extends AbstractComponent {
   constructor(points) {
     super();
     this._points = points;
-    this._pointElems = this._getPoints();
+    this._pointComponents = this._getPoints();
   }
 
   _getPoints() {
@@ -35,7 +36,7 @@ class TripEventsList extends AbstractComponent {
   }
 
   _renderTripPoint() {
-    this._pointElems.forEach((point) => {
+    this._pointComponents.forEach((point) => {
       const pointElem = point.getElement();
       const listElem = createElement(getTripEventsItemTemplate());
 
@@ -54,6 +55,29 @@ class TripEventsList extends AbstractComponent {
 
     return this._element;
   }
+
+  _onEditTripCancelBtnClick(editTripComponent, pointComponent) {
+    return () => {
+      replaceComponent(editTripComponent, pointComponent);
+    };
+  }
+
+  _onRollupBtnClick(pointComponent) {
+    const point = pointComponent.getPointData();
+    const editTripComponent = new EditTrip(point);
+
+    editTripComponent.setCancelButtonClick(this._onEditTripCancelBtnClick(editTripComponent, pointComponent));
+
+    return () => {
+      replaceComponent(pointComponent, editTripComponent);
+    };
+  }
+
+  setRollupBtnClickHandler() {
+    this._pointComponents.forEach((pointComponent) => {
+      pointComponent.setRollupBtnClickHandler(this._onRollupBtnClick(pointComponent));
+    });
+  }
 }
 
 class TripDay extends AbstractComponent {
@@ -62,11 +86,12 @@ class TripDay extends AbstractComponent {
     this._dayGroup = dayGroup;
     this._dayNumber = dayNumber;
     this._template = this.getTemplate();
-    this._tripEventsList = new TripEventsList(this._dayGroup.points);
+    this._tripEventsListComponent = new TripEventsList(this._dayGroup.points);
+    this._tripEventsListComponent.setRollupBtnClickHandler();
   }
 
   _renderTripDay() {
-    this._element.append(this._tripEventsList.getElement());
+    this._element.append(this._tripEventsListComponent.getElement());
   }
 
   getTemplate() {
@@ -84,7 +109,7 @@ class TripDay extends AbstractComponent {
 export default class TripDays extends AbstractComponent {
   constructor(dayGroups) {
     super();
-    this._tripDays = this._getTripDays(dayGroups);
+    this._tripDaysComponents = this._getTripDays(dayGroups);
   }
 
   _getTripDays(dayGroups) {
@@ -92,7 +117,7 @@ export default class TripDays extends AbstractComponent {
   }
 
   _renderTripDays() {
-    this._tripDays.forEach((tripDay) => {
+    this._tripDaysComponents.forEach((tripDay) => {
       const tripDayElem = tripDay.getElement();
       this._element.append(tripDayElem);
     });

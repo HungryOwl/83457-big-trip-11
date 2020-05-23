@@ -43,7 +43,7 @@ const renderTemplate = (container, component, place = `beforeend`) => {
   }
 };
 
-const replaceComponent = (newComponent, oldComponent) => {
+const replaceComponent = (oldComponent, newComponent) => {
   const parentElement = oldComponent.getElement().parentElement;
   const newElement = newComponent.getElement();
   const oldElement = oldComponent.getElement();

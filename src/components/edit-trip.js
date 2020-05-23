@@ -300,7 +300,7 @@ export default class EditTrip extends AbstractComponent {
 
     this
       .collectElements();
-    //   // .addListeners();
+    // .addListeners();
   }
 
   getTemplate() {
@@ -308,9 +308,7 @@ export default class EditTrip extends AbstractComponent {
   }
 
   collectElements() {
-    if (!this._element) {
-      this._element = createElement(this._template);
-    }
+    super.getElement();
 
     this._submitBtn = this._element.querySelector(`.event__save-btn`);
     this._cancelBtn = this._element.querySelector(`.event__reset-btn`);

@@ -128,17 +128,18 @@ export default class TripController {
     this._tripInfo = this._getTripInfo();
     this._fullCost = this._getFullCost();
     this._tripDaysComponent = new TripDays(this._dayGroups);
-
     this._tripInfoComponent = new TripInfo(this._tripInfo);
     this._tripInfoCostComponent = new TripInfoCost(this._fullCost);
 
     const headerElement = this._headerContainer.getElement();
     const eventsElement = this._eventsContaianer.getElement();
+    const tripControlsElement = this._tripControlsComponent.getElement();
+    const tripInfoElement = this._tripInfoComponent.getElement();
 
-    renderTemplate(this._tripControlsComponent.getElement(), this._navigationComponent);
-    renderTemplate(this._tripControlsComponent.getElement(), this._filtersComponent);
+    renderTemplate(tripControlsElement, this._navigationComponent);
+    renderTemplate(tripControlsElement, this._filtersComponent);
     renderTemplate(headerElement, this._tripControlsComponent, RenderPosition.AFTERBEGIN);
-    renderTemplate(this._tripInfoComponent.getElement(), this._tripInfoCostComponent);
+    renderTemplate(tripInfoElement, this._tripInfoCostComponent);
     renderTemplate(headerElement, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
     renderTemplate(headerElement, this._newEventBtnComponent);
     renderTemplate(eventsElement, this._sortComponent);

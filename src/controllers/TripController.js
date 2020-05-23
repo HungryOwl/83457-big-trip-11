@@ -1,6 +1,6 @@
 import {renderTemplate, replaceComponent, removeElement, RenderPosition} from '../utils/render.js';
 import Filters from '../components/filters';
-import Sort from '../components/sort-trip';
+import Sort, {SortType} from '../components/sort-trip';
 import EditTrip from '../components/edit-trip';
 import TripDays from '../components/trip-days';
 import TripControls from '../components/trip-controls';
@@ -29,17 +29,16 @@ export default class TripController {
     this._addTripComponent = new EditTrip();
   }
 
-  _getTripDayGroups() {
+  _getTripDayGroups(currentDate = null) {
     const dayGroups = [];
     const daysMap = {};
 
     this._points.forEach((point) => {
-      const dateFrom = point.date.from;
-      const dateObj = getDateObj(dateFrom);
+      const pointDate = currentDate ? currentDate : point.date.from;
+      const dateObj = getDateObj(pointDate);
       const year = dateObj.year;
       const month = dateObj.month;
       const day = getFormattedDate(dateObj.day);
-
       const date = `${year}-${getFormattedDate(month)}-${day}`;
 
       let group = daysMap[date];
@@ -122,6 +121,25 @@ export default class TripController {
     };
   }
 
+  _getSortedPoints(points, sortType) {
+    let sortedPoints = [];
+    const showingPoints = points.slice();
+
+    switch (sortType) {
+      case SortType.TIME:
+        sortedPoints = showingPoints.sort((a, b) => b.date.timeDuration - a.date.timeDuration);
+        break;
+      case SortType.PRICE:
+        sortedPoints = showingPoints.sort((a, b) => b.price - a.price);
+        break;
+      case SortType.EVENT:
+        sortedPoints = showingPoints;
+        break;
+    }
+
+    return sortedPoints;
+  };
+
   render(points) {
     this._points = points;
     this._dayGroups = this._getTripDayGroups();
@@ -146,6 +164,26 @@ export default class TripController {
     renderTemplate(eventsElement, this._tripDaysComponent);
 
     this._newEventBtnComponent.setClickHandler(this._onEditButtonClick(this._sortComponent));
+
+    this._sortComponent.setSortTypeChangeHandler((sortType) => {
+      this._points = this._getSortedPoints(points, sortType);
+
+      removeElement(this._tripDaysComponent);
+
+      switch (sortType) {
+        case SortType.TIME:
+        case SortType.PRICE:
+          this._dayGroups = this._getTripDayGroups(new Date());
+          this._tripDaysComponent = new TripDays(this._dayGroups);
+          renderTemplate(eventsElement, this._tripDaysComponent);
+          break;
+        case SortType.EVENT:
+          this._dayGroups = this._getTripDayGroups();
+          this._tripDaysComponent = new TripDays(this._dayGroups);
+          renderTemplate(eventsElement, this._tripDaysComponent);
+          break;
+      }
+    });
 
     console.log('rendered');
   }

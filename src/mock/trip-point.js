@@ -209,6 +209,7 @@ const getPoint = (i) => {
   const price = prices[type];
   const id = i;
   date.eventTime = getEventTime(date.from, date.to);
+  date.timeDuration = date.to - date.from;
   date.eventDuration = getEventDuration(date.from, date.to);
 
   return {

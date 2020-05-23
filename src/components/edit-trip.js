@@ -295,7 +295,6 @@ export default class EditTrip extends AbstractComponent {
     this._rollupBtn = null;
 
     this.collectElements();
-    // .addListeners();
   }
 
   getTemplate() {
@@ -309,10 +308,6 @@ export default class EditTrip extends AbstractComponent {
     this._cancelBtn = this._element.querySelector(`.event__reset-btn`);
     this._rollupBtn = this._element.querySelector(`.event__rollup-btn`);
 
-    console.log('this._submitBtn', this._submitBtn);
-    console.log('this._cancelBtn', this._cancelBtn);
-    console.log('this._rollupBtn', this._rollupBtn);
-
     return this;
   }
 
@@ -322,39 +317,21 @@ export default class EditTrip extends AbstractComponent {
     this._cancelBtn = null;
   }
 
-  // getTripPoint() {
-  //   const tripPointElem = new TripPoint(this._point).getElement();
-  //   this._element.replaceWith(tripPointElem);
-  // }
-
   setCancelButtonClickHandler(handler) {
     this._cancelBtn.addEventListener(`click`, handler);
   }
 
   setRollupButtonClickHandler(handler) {
-    // this.getTripPoint();
-    console.log('setRollupButtonClickHandler this._rollupBtn', this._rollupBtn);
     this._rollupBtn.addEventListener(`click`, handler);
   }
 
   setSubmitButtonClickHandler(handler) {
-    // this.getTripPoint();
     this._submitBtn.addEventListener(`click`, handler);
   }
 
   setDeleteButtonClickHandler(handler) {
-    // this.remove();
-
     if (this._editing) {
       this._cancelBtn.addEventListener(`click`, handler);
     }
   }
-
-  // onEscKeyDown(evt) {
-  //   const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-  //
-  //   if (isEscKey) {
-  //     this.getTripPoint();
-  //   }
-  // }
 }

@@ -1,16 +1,20 @@
-import {createElement, removeElement, replaceComponent} from '../utils/render.js';
+import {createElement, replaceComponent} from '../utils/render.js';
 import TripPoint from './trip-point';
 import EditTrip from './edit-trip';
 import AbstractComponent from './abstract-component';
 
-const getTripDaysemplate = (dayGroup, dayNumber) => (
-  `<li class="trip-days__item day">
-      <div class="day__info">
-        <span class="day__counter">${dayNumber}</span>
-        <time class="day__date" datetime=${dayGroup.date}>${dayGroup.month.slice(0, 3)} ${dayGroup.day}</time>
-      </div>
+const getTripDayTemplate = (dayGroup, dayNumber) => {
+  const dayInfo = dayNumber
+    ? `<span class="day__counter">${dayNumber}</span>
+       <time class="day__date" datetime=${dayGroup.date}>${dayGroup.month.slice(0, 3)} ${dayGroup.day}</time>`
+    : ``;
+
+  return (
+    `<li class="trip-days__item day">
+      <div class="day__info">${dayInfo}</div>
     </li>`
-);
+  );
+};
 
 const getTripDaysTemplate = () => (
   `<ul class="trip-days"></ul>`
@@ -28,39 +32,55 @@ class TripEventsList extends AbstractComponent {
   constructor(points) {
     super();
     this._points = points;
-    this._pointComponents = this._getPoints();
+    this._pointComponents = this._getPointComponents();
   }
 
-  _getPoints() {
-    return this._points.map((point) => new TripPoint(point));
+  _getPointComponents() {
+    return this._points.map((point) => {
+      const tripPointComponent = new TripPoint(point);
+      const editTripComponent = new EditTrip(point);
+
+      const replacePointToEdit = () => {
+        replaceComponent(tripPointComponent, editTripComponent);
+        document.addEventListener(`keydown`, onEscKeyDown);
+      };
+
+      const replaceEditToPoint = () => {
+        replaceComponent(editTripComponent, tripPointComponent);
+        document.removeEventListener(`keydown`, onEscKeyDown);
+      };
+
+      const onEscKeyDown = (evt) => {
+        const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+        if (isEscKey) {
+          replaceEditToPoint();
+        }
+      };
+
+      const onEditTripRollupBtnClick = () => {
+        replaceComponent(editTripComponent, tripPointComponent);
+      };
+      const onPointRollupBtnClick = () => {
+        editTripComponent.setSubmitButtonClickHandler(onEditTripRollupBtnClick);
+        editTripComponent.setRollupButtonClickHandler(onEditTripRollupBtnClick);
+        replacePointToEdit();
+      };
+
+      tripPointComponent.setRollupBtnClickHandler(onPointRollupBtnClick);
+
+      return tripPointComponent;
+    });
   }
 
   _renderTripPoint() {
     this._pointComponents.forEach((pointComponent) => {
       const pointElem = pointComponent.getElement();
       const listElem = createElement(getTripEventsItemTemplate());
-      pointComponent.setRollupBtnClickHandler(this._onPointRollupBtnClick(pointComponent));
 
       listElem.append(pointElem);
       this._element.append(listElem);
     });
-  }
-
-  _onEditTripRollupBtnClick(editTripComponent, pointComponent) {
-    return () => {
-      replaceComponent(editTripComponent, pointComponent);
-    };
-  }
-
-  _onPointRollupBtnClick(pointComponent) {
-    const point = pointComponent.getPointData();
-    const editTripComponent = new EditTrip(point);
-
-    editTripComponent.setRollupButtonClickHandler(this._onEditTripRollupBtnClick(editTripComponent, pointComponent));
-
-    return () => {
-      replaceComponent(pointComponent, editTripComponent);
-    };
   }
 
   getTemplate() {
@@ -88,7 +108,7 @@ class TripDay extends AbstractComponent {
   }
 
   getTemplate() {
-    return getTripDaysemplate(this._dayGroup, this._dayNumber);
+    return getTripDayTemplate(this._dayGroup, this._dayNumber);
   }
 
   getElement() {
@@ -106,7 +126,10 @@ export default class TripDays extends AbstractComponent {
   }
 
   _getTripDays(dayGroups) {
-    return dayGroups.map((dayGroup, day) => new TripDay(dayGroup, day + 1));
+    return dayGroups.map((dayGroup, day, arr) => {
+      const groupDay = (arr.length > 1) ? day + 1 : null;
+      return new TripDay(dayGroup, groupDay);
+    });
   }
 
   _renderTripDays() {

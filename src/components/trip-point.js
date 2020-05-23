@@ -65,10 +65,7 @@ export default class TripPoint extends AbstractComponent {
   constructor(point) {
     super();
     this._point = point;
-    this._template = this.getTemplate();
-
     this._rollupBtn = null;
-    this._isEdit = false;
 
     this.collectElements();
   }
@@ -91,10 +88,4 @@ export default class TripPoint extends AbstractComponent {
   setRollupBtnClickHandler(handler) {
     this._rollupBtn.addEventListener(`click`, handler);
   }
-
-  // addListeners() {
-  //   // this._rollupBtn.addEventListener(`click`, this.onRollupButtonClick.bind(this));
-  //   this._rollupBtn.addEventListener(`click`, this.onRollupButtonClick.bind(this));
-  //   return this;
-  // }
 }

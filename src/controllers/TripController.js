@@ -118,7 +118,7 @@ export default class TripController {
       evt.target.disabled = true;
       renderTemplate(this._sortComponent.getElement(), this._addTripComponent, RenderPosition.AFTEREND);
 
-      this._addTripComponent.setCancelButtonClick(this._onAddTripCancelBtnClick());
+      this._addTripComponent.setCancelButtonClickHandler(this._onAddTripCancelBtnClick());
     };
   }
 

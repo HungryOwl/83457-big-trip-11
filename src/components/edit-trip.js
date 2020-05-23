@@ -1,8 +1,7 @@
-import {createElement} from '../utils/render.js';
 import {eventTypes, destinations} from '../mock/trip-point';
 import {getEventTime, getFormattedDate} from '../utils/common';
 import AbstractComponent from './abstract-component';
-import TripPoint from './trip-point';
+import _ from 'lodash';
 
 const rideTypes = [];
 const placeTypes = [];
@@ -286,20 +285,16 @@ const getTripEditTemplate = (point = {}, isEditing = false) => {
 };
 
 export default class EditTrip extends AbstractComponent {
-  constructor(point = {}, showBtn = null) {
+  constructor(point = {}) {
     super();
     this._point = point;
-    this._showBtn = showBtn;
-    this._editing = this._point.length > 0;
-    this._template = this.getTemplate();
-
+    this._editing = !(_.isEmpty(this._point));
     this._element = null;
     this._submitBtn = null;
     this._cancelBtn = null;
     this._rollupBtn = null;
 
-    this
-      .collectElements();
+    this.collectElements();
     // .addListeners();
   }
 
@@ -314,15 +309,14 @@ export default class EditTrip extends AbstractComponent {
     this._cancelBtn = this._element.querySelector(`.event__reset-btn`);
     this._rollupBtn = this._element.querySelector(`.event__rollup-btn`);
 
+    console.log('this._submitBtn', this._submitBtn);
+    console.log('this._cancelBtn', this._cancelBtn);
+    console.log('this._rollupBtn', this._rollupBtn);
+
     return this;
   }
 
-  remove() {
-    this._element.remove();
-    this.removeElements();
-  }
-
-  removeElements() {
+  removeElement() {
     super.removeElement();
     this._submitBtn = null;
     this._cancelBtn = null;
@@ -333,24 +327,22 @@ export default class EditTrip extends AbstractComponent {
   //   this._element.replaceWith(tripPointElem);
   // }
 
-  setCancelButtonClick(handler) {
-    // this._showBtn.disabled = false;
-    // this.remove();
-
+  setCancelButtonClickHandler(handler) {
     this._cancelBtn.addEventListener(`click`, handler);
   }
 
-  setRollupButtonClick(handler) {
+  setRollupButtonClickHandler(handler) {
     // this.getTripPoint();
+    console.log('setRollupButtonClickHandler this._rollupBtn', this._rollupBtn);
     this._rollupBtn.addEventListener(`click`, handler);
   }
 
-  setSubmitButtonClick(handler) {
+  setSubmitButtonClickHandler(handler) {
     // this.getTripPoint();
     this._submitBtn.addEventListener(`click`, handler);
   }
 
-  setDeleteButtonClick(handler) {
+  setDeleteButtonClickHandler(handler) {
     // this.remove();
 
     if (this._editing) {

@@ -29,6 +29,8 @@ export default class TripController {
     this._tripControlsComponent = new TripControls();
     this._navigationComponent = new Navigation(tabs.slice());
     this._addTripComponent = new EditTrip();
+
+    this._onSortBtnClick = this._onSortBtnClick.bind(this);
   }
 
   _getTripDayGroups(currentDate = null) {
@@ -161,6 +163,23 @@ export default class TripController {
     renderTemplate(eventsElement, this._tripDaysComponent);
   }
 
+  _onSortBtnClick(sortType) {
+    this._points = this._getSortedPoints(sortType);
+    const eventsElement = this._eventsContaianer.getElement();
+
+    removeElement(this._tripDaysComponent);
+
+    switch (sortType) {
+      case SortType.TIME:
+      case SortType.PRICE:
+        this._renderDayDroups(eventsElement, new Date());
+        break;
+      case SortType.EVENT:
+        this._renderDayDroups(eventsElement);
+        break;
+    }
+  }
+
   render(points) {
     this._points = points;
     this._fullCost = this._getFullCost();
@@ -193,20 +212,6 @@ export default class TripController {
 
     this._newEventBtnComponent.setClickHandler(this._onEditButtonClick(this._sortComponent));
 
-    this._sortComponent.setSortTypeChangeHandler((sortType) => {
-      this._points = this._getSortedPoints(sortType);
-
-      removeElement(this._tripDaysComponent);
-
-      switch (sortType) {
-        case SortType.TIME:
-        case SortType.PRICE:
-          this._renderDayDroups(eventsElement, new Date());
-          break;
-        case SortType.EVENT:
-          this._renderDayDroups(eventsElement);
-          break;
-      }
-    });
+    this._sortComponent.setSortTypeChangeHandler(this._onSortBtnClick);
   }
 }

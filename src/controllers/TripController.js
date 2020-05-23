@@ -1,4 +1,7 @@
-import {renderTemplate, replaceComponent, removeElement, RenderPosition} from '../utils/render.js';
+import _ from 'lodash';
+import {renderTemplate, removeElement, RenderPosition} from '../utils/render.js';
+import {getDateObj, getFormattedDate, monthNames} from '../utils/common';
+import Message from '../components/messages';
 import Filters from '../components/filters';
 import Sort, {SortType} from '../components/sort-trip';
 import EditTrip from '../components/edit-trip';
@@ -11,8 +14,6 @@ import NewEventButton from '../components/new-event-button';
 import {tabs} from '../mock/menu';
 import {sortItems} from '../mock/sort-trip';
 import {filters} from '../mock/filters';
-import {getDateObj, getFormattedDate, monthNames} from '../utils/common';
-import {points} from '../mock/trip-point';
 
 export default class TripController {
   constructor(headerContainer, eventsContaianer) {
@@ -21,6 +22,7 @@ export default class TripController {
     this._fullCost = 0;
     this._headerContainer = headerContainer;
     this._eventsContaianer = eventsContaianer;
+    this._messageComponent = new Message(`Click New Event to create your first point`);
     this._newEventBtnComponent = new NewEventButton();
     this._sortComponent = new Sort(sortItems.slice());
     this._filtersComponent = new Filters(filters.slice());
@@ -32,6 +34,10 @@ export default class TripController {
   _getTripDayGroups(currentDate = null) {
     const dayGroups = [];
     const daysMap = {};
+
+    if (!this._points) {
+      return dayGroups;
+    }
 
     this._points.forEach((point) => {
       const pointDate = currentDate ? currentDate : point.date.from;
@@ -64,8 +70,8 @@ export default class TripController {
   _getStartEndDates() {
     let dates = [this._points[0].date.from];
 
-    if (points.length > 1) {
-      dates.push(points[points.length - 1].date.to);
+    if (this._points.length > 1) {
+      dates.push(this._points[this._points.length - 1].date.to);
     }
 
     dates = dates.map((timestamp) => {
@@ -86,8 +92,13 @@ export default class TripController {
   }
 
   _getTripInfo() {
-    const pointsCopy = this._points.slice(1);
     const tripInfo = {};
+
+    if (!this._points || _.isEmpty(this._points)) {
+      return tripInfo;
+    }
+
+    const pointsCopy = this._points.slice(1);
 
     tripInfo.cities = this._getCitySequence(pointsCopy);
     tripInfo.dates = this._getStartEndDates(pointsCopy);
@@ -97,6 +108,10 @@ export default class TripController {
 
   _getFullCost() {
     let fullCost = 0;
+
+    if (!this._points || _.isEmpty(this._points)) {
+      return fullCost;
+    }
 
     this._points.forEach((point) => {
       fullCost += point.getFullPrice();
@@ -121,9 +136,9 @@ export default class TripController {
     };
   }
 
-  _getSortedPoints(points, sortType) {
+  _getSortedPoints(sortType) {
     let sortedPoints = [];
-    const showingPoints = points.slice();
+    const showingPoints = this._points.slice();
 
     switch (sortType) {
       case SortType.TIME:
@@ -138,14 +153,18 @@ export default class TripController {
     }
 
     return sortedPoints;
-  };
+  }
+
+  _renderDayDroups(eventsElement, date = null) {
+    this._dayGroups = this._getTripDayGroups(date);
+    this._tripDaysComponent = new TripDays(this._dayGroups);
+    renderTemplate(eventsElement, this._tripDaysComponent);
+  }
 
   render(points) {
     this._points = points;
-    this._dayGroups = this._getTripDayGroups();
-    this._tripInfo = this._getTripInfo();
     this._fullCost = this._getFullCost();
-    this._tripDaysComponent = new TripDays(this._dayGroups);
+    this._tripInfo = this._getTripInfo();
     this._tripInfoComponent = new TripInfo(this._tripInfo);
     this._tripInfoCostComponent = new TripInfoCost(this._fullCost);
 
@@ -160,31 +179,34 @@ export default class TripController {
     renderTemplate(tripInfoElement, this._tripInfoCostComponent);
     renderTemplate(headerElement, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
     renderTemplate(headerElement, this._newEventBtnComponent);
+
+    if (!this._points || _.isEmpty(this._points)) {
+      renderTemplate(eventsElement, this._messageComponent);
+      return;
+    }
+
+    this._dayGroups = this._getTripDayGroups();
+    this._tripDaysComponent = new TripDays(this._dayGroups);
+
     renderTemplate(eventsElement, this._sortComponent);
     renderTemplate(eventsElement, this._tripDaysComponent);
 
     this._newEventBtnComponent.setClickHandler(this._onEditButtonClick(this._sortComponent));
 
     this._sortComponent.setSortTypeChangeHandler((sortType) => {
-      this._points = this._getSortedPoints(points, sortType);
+      this._points = this._getSortedPoints(sortType);
 
       removeElement(this._tripDaysComponent);
 
       switch (sortType) {
         case SortType.TIME:
         case SortType.PRICE:
-          this._dayGroups = this._getTripDayGroups(new Date());
-          this._tripDaysComponent = new TripDays(this._dayGroups);
-          renderTemplate(eventsElement, this._tripDaysComponent);
+          this._renderDayDroups(eventsElement, new Date());
           break;
         case SortType.EVENT:
-          this._dayGroups = this._getTripDayGroups();
-          this._tripDaysComponent = new TripDays(this._dayGroups);
-          renderTemplate(eventsElement, this._tripDaysComponent);
+          this._renderDayDroups(eventsElement);
           break;
       }
     });
-
-    console.log('rendered');
   }
 }

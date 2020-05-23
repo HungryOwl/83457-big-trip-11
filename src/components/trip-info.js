@@ -12,8 +12,12 @@ const getDatesFromTo = ([from, to] = [``, ``]) => {
   );
 };
 
-const getSequenceOfCities = (cities) => {
+const getSequenceOfCities = (cities = []) => {
   let cityChain = [];
+
+  if (cities.length === 0) {
+    return ``;
+  }
 
   if (cities.length > 3) {
     cityChain = [cities[0], `...`, cities[cities.length - 1]];
@@ -28,13 +32,17 @@ const getSequenceOfCities = (cities) => {
   );
 };
 
-const getTripInfoTemplate = ({cities, dates}) => {
-  return (
-    `<section class="trip-main__trip-info  trip-info">
-      <div class="trip-info__main">
+const getTripInfoTemplate = ({cities = [], dates}) => {
+  const main = ((cities.length > 0))
+    ? `<div class="trip-info__main">
         ${getSequenceOfCities(cities)}
         ${getDatesFromTo(dates)}
-      </div>
+      </div>`
+    : ``;
+
+  return (
+    `<section class="trip-main__trip-info  trip-info">
+     ${main}
     </section>`
   );
 };

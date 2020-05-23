@@ -1,6 +1,4 @@
 import AbstractComponent from './abstract-component';
-import EditTrip from './edit-trip';
-import {createElement, replaceComponent} from "../utils/render";
 
 const getEventOfferMarkup = (name, price) => {
   return (

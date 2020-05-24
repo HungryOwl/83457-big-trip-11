@@ -1,6 +1,5 @@
-import {createElement, replaceComponent} from '../utils/render.js';
-import TripPoint from './trip-point';
-import EditTrip from './edit-trip';
+import {createElement} from '../utils/render.js';
+import PointController from '../controllers/PointController';
 import AbstractComponent from './abstract-component';
 
 const getTripDayTemplate = (dayGroup, dayNumber) => {
@@ -32,66 +31,32 @@ class TripEventsList extends AbstractComponent {
   constructor(points) {
     super();
     this._points = points;
-    this._pointComponents = this._getPointComponents();
+    this._element = this.getElement();
+    this._onViewChange = this._onViewChange.bind(this);
+
+    this._pointControllers = this._getPointControllers(this._onViewChange);
   }
 
-  _getPointComponents() {
+  _onViewChange() {
+    this._pointControllers.forEach((controller) => controller.setDefaultView());
+  }
+
+  _getPointControllers(onViewChange) {
     return this._points.map((point) => {
-      const tripPointComponent = new TripPoint(point);
-      const editTripComponent = new EditTrip(point);
-
-      const replacePointToEdit = () => {
-        replaceComponent(tripPointComponent, editTripComponent);
-        document.addEventListener(`keydown`, onEscKeyDown);
-      };
-
-      const replaceEditToPoint = () => {
-        replaceComponent(editTripComponent, tripPointComponent);
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      };
-
-      const onEscKeyDown = (evt) => {
-        const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-        if (isEscKey) {
-          replaceEditToPoint();
-        }
-      };
-
-      const onEditTripRollupBtnClick = () => {
-        replaceComponent(editTripComponent, tripPointComponent);
-      };
-      const onPointRollupBtnClick = () => {
-        editTripComponent.setSubmitButtonClickHandler(onEditTripRollupBtnClick);
-        editTripComponent.setRollupButtonClickHandler(onEditTripRollupBtnClick);
-        replacePointToEdit();
-      };
-
-      tripPointComponent.setRollupBtnClickHandler(onPointRollupBtnClick);
-
-      return tripPointComponent;
+      const listElement = this._getPointContainer();
+      const pointController = new PointController(listElement, onViewChange);
+      pointController.render(point);
+      this._element.append(listElement);
+      return pointController;
     });
   }
 
-  _renderTripPoint() {
-    this._pointComponents.forEach((pointComponent) => {
-      const pointElem = pointComponent.getElement();
-      const listElem = createElement(getTripEventsItemTemplate());
-
-      listElem.append(pointElem);
-      this._element.append(listElem);
-    });
+  _getPointContainer() {
+    return createElement(getTripEventsItemTemplate());
   }
 
   getTemplate() {
     return getTripEventsListTemplate();
-  }
-
-  getElement() {
-    super.getElement();
-    this._renderTripPoint();
-
-    return this._element;
   }
 }
 

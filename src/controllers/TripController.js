@@ -199,7 +199,7 @@ export default class TripController {
     renderTemplate(headerElement, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
     renderTemplate(headerElement, this._newEventBtnComponent);
 
-    if (!this._points || _.isEmpty(this._points)) {
+    if (_.isEmpty(this._points)) {
       renderTemplate(eventsElement, this._messageComponent);
       return;
     }

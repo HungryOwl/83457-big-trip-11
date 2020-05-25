@@ -1,4 +1,4 @@
-import {getRandomInteger, getFormattedDate, getEventTime, sortPointsByDate} from '../utils/common';
+import {getRandomInteger, getFormattedDate, getEventTime, sortPointsByDate, flipCoin} from '../utils/common';
 
 const MIN_IN_HOUR = 60;
 const HOURS_IN_DAY = 24;
@@ -208,6 +208,7 @@ const getPoint = (i) => {
   const date = getDate(dates);
   const price = prices[type];
   const id = i;
+  const isFavorite = flipCoin();
   date.eventTime = getEventTime(date.from, date.to);
   date.timeDuration = date.to - date.from;
   date.eventDuration = getEventDuration(date.from, date.to);
@@ -222,6 +223,7 @@ const getPoint = (i) => {
     preposition,
     date,
     id,
+    isFavorite,
     getFullPrice() {
       let fullPrice = this.price;
 

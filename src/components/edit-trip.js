@@ -230,9 +230,9 @@ const getEventDetailsMarkup = (offers, id, description, photos) => {
   );
 };
 
-const getEditingControls = (isEditing, id) => {
+const getEditingControls = (isEditing, isFavorite, id) => {
   return isEditing ?
-    `<input id="event-favorite-${id}" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" checked>
+    `<input id="event-favorite-${id}" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
       <label class="event__favorite-btn" for="event-favorite-${id}">
         <span class="visually-hidden">Add to favorite</span>
         <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -261,7 +261,8 @@ const getTripEditTemplate = (point = {}, isEditing = false) => {
       from: dateNow,
       eventTime: getEventTime(dateNow)
     },
-    id = `0`
+    id = `0`,
+    isFavorite = false,
   } = point;
 
   const resetBtnCaption = isEditing ? `Delete` : `Cancel`;
@@ -276,7 +277,7 @@ const getTripEditTemplate = (point = {}, isEditing = false) => {
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">${resetBtnCaption}</button>
-        ${getEditingControls(isEditing, id)}
+        ${getEditingControls(isEditing, isFavorite, id)}
       </header>
 
       ${getEventDetailsMarkup(offers, id, description, photos)}
@@ -293,6 +294,7 @@ export default class EditTrip extends AbstractComponent {
     this._submitBtn = null;
     this._cancelBtn = null;
     this._rollupBtn = null;
+    this._favoriteBtn = null;
   }
 
   getTemplate() {
@@ -325,5 +327,10 @@ export default class EditTrip extends AbstractComponent {
       this._cancelBtn = this.getElement().querySelector(`.event__reset-btn`);
       this._cancelBtn.addEventListener(`click`, handler);
     }
+  }
+
+  setFavoriteButtonClickHandler(handler) {
+    this._favoriteBtn = this.getElement().querySelector(`.event__favorite-btn`);
+    this._favoriteBtn.addEventListener(`click`, handler);
   }
 }

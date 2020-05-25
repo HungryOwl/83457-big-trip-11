@@ -65,6 +65,14 @@ export default class PointController {
     this._editPointComponent = new EditTrip(point);
 
     this._pointComponent.setRollupBtnClickHandler(this._onPointRollupBtnClick);
+
+    this._editPointComponent.setFavoriteButtonClickHandler(() => {
+      const favoriteTrigger = {isFavorite: !point.isFavorite};
+      const newPoint = Object.assign({}, point, favoriteTrigger);
+      this._parentController.onDataChange(this, point, newPoint);
+      // this._editPointComponent = new EditTrip(point);
+    });
+
     this._editPointComponent.setSubmitButtonClickHandler(this._onEditTripRollupBtnClick);
     this._editPointComponent.setRollupButtonClickHandler(this._onEditTripRollupBtnClick);
 

@@ -1,4 +1,4 @@
-import {RenderPosition, renderTemplate} from "../utils/render";
+import {RenderPosition, renderTemplate, removeElement} from "../utils/render";
 import {TripDayController} from "./TripDayController";
 import {TripDays} from "../components/trip-days";
 
@@ -28,6 +28,10 @@ export class TripDaysController {
       tripDayController.render(dayGroup, groupDayNumber);
       return tripDayController;
     });
+  }
+
+  removeElement() {
+    removeElement(this._tripDaysComponent);
   }
 
   render(dayGroups) {

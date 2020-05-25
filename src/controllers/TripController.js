@@ -171,7 +171,7 @@ export default class TripController {
   _onNewEventButtonClick() {
     return (evt) => {
       evt.target.disabled = true;
-      this._tripDaysController.onViewChange(); // закрываем все остальные точки маршрута
+      this._tripDaysController.onViewChange();
       this._renderAddTripForm();
     };
   }
@@ -195,27 +195,21 @@ export default class TripController {
     return sortedPoints;
   }
 
-  _renderDayGroups(eventsElement, date = null) {
-    this._dayGroups = this._getTripDayGroups(date);
-    this._tripDaysComponent = new TripDays(this._dayGroups);
-    renderTemplate(eventsElement, this._tripDaysComponent);
-  }
-
   _onSortBtnClick(sortType) {
     this._points = this._getSortedPoints(sortType);
-    const eventsElement = this._eventsContainer.getElement();
-
-    removeElement(this._tripDaysComponent);
+    this._tripDaysController.removeElement();
 
     switch (sortType) {
       case SortType.TIME:
       case SortType.PRICE:
-        this._renderDayGroups(eventsElement, new Date());
+        this._dayGroups = this._getTripDayGroups(new Date());
         break;
       case SortType.EVENT:
-        this._renderDayGroups(eventsElement);
+        this._dayGroups = this._getTripDayGroups();
         break;
     }
+
+    this._tripDaysController.render(this._dayGroups, this._points);
   }
 
   render(points) {

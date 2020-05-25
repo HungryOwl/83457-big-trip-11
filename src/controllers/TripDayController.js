@@ -30,6 +30,17 @@ export class TripDayController {
     });
   }
 
+  onDataChange(pointController, oldData, newData) {
+    const index = this._points.findIndex((point) => point === oldData);
+
+    if (index === -1) {
+      return;
+    }
+
+    this._points = [].concat(this._points.slice(0, index), newData, this._points.slice(index + 1));
+    // pointController.render(this._points[index]);
+  }
+
   render(dayGroup, dayNumber) {
     this._points = dayGroup.points;
     this._dayGroup = dayGroup;

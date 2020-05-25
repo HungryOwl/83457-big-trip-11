@@ -6,7 +6,6 @@ import Filters from '../components/filters';
 import Sort, {SortType} from '../components/sort-trip';
 import EditTrip from '../components/edit-trip';
 import {TripDaysController} from './TripDaysController';
-import {TripDays} from '../components/trip-days';
 import TripControls from '../components/trip-controls';
 import Navigation from '../components/menu';
 import TripInfo from '../components/trip-info';

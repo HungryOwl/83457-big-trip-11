@@ -48,7 +48,7 @@ export default class PointController {
   }
 
   _onEditTripRollupBtnClick() {
-    this._replaceEdSitToPoint();
+    this._replaceEditToPoint();
   }
 
   setDefaultView() {

@@ -5,7 +5,8 @@ import Message from '../components/messages';
 import Filters from '../components/filters';
 import Sort, {SortType} from '../components/sort-trip';
 import EditTrip from '../components/edit-trip';
-import TripDays from '../components/trip-days';
+import {TripDaysController} from './TripEventsListController';
+import {TripDays} from '../components/trip-days';
 import TripControls from '../components/trip-controls';
 import Navigation from '../components/menu';
 import TripInfo from '../components/trip-info';
@@ -16,12 +17,12 @@ import {sortItems} from '../mock/sort-trip';
 import {filters} from '../mock/filters';
 
 export default class TripController {
-  constructor(headerContainer, eventsContaianer) {
+  constructor(headerContainer, eventsContainer) {
     this._points = null;
     this._tripInfo = {};
     this._fullCost = 0;
     this._headerContainer = headerContainer;
-    this._eventsContaianer = eventsContaianer;
+    this._eventsContainer = eventsContainer;
     this._messageComponent = new Message(`Click New Event to create your first point`);
     this._newEventBtnComponent = new NewEventButton();
     this._sortComponent = new Sort(sortItems.slice());
@@ -165,7 +166,7 @@ export default class TripController {
 
   _onSortBtnClick(sortType) {
     this._points = this._getSortedPoints(sortType);
-    const eventsElement = this._eventsContaianer.getElement();
+    const eventsElement = this._eventsContainer.getElement();
 
     removeElement(this._tripDaysComponent);
 
@@ -188,7 +189,7 @@ export default class TripController {
     this._tripInfoCostComponent = new TripInfoCost(this._fullCost);
 
     const headerElement = this._headerContainer.getElement();
-    const eventsElement = this._eventsContaianer.getElement();
+    const eventsElement = this._eventsContainer.getElement();
     const tripControlsElement = this._tripControlsComponent.getElement();
     const tripInfoElement = this._tripInfoComponent.getElement();
 
@@ -205,13 +206,12 @@ export default class TripController {
     }
 
     this._dayGroups = this._getTripDayGroups();
-    this._tripDaysComponent = new TripDays(this._dayGroups);
+    this._tripDaysController = new TripDaysController(eventsElement);
 
     renderTemplate(eventsElement, this._sortComponent);
-    renderTemplate(eventsElement, this._tripDaysComponent);
+    this._tripDaysController.render(this._dayGroups, this._points);
 
     this._newEventBtnComponent.setClickHandler(this._onEditButtonClick(this._sortComponent));
-
     this._sortComponent.setSortTypeChangeHandler(this._onSortBtnClick);
   }
 }

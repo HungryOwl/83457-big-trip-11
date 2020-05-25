@@ -9,6 +9,7 @@ const Mode = {
 
 export default class PointController {
   constructor(container, parentController) {
+    this._point = {};
     this._container = container;
     this._parentController = parentController;
     this._mode = Mode.DEFAULT;
@@ -18,6 +19,7 @@ export default class PointController {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._onPointRollupBtnClick = this._onPointRollupBtnClick.bind(this);
     this._onEditTripRollupBtnClick = this._onEditTripRollupBtnClick.bind(this);
+    this._onFavoriteButtonClick = this._onFavoriteButtonClick.bind(this);
   }
 
   _onEscKeyDown(evt) {
@@ -51,6 +53,12 @@ export default class PointController {
     this._replaceEditToPoint();
   }
 
+  _onFavoriteButtonClick() {
+    const favoriteTrigger = {isFavorite: !this._point.isFavorite};
+    const newPoint = Object.assign({}, this._point, favoriteTrigger);
+    this._parentController.onDataChange(this, this._point, newPoint);
+  }
+
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceEditToPoint();
@@ -58,19 +66,17 @@ export default class PointController {
   }
 
   render(point) {
+    console.log(point);
+    this._point = point;
     const oldPointComponent = this._pointComponent;
     const oldEditPointComponent = this._editPointComponent;
 
-    this._pointComponent = new TripPoint(point);
-    this._editPointComponent = new EditTrip(point);
+    this._pointComponent = new TripPoint(this._point);
+    this._editPointComponent = new EditTrip(this._point);
 
     this._pointComponent.setRollupBtnClickHandler(this._onPointRollupBtnClick);
 
-    this._editPointComponent.setFavoriteButtonClickHandler(() => {
-      const favoriteTrigger = {isFavorite: !point.isFavorite};
-      const newPoint = Object.assign({}, point, favoriteTrigger);
-      this._parentController.onDataChange(this, point, newPoint);
-    });
+    this._editPointComponent.setFavoriteButtonClickHandler(this._onFavoriteButtonClick);
 
     this._editPointComponent.setSubmitButtonClickHandler(this._onEditTripRollupBtnClick);
     this._editPointComponent.setRollupButtonClickHandler(this._onEditTripRollupBtnClick);

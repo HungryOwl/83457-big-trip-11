@@ -147,6 +147,7 @@ export default class TripController {
       renderTemplate(this._sortComponent.getElement(), this._addTripComponent, RenderPosition.AFTEREND);
       document.addEventListener(`keydown`, this._onEscKeyDown);
       this._addTripComponent.setCancelButtonClickHandler(this._onAddTripCancelBtnClick());
+      this._tripDaysController.onViewChange();
     };
   }
 

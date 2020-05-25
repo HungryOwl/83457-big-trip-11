@@ -16,6 +16,11 @@ import {tabs} from '../mock/menu';
 import {sortItems} from '../mock/sort-trip';
 import {filters} from '../mock/filters';
 
+export const NewPointMode = {
+  DEFAULT: `close`,
+  OPEN: `open`,
+};
+
 export default class TripController {
   constructor(headerContainer, eventsContainer) {
     this._points = null;
@@ -30,6 +35,7 @@ export default class TripController {
     this._tripControlsComponent = new TripControls();
     this._navigationComponent = new Navigation(tabs.slice());
     this._addTripComponent = new EditTrip();
+    this._newPointMode = NewPointMode.DEFAULT;
 
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._onSortBtnClick = this._onSortBtnClick.bind(this);
@@ -129,6 +135,7 @@ export default class TripController {
       document.removeEventListener(`keydown`, this._onEscKeyDown);
       this._newEventBtnComponent.enable();
       removeElement(this._addTripComponent);
+      this._newPointMode = NewPointMode.DEFAULT;
     };
   }
 
@@ -138,16 +145,27 @@ export default class TripController {
     if (isEscKey) {
       this._newEventBtnComponent.enable();
       removeElement(this._addTripComponent);
+      this._newPointMode = NewPointMode.DEFAULT;
+    }
+  }
+
+  onViewChange() {
+    if (this._newPointMode !== NewPointMode.DEFAULT) {
+      removeElement(this._addTripComponent);
+      this._newPointMode = NewPointMode.DEFAULT;
+      this._newEventBtnComponent.enable();
     }
   }
 
   _onNewEventButtonClick() {
     return (evt) => {
       evt.target.disabled = true;
-      renderTemplate(this._sortComponent.getElement(), this._addTripComponent, RenderPosition.AFTEREND);
+      const sortElement = this._sortComponent.getElement();
       document.addEventListener(`keydown`, this._onEscKeyDown);
       this._addTripComponent.setCancelButtonClickHandler(this._onAddTripCancelBtnClick());
-      this._tripDaysController.onViewChange();
+      this._tripDaysController.onViewChange(); // закрываем все остальные точки маршрута
+      renderTemplate(sortElement, this._addTripComponent, RenderPosition.AFTEREND);
+      this._newPointMode = NewPointMode.OPEN;
     };
   }
 
@@ -170,7 +188,7 @@ export default class TripController {
     return sortedPoints;
   }
 
-  _renderDayDroups(eventsElement, date = null) {
+  _renderDayGroups(eventsElement, date = null) {
     this._dayGroups = this._getTripDayGroups(date);
     this._tripDaysComponent = new TripDays(this._dayGroups);
     renderTemplate(eventsElement, this._tripDaysComponent);
@@ -185,10 +203,10 @@ export default class TripController {
     switch (sortType) {
       case SortType.TIME:
       case SortType.PRICE:
-        this._renderDayDroups(eventsElement, new Date());
+        this._renderDayGroups(eventsElement, new Date());
         break;
       case SortType.EVENT:
-        this._renderDayDroups(eventsElement);
+        this._renderDayGroups(eventsElement);
         break;
     }
   }
@@ -218,7 +236,7 @@ export default class TripController {
     }
 
     this._dayGroups = this._getTripDayGroups();
-    this._tripDaysController = new TripDaysController(eventsElement);
+    this._tripDaysController = new TripDaysController(eventsElement, this);
 
     renderTemplate(eventsElement, this._sortComponent);
     this._tripDaysController.render(this._dayGroups, this._points);

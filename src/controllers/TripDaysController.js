@@ -3,13 +3,15 @@ import {TripDayController} from "./TripDayController";
 import {TripDays} from "../components/trip-days";
 
 export class TripDaysController {
-  constructor(container) {
+  constructor(container, parentController) {
     this._container = container;
     this._tripDayControllers = [];
+    this._parentController = parentController;
     this._tripDaysComponent = new TripDays();
   }
 
   onViewChange() {
+    this._parentController.onViewChange();
     this._tripDayControllers.forEach((controller) => controller.setDefaultView());
   }
 

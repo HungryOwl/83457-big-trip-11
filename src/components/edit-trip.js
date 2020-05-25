@@ -293,22 +293,10 @@ export default class EditTrip extends AbstractComponent {
     this._submitBtn = null;
     this._cancelBtn = null;
     this._rollupBtn = null;
-
-    this.collectElements();
   }
 
   getTemplate() {
     return getTripEditTemplate(this._point, this._editing);
-  }
-
-  collectElements() {
-    super.getElement();
-
-    this._submitBtn = this._element.querySelector(`.event__save-btn`);
-    this._cancelBtn = this._element.querySelector(`.event__reset-btn`);
-    this._rollupBtn = this._element.querySelector(`.event__rollup-btn`);
-
-    return this;
   }
 
   removeElement() {
@@ -318,19 +306,23 @@ export default class EditTrip extends AbstractComponent {
   }
 
   setCancelButtonClickHandler(handler) {
+    this._cancelBtn = this.getElement().querySelector(`.event__reset-btn`);
     this._cancelBtn.addEventListener(`click`, handler);
   }
 
   setRollupButtonClickHandler(handler) {
+    this._rollupBtn = this.getElement().querySelector(`.event__rollup-btn`);
     this._rollupBtn.addEventListener(`click`, handler);
   }
 
   setSubmitButtonClickHandler(handler) {
+    this._submitBtn = this.getElement().querySelector(`.event__save-btn`);
     this._submitBtn.addEventListener(`click`, handler);
   }
 
   setDeleteButtonClickHandler(handler) {
     if (this._editing) {
+      this._cancelBtn = this.getElement().querySelector(`.event__reset-btn`);
       this._cancelBtn.addEventListener(`click`, handler);
     }
   }

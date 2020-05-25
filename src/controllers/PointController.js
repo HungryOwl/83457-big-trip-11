@@ -11,7 +11,6 @@ export default class PointController {
   constructor(container, parentController) {
     this._container = container;
     this._parentController = parentController;
-    // this._onViewChange = onViewChange;
     this._mode = Mode.DEFAULT;
     this._pointComponent = null;
     this._editPointComponent = null;

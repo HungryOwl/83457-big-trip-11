@@ -5,7 +5,7 @@ import Message from '../components/messages';
 import Filters from '../components/filters';
 import Sort, {SortType} from '../components/sort-trip';
 import EditTrip from '../components/edit-trip';
-import {TripDaysController} from './TripEventsListController';
+import {TripDaysController} from './TripDaysController';
 import {TripDays} from '../components/trip-days';
 import TripControls from '../components/trip-controls';
 import Navigation from '../components/menu';
@@ -31,6 +31,7 @@ export default class TripController {
     this._navigationComponent = new Navigation(tabs.slice());
     this._addTripComponent = new EditTrip();
 
+    this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._onSortBtnClick = this._onSortBtnClick.bind(this);
   }
 
@@ -125,16 +126,26 @@ export default class TripController {
 
   _onAddTripCancelBtnClick() {
     return () => {
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
       this._newEventBtnComponent.enable();
       removeElement(this._addTripComponent);
     };
   }
 
-  _onEditButtonClick() {
+  _onEscKeyDown(evt) {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      this._newEventBtnComponent.enable();
+      removeElement(this._addTripComponent);
+    }
+  }
+
+  _onNewEventButtonClick() {
     return (evt) => {
       evt.target.disabled = true;
       renderTemplate(this._sortComponent.getElement(), this._addTripComponent, RenderPosition.AFTEREND);
-
+      document.addEventListener(`keydown`, this._onEscKeyDown);
       this._addTripComponent.setCancelButtonClickHandler(this._onAddTripCancelBtnClick());
     };
   }
@@ -211,7 +222,7 @@ export default class TripController {
     renderTemplate(eventsElement, this._sortComponent);
     this._tripDaysController.render(this._dayGroups, this._points);
 
-    this._newEventBtnComponent.setClickHandler(this._onEditButtonClick(this._sortComponent));
+    this._newEventBtnComponent.setClickHandler(this._onNewEventButtonClick(this._sortComponent));
     this._sortComponent.setSortTypeChangeHandler(this._onSortBtnClick);
   }
 }

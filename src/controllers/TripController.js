@@ -139,33 +139,40 @@ export default class TripController {
     };
   }
 
+  _renderAddTripForm() {
+    const sortElement = this._sortComponent.getElement();
+    document.addEventListener(`keydown`, this._onEscKeyDown);
+    this._addTripComponent.setCancelButtonClickHandler(this._onAddTripCancelBtnClick());
+    renderTemplate(sortElement, this._addTripComponent, RenderPosition.AFTEREND);
+    this._newPointMode = NewPointMode.OPEN;
+  }
+
+  _removeAddTripForm() {
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+    this._newEventBtnComponent.enable();
+    removeElement(this._addTripComponent);
+    this._newPointMode = NewPointMode.DEFAULT;
+  }
+
   _onEscKeyDown(evt) {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
 
     if (isEscKey) {
-      this._newEventBtnComponent.enable();
-      removeElement(this._addTripComponent);
-      this._newPointMode = NewPointMode.DEFAULT;
+      this._removeAddTripForm();
     }
   }
 
   onViewChange() {
     if (this._newPointMode !== NewPointMode.DEFAULT) {
-      removeElement(this._addTripComponent);
-      this._newPointMode = NewPointMode.DEFAULT;
-      this._newEventBtnComponent.enable();
+      this._removeAddTripForm();
     }
   }
 
   _onNewEventButtonClick() {
     return (evt) => {
       evt.target.disabled = true;
-      const sortElement = this._sortComponent.getElement();
-      document.addEventListener(`keydown`, this._onEscKeyDown);
-      this._addTripComponent.setCancelButtonClickHandler(this._onAddTripCancelBtnClick());
       this._tripDaysController.onViewChange(); // закрываем все остальные точки маршрута
-      renderTemplate(sortElement, this._addTripComponent, RenderPosition.AFTEREND);
-      this._newPointMode = NewPointMode.OPEN;
+      this._renderAddTripForm();
     };
   }
 

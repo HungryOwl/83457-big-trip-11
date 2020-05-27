@@ -139,6 +139,7 @@ export default class TripController {
     const sortElement = this._sortComponent.getElement();
     document.addEventListener(`keydown`, this._onEscKeyDown);
     this._addTripComponent.setCancelButtonClickHandler(this._onAddTripCancelBtnClick());
+    this._addTripComponent.rerender();
     renderTemplate(sortElement, this._addTripComponent, RenderPosition.AFTEREND);
     this._newPointMode = NewPointMode.OPEN;
   }
@@ -147,7 +148,6 @@ export default class TripController {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
     this._newEventBtnComponent.enable();
     removeElement(this._addTripComponent);
-    this._addTripComponent.rerender();
     this._newPointMode = NewPointMode.DEFAULT;
   }
 

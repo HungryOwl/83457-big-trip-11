@@ -1,3 +1,13 @@
+import moment from 'moment';
+
+export const formatTime = (date) => {
+  return moment(date).format(`hh:mm`);
+};
+
+export const formatDate = (date) => {
+  return moment(date).format(`DD MMMM`);
+};
+
 const monthNames = [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`];
 
 const getHtmlElement = (className) => {
@@ -28,6 +38,49 @@ const flipCoin = () => {
 const getFormattedDate = (value) => {
   const digits = `` + value;
   return `00`.substring(digits.length) + digits;
+};
+
+const getFormattedEventTime = (date) => {
+  const tripTime = {
+    from: ``,
+    to: ``
+  };
+
+  if (!date) {
+    return tripTime;
+  }
+
+  const eventTime = date.eventTime;
+
+  const year = {
+    from: date.from.getFullYear() % 100,
+    to: (date.to) ? date.to.getFullYear() % 100 : ``
+  };
+
+  const month = {
+    from: getFormattedDate(date.from.getMonth()),
+    to: (date.to) ? getFormattedDate(date.to.getMonth()) : ``
+  };
+
+  const day = {
+    from: getFormattedDate(date.from.getDate()),
+    to: (date.to) ? getFormattedDate(date.to.getDate()) : ``
+  };
+
+  const hours = {
+    from: eventTime.from.hours,
+    to: (eventTime.to) ? eventTime.to.hours : ``
+  };
+
+  const minutes = {
+    from: eventTime.from.minutes,
+    to: eventTime.to ? eventTime.to.minutes : ``
+  };
+
+  tripTime.from = `${day.from}/${month.from}/${year.from} ${hours.from}:${minutes.from}`;
+  tripTime.to = date.to ? `${day.to}/${month.to}/${year.to} ${hours.to}:${minutes.to}` : ``;
+
+  return tripTime;
 };
 
 const sortPointsByDate = (point, nextPoint) => {
@@ -94,5 +147,6 @@ export {
   getEventTime,
   getDateObj,
   pointRandomReset,
+  getFormattedEventTime,
   monthNames
 };

@@ -1,7 +1,8 @@
-import {eventTypes, destinations} from '../mock/trip-point';
-import {getEventTime, getFormattedDate} from '../utils/common';
-import AbstractComponent from './abstract-component';
 import _ from 'lodash';
+import {eventTypes, destinations, PREPOSITIONS} from '../mock/trip-point';
+import {getEventTime, getFormattedDate} from '../utils/common';
+import AbstractSmartComponent from './abstract-smart-component';
+import {NewPointMode} from '../controllers/TripController';
 
 const rideTypes = [];
 const placeTypes = [];
@@ -246,17 +247,11 @@ const getEditingControls = (isEditing, isFavorite, id) => {
     : ``;
 };
 
-const getTripEditTemplate = (point = {}, isEditing = false) => {
+const getTripEditTemplate = (point = {}, options = {}) => {
   const dateNow = new Date();
 
   const {
-    type = `flight`,
     price = ``,
-    destination = ``,
-    offers = ``,
-    description = ``,
-    preposition = `to`,
-    photos = ``,
     date = {
       from: dateNow,
       eventTime: getEventTime(dateNow)
@@ -264,6 +259,16 @@ const getTripEditTemplate = (point = {}, isEditing = false) => {
     id = `0`,
     isFavorite = false,
   } = point;
+
+  const {
+    type = `flight`,
+    isEditing = false,
+    preposition = `to`,
+    offers = ``,
+    destination = ``,
+    description = ``,
+    photos = ``,
+  } = options;
 
   const resetBtnCaption = isEditing ? `Delete` : `Cancel`;
 
@@ -285,20 +290,39 @@ const getTripEditTemplate = (point = {}, isEditing = false) => {
   );
 };
 
-export default class EditTrip extends AbstractComponent {
+export default class EditTrip extends AbstractSmartComponent {
   constructor(point = {}) {
     super();
     this._point = point;
-    this._editing = !(_.isEmpty(this._point));
     this._element = null;
     this._submitBtn = null;
     this._cancelBtn = null;
     this._rollupBtn = null;
     this._favoriteBtn = null;
+
+    this._type = point.type || NewPointMode.TYPE;
+    this._editing = !(_.isEmpty(this._point));
+    this._preposition = point.preposition;
+    this._offers = point.offers && point.offers.slice();
+    this._destination = point.destination;
+    this._description = point.description;
+    this._photos = point.photos && point.photos.slice();
+
+    this.getElement();
+    // this._onEventTypeClick = this._onEventTypeClick.bind(this);
+    this._eventTypeClickHandler();
   }
 
   getTemplate() {
-    return getTripEditTemplate(this._point, this._editing);
+    return getTripEditTemplate(this._point, {
+      type: this._type,
+      isEditing: this._editing,
+      preposition: this._preposition,
+      offers: this._offers,
+      destination: this._destination,
+      description: this._description,
+      photos: this._photos
+    });
   }
 
   removeElement() {
@@ -307,19 +331,45 @@ export default class EditTrip extends AbstractComponent {
     this._cancelBtn = null;
   }
 
+  recoveryListeners() {
+    this.setCancelButtonClickHandler(this._cancelButtonHandler);
+    this.setRollupButtonClickHandler(this._rollupButtonHandler);
+    this.setSubmitButtonClickHandler(this._submitButtonHandler);
+    this.setDeleteButtonClickHandler(this._deleteButtonHandler);
+    this.setFavoriteButtonClickHandler(this._favoriteButtonHandler);
+    this._eventTypeClickHandler();
+  }
+
+  reset() {
+    this.rerender();
+  }
+
   setCancelButtonClickHandler(handler) {
     this._cancelBtn = this.getElement().querySelector(`.event__reset-btn`);
     this._cancelBtn.addEventListener(`click`, handler);
+    this._cancelButtonHandler = handler;
   }
 
   setRollupButtonClickHandler(handler) {
-    this._rollupBtn = this.getElement().querySelector(`.event__rollup-btn`);
-    this._rollupBtn.addEventListener(`click`, handler);
+    if (this._editing) {
+      this._rollupBtn = this.getElement().querySelector(`.event__rollup-btn`);
+      this._rollupBtn.addEventListener(`click`, handler);
+      this._rollupButtonHandler = handler;
+    }
+  }
+
+  setFavoriteButtonClickHandler(handler) {
+    if (this._editing) {
+      this._favoriteBtn = this.getElement().querySelector(`.event__favorite-btn`);
+      this._favoriteBtn.addEventListener(`click`, handler);
+      this._favoriteButtonHandler = handler;
+    }
   }
 
   setSubmitButtonClickHandler(handler) {
     this._submitBtn = this.getElement().querySelector(`.event__save-btn`);
     this._submitBtn.addEventListener(`click`, handler);
+    this._submitButtonHandler = handler;
   }
 
   setDeleteButtonClickHandler(handler) {
@@ -327,10 +377,22 @@ export default class EditTrip extends AbstractComponent {
       this._cancelBtn = this.getElement().querySelector(`.event__reset-btn`);
       this._cancelBtn.addEventListener(`click`, handler);
     }
+
+    this._deleteButtonHandler = handler;
   }
 
-  setFavoriteButtonClickHandler(handler) {
-    this._favoriteBtn = this.getElement().querySelector(`.event__favorite-btn`);
-    this._favoriteBtn.addEventListener(`click`, handler);
+  _eventTypeClickHandler() {
+    const list = this.getElement().querySelector(`.event__type-list`);
+    list.addEventListener(`click`, this._onEventTypeClick());
+  }
+
+  _onEventTypeClick() {
+    return (evt) => {
+      if (evt.target.classList.contains(`event__type-label`)) {
+        this._type = evt.target.textContent;
+        this._preposition = PREPOSITIONS[this._type];
+        this.rerender();
+      }
+    };
   }
 }

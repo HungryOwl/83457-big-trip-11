@@ -18,6 +18,7 @@ import {filters} from '../mock/filters';
 export const NewPointMode = {
   DEFAULT: `close`,
   OPEN: `open`,
+  TYPE: `flight`
 };
 
 export default class TripController {
@@ -38,6 +39,7 @@ export default class TripController {
 
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._onSortBtnClick = this._onSortBtnClick.bind(this);
+    this._removeAddTripForm = this._removeAddTripForm.bind(this);
   }
 
   _getTripDayGroups(currentDate = null) {
@@ -103,11 +105,11 @@ export default class TripController {
   _getTripInfo() {
     const tripInfo = {};
 
-    if (!this._points || _.isEmpty(this._points)) {
+    if (_.isEmpty(this._points)) {
       return tripInfo;
     }
 
-    const pointsCopy = this._points.slice(1);
+    const pointsCopy = this._points.slice();
 
     tripInfo.cities = this._getCitySequence(pointsCopy);
     tripInfo.dates = this._getStartEndDates(pointsCopy);
@@ -130,12 +132,7 @@ export default class TripController {
   }
 
   _onAddTripCancelBtnClick() {
-    return () => {
-      document.removeEventListener(`keydown`, this._onEscKeyDown);
-      this._newEventBtnComponent.enable();
-      removeElement(this._addTripComponent);
-      this._newPointMode = NewPointMode.DEFAULT;
-    };
+    return this._removeAddTripForm;
   }
 
   _renderAddTripForm() {
@@ -150,6 +147,7 @@ export default class TripController {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
     this._newEventBtnComponent.enable();
     removeElement(this._addTripComponent);
+    this._addTripComponent.rerender();
     this._newPointMode = NewPointMode.DEFAULT;
   }
 

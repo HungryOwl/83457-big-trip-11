@@ -32,7 +32,7 @@ export default class PointController {
 
   _replaceEditToPoint() {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
-    // this._editPointComponent.reset();
+    this._editPointComponent.reset();
     replaceComponent(this._editPointComponent, this._pointComponent);
     this._mode = Mode.DEFAULT;
   }
@@ -66,7 +66,6 @@ export default class PointController {
   }
 
   render(point) {
-    console.log(point);
     this._point = point;
     const oldPointComponent = this._pointComponent;
     const oldEditPointComponent = this._editPointComponent;
@@ -75,15 +74,14 @@ export default class PointController {
     this._editPointComponent = new EditTrip(this._point);
 
     this._pointComponent.setRollupBtnClickHandler(this._onPointRollupBtnClick);
-
     this._editPointComponent.setFavoriteButtonClickHandler(this._onFavoriteButtonClick);
-
     this._editPointComponent.setSubmitButtonClickHandler(this._onEditTripRollupBtnClick);
     this._editPointComponent.setRollupButtonClickHandler(this._onEditTripRollupBtnClick);
 
     if (oldPointComponent && oldEditPointComponent) {
       replaceComponent(oldPointComponent, this._pointComponent);
       replaceComponent(oldEditPointComponent, this._editPointComponent);
+
     } else {
       renderTemplate(this._container, this._pointComponent, RenderPosition.BEFOREEND);
     }

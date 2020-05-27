@@ -23,7 +23,7 @@ const eventTypes = [
 
 const destinations = [`Горький`, `Дзержинск`, `Сталинград`, `Ногинск`, `Ворошиловск`, `Ульяновск`, `Молотов`, `Орджоникидзе`];
 
-const prepositions = {
+export const PREPOSITIONS = {
   Taxi: `to`,
   Bus: `to`,
   Train: `to`,
@@ -204,7 +204,7 @@ const getPoint = (i) => {
   const offers = offersMap.get(type);
   const description = getRandomDescription(SENTENCE_COUNT, descriptionArr);
   const photos = getPhotos(PHOTO_COUNT);
-  const preposition = prepositions[type];
+  const preposition = PREPOSITIONS[type];
   const date = getDate(dates);
   const price = prices[type];
   const id = i;

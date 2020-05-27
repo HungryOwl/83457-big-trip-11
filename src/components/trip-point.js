@@ -68,12 +68,12 @@ export default class TripPoint extends AbstractComponent {
     this._rollupBtn = null;
   }
 
-  getTemplate() {
-    return getTripPointTemplate(this._point);
-  }
-
   setRollupBtnClickHandler(handler) {
     this._rollupBtn = this.getElement().querySelector(`.event__rollup-btn`);
     this._rollupBtn.addEventListener(`click`, handler);
+  }
+
+  getTemplate() {
+    return getTripPointTemplate(this._point);
   }
 }

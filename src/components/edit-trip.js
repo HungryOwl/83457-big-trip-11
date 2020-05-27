@@ -1,5 +1,16 @@
 import _ from 'lodash';
-import {eventTypes, destinations, PREPOSITIONS} from '../mock/trip-point';
+
+import {eventTypes,
+  DESTINATIONS,
+  getRandomDescription,
+  getPhotos,
+  OFFERS_MAP,
+  PREPOSITIONS,
+  DESCRIPTION_MOCK,
+  SENTENCE_COUNT,
+  PHOTO_COUNT
+} from '../mock/trip-point';
+
 import {getEventTime, getFormattedDate} from '../utils/common';
 import AbstractSmartComponent from './abstract-smart-component';
 import {NewPointMode} from '../controllers/TripController';
@@ -276,7 +287,7 @@ const getTripEditTemplate = (point = {}, options = {}) => {
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
       <header class="event__header">
         ${getEventType(type, id)}
-        ${getDestinationList(destinations, destination, id, type, preposition)}
+        ${getDestinationList(DESTINATIONS, destination, id, type, preposition)}
         ${getEventTimeMarkup(date, id)}
         ${getBasePrice(price, id)}
 
@@ -309,8 +320,11 @@ export default class EditTrip extends AbstractSmartComponent {
     this._photos = point.photos && point.photos.slice();
 
     this.getElement();
-    // this._onEventTypeClick = this._onEventTypeClick.bind(this);
+    this._onEventTypeClick = this._onEventTypeClick.bind(this);
+    this._onEventInputChange = this._onEventInputChange.bind(this);
+
     this._eventTypeClickHandler();
+    this._eventInputChangeHandler();
   }
 
   getTemplate() {
@@ -338,6 +352,7 @@ export default class EditTrip extends AbstractSmartComponent {
     this.setDeleteButtonClickHandler(this._deleteButtonHandler);
     this.setFavoriteButtonClickHandler(this._favoriteButtonHandler);
     this._eventTypeClickHandler();
+    this._eventInputChangeHandler();
   }
 
   reset() {
@@ -383,16 +398,30 @@ export default class EditTrip extends AbstractSmartComponent {
 
   _eventTypeClickHandler() {
     const list = this.getElement().querySelector(`.event__type-list`);
-    list.addEventListener(`click`, this._onEventTypeClick());
+    list.addEventListener(`click`, this._onEventTypeClick);
   }
 
-  _onEventTypeClick() {
-    return (evt) => {
-      if (evt.target.classList.contains(`event__type-label`)) {
-        this._type = evt.target.textContent;
-        this._preposition = PREPOSITIONS[this._type];
-        this.rerender();
-      }
-    };
+  _onEventTypeClick(evt) {
+    if (evt.target.classList.contains(`event__type-label`)) {
+      this._type = evt.target.textContent;
+      this._preposition = PREPOSITIONS[this._type];
+      this._offers = OFFERS_MAP.get(this._type);
+      this.rerender();
+    }
+  }
+
+  _eventInputChangeHandler() {
+    const eventInput = this.getElement().querySelector(`.event__input`);
+    eventInput.addEventListener(`change`, this._onEventInputChange);
+  }
+
+  _onEventInputChange(evt) {
+    this._description = getRandomDescription(SENTENCE_COUNT, DESCRIPTION_MOCK);
+
+    if (DESTINATIONS.indexOf(evt.target.value) !== -1) {
+      this._destination = evt.target.value;
+      this._photos = getPhotos(PHOTO_COUNT);
+      this.rerender();
+    }
   }
 }

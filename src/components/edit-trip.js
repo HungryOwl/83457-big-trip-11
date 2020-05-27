@@ -1,7 +1,19 @@
-import {eventTypes, destinations} from '../mock/trip-point';
-import {getEventTime, getFormattedDate} from '../utils/common';
-import AbstractComponent from './abstract-component';
 import _ from 'lodash';
+
+import {eventTypes,
+  DESTINATIONS,
+  getRandomDescription,
+  getPhotos,
+  OFFERS_MAP,
+  PREPOSITIONS,
+  DESCRIPTION_MOCK,
+  SENTENCE_COUNT,
+  PHOTO_COUNT
+} from '../mock/trip-point';
+
+import {getEventTime, getFormattedDate} from '../utils/common';
+import AbstractSmartComponent from './abstract-smart-component';
+import {NewPointMode} from '../controllers/TripController';
 
 const rideTypes = [];
 const placeTypes = [];
@@ -230,9 +242,9 @@ const getEventDetailsMarkup = (offers, id, description, photos) => {
   );
 };
 
-const getEditingControls = (isEditing, id) => {
+const getEditingControls = (isEditing, isFavorite, id) => {
   return isEditing ?
-    `<input id="event-favorite-${id}" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" checked>
+    `<input id="event-favorite-${id}" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
       <label class="event__favorite-btn" for="event-favorite-${id}">
         <span class="visually-hidden">Add to favorite</span>
         <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -246,23 +258,28 @@ const getEditingControls = (isEditing, id) => {
     : ``;
 };
 
-const getTripEditTemplate = (point = {}, isEditing = false) => {
+const getTripEditTemplate = (point = {}, options = {}) => {
   const dateNow = new Date();
 
   const {
-    type = `flight`,
     price = ``,
-    destination = ``,
-    offers = ``,
-    description = ``,
-    preposition = `to`,
-    photos = ``,
     date = {
       from: dateNow,
       eventTime: getEventTime(dateNow)
     },
-    id = `0`
+    id = `0`,
+    isFavorite = false,
   } = point;
+
+  const {
+    type = `flight`,
+    isEditing = false,
+    preposition = `to`,
+    offers = ``,
+    destination = ``,
+    description = ``,
+    photos = ``,
+  } = options;
 
   const resetBtnCaption = isEditing ? `Delete` : `Cancel`;
 
@@ -270,13 +287,13 @@ const getTripEditTemplate = (point = {}, isEditing = false) => {
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
       <header class="event__header">
         ${getEventType(type, id)}
-        ${getDestinationList(destinations, destination, id, type, preposition)}
+        ${getDestinationList(DESTINATIONS, destination, id, type, preposition)}
         ${getEventTimeMarkup(date, id)}
         ${getBasePrice(price, id)}
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">${resetBtnCaption}</button>
-        ${getEditingControls(isEditing, id)}
+        ${getEditingControls(isEditing, isFavorite, id)}
       </header>
 
       ${getEventDetailsMarkup(offers, id, description, photos)}
@@ -284,31 +301,42 @@ const getTripEditTemplate = (point = {}, isEditing = false) => {
   );
 };
 
-export default class EditTrip extends AbstractComponent {
+export default class EditTrip extends AbstractSmartComponent {
   constructor(point = {}) {
     super();
     this._point = point;
-    this._editing = !(_.isEmpty(this._point));
     this._element = null;
     this._submitBtn = null;
     this._cancelBtn = null;
     this._rollupBtn = null;
+    this._favoriteBtn = null;
 
-    this.collectElements();
+    this._type = point.type || NewPointMode.TYPE;
+    this._editing = !(_.isEmpty(this._point));
+    this._preposition = point.preposition;
+    this._offers = point.offers && point.offers.slice();
+    this._destination = point.destination;
+    this._description = point.description;
+    this._photos = point.photos && point.photos.slice();
+
+    this.getElement();
+    this._onEventTypeClick = this._onEventTypeClick.bind(this);
+    this._onEventInputChange = this._onEventInputChange.bind(this);
+
+    this._eventTypeClickHandler();
+    this._eventInputChangeHandler();
   }
 
   getTemplate() {
-    return getTripEditTemplate(this._point, this._editing);
-  }
-
-  collectElements() {
-    super.getElement();
-
-    this._submitBtn = this._element.querySelector(`.event__save-btn`);
-    this._cancelBtn = this._element.querySelector(`.event__reset-btn`);
-    this._rollupBtn = this._element.querySelector(`.event__rollup-btn`);
-
-    return this;
+    return getTripEditTemplate(this._point, {
+      type: this._type,
+      isEditing: this._editing,
+      preposition: this._preposition,
+      offers: this._offers,
+      destination: this._destination,
+      description: this._description,
+      photos: this._photos
+    });
   }
 
   removeElement() {
@@ -317,21 +345,83 @@ export default class EditTrip extends AbstractComponent {
     this._cancelBtn = null;
   }
 
+  recoveryListeners() {
+    this.setCancelButtonClickHandler(this._cancelButtonHandler);
+    this.setRollupButtonClickHandler(this._rollupButtonHandler);
+    this.setSubmitButtonClickHandler(this._submitButtonHandler);
+    this.setDeleteButtonClickHandler(this._deleteButtonHandler);
+    this.setFavoriteButtonClickHandler(this._favoriteButtonHandler);
+    this._eventTypeClickHandler();
+    this._eventInputChangeHandler();
+  }
+
+  reset() {
+    this.rerender();
+  }
+
   setCancelButtonClickHandler(handler) {
+    this._cancelBtn = this.getElement().querySelector(`.event__reset-btn`);
     this._cancelBtn.addEventListener(`click`, handler);
+    this._cancelButtonHandler = handler;
   }
 
   setRollupButtonClickHandler(handler) {
-    this._rollupBtn.addEventListener(`click`, handler);
+    if (this._editing) {
+      this._rollupBtn = this.getElement().querySelector(`.event__rollup-btn`);
+      this._rollupBtn.addEventListener(`click`, handler);
+      this._rollupButtonHandler = handler;
+    }
+  }
+
+  setFavoriteButtonClickHandler(handler) {
+    if (this._editing) {
+      this._favoriteBtn = this.getElement().querySelector(`.event__favorite-btn`);
+      this._favoriteBtn.addEventListener(`click`, handler);
+      this._favoriteButtonHandler = handler;
+    }
   }
 
   setSubmitButtonClickHandler(handler) {
+    this._submitBtn = this.getElement().querySelector(`.event__save-btn`);
     this._submitBtn.addEventListener(`click`, handler);
+    this._submitButtonHandler = handler;
   }
 
   setDeleteButtonClickHandler(handler) {
     if (this._editing) {
+      this._cancelBtn = this.getElement().querySelector(`.event__reset-btn`);
       this._cancelBtn.addEventListener(`click`, handler);
+    }
+
+    this._deleteButtonHandler = handler;
+  }
+
+  _eventTypeClickHandler() {
+    const list = this.getElement().querySelector(`.event__type-list`);
+    list.addEventListener(`click`, this._onEventTypeClick);
+  }
+
+  _onEventTypeClick(evt) {
+    if (evt.target.classList.contains(`event__type-label`)) {
+      this._type = evt.target.textContent;
+      this._preposition = PREPOSITIONS[this._type];
+      this._offers = OFFERS_MAP.get(this._type);
+      this.rerender();
+    }
+  }
+
+  _eventInputChangeHandler() {
+    const eventInput = this.getElement().querySelector(`.event__input`);
+    eventInput.addEventListener(`change`, this._onEventInputChange);
+  }
+
+  _onEventInputChange(evt) {
+    this._description = getRandomDescription(SENTENCE_COUNT, DESCRIPTION_MOCK);
+
+    if (DESTINATIONS.indexOf(evt.target.value) !== -1) {
+      this._destination = evt.target.value;
+      this._photos = getPhotos(PHOTO_COUNT);
+      this.rerender();
     }
   }
 }

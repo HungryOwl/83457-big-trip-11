@@ -1,4 +1,4 @@
-import {getRandomInteger, getFormattedDate, getEventTime, sortPointsByDate} from '../utils/common';
+import {getRandomInteger, getFormattedDate, getEventTime, sortPointsByDate, flipCoin} from '../utils/common';
 
 const MIN_IN_HOUR = 60;
 const HOURS_IN_DAY = 24;
@@ -21,9 +21,9 @@ const eventTypes = [
   {event: `Restaurant`, type: `place`},
 ];
 
-const destinations = [`Горький`, `Дзержинск`, `Сталинград`, `Ногинск`, `Ворошиловск`, `Ульяновск`, `Молотов`, `Орджоникидзе`];
+const DESTINATIONS = [`Горький`, `Дзержинск`, `Сталинград`, `Ногинск`, `Ворошиловск`, `Ульяновск`, `Молотов`, `Орджоникидзе`];
 
-const prepositions = {
+export const PREPOSITIONS = {
   Taxi: `to`,
   Bus: `to`,
   Train: `to`,
@@ -75,7 +75,7 @@ const prices = {
   Restaurant: getMiddleCost()
 };
 
-const offersMap = new Map([
+export const OFFERS_MAP = new Map([
   [`Taxi`, [
     {name: `Order Uber`, price: getLowCost(), label: `uber`, checked: isChecked()},
     {name: `Order Uber Comfort`, price: getMiddleCost(), label: `comfort`, checked: isChecked()},
@@ -128,7 +128,7 @@ const offersMap = new Map([
   ]]
 ]);
 
-const descriptionArr = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget.
+const DESCRIPTION_MOCK = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget.
   Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra.
   Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.
   Phasellus eros mauris, condimentum sed nibhvitae, sodales efficitur ipsum.
@@ -137,7 +137,7 @@ const descriptionArr = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   In rutrum ac purus sit amet tempus`.split(`.`);
 
 const getPointType = () => eventTypes[getRandomInteger(0, eventTypes.length - 1)].event;
-const getDestination = () => destinations[getRandomInteger(0, destinations.length - 1)];
+const getDestination = () => DESTINATIONS[getRandomInteger(0, DESTINATIONS.length - 1)];
 
 // По велению судьбы и дизайнера мы получаем дату из поля ввода в формате 18/03/19 00:00
 const parseDate = (value) => {
@@ -201,13 +201,14 @@ const getPhotos = (count) => {
 const getPoint = (i) => {
   const type = getPointType();
   const destination = getDestination();
-  const offers = offersMap.get(type);
-  const description = getRandomDescription(SENTENCE_COUNT, descriptionArr);
+  const offers = OFFERS_MAP.get(type);
+  const description = getRandomDescription(SENTENCE_COUNT, DESCRIPTION_MOCK);
   const photos = getPhotos(PHOTO_COUNT);
-  const preposition = prepositions[type];
+  const preposition = PREPOSITIONS[type];
   const date = getDate(dates);
   const price = prices[type];
   const id = i;
+  const isFavorite = flipCoin();
   date.eventTime = getEventTime(date.from, date.to);
   date.timeDuration = date.to - date.from;
   date.eventDuration = getEventDuration(date.from, date.to);
@@ -222,6 +223,7 @@ const getPoint = (i) => {
     preposition,
     date,
     id,
+    isFavorite,
     getFullPrice() {
       let fullPrice = this.price;
 
@@ -253,5 +255,10 @@ const points = getPoints(POINTS_COUNT);
 export {
   points,
   eventTypes,
-  destinations
+  DESTINATIONS,
+  getRandomDescription,
+  SENTENCE_COUNT,
+  DESCRIPTION_MOCK,
+  getPhotos,
+  PHOTO_COUNT
 };

@@ -1,3 +1,13 @@
+import moment from 'moment';
+
+const formatTime = (date) => {
+  return moment(date).format(`HH:mm`);
+};
+
+const formatDate = (date) => {
+  return moment(date).format(`DD[/]MM[/]YY`);
+};
+
 const monthNames = [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`];
 
 const getHtmlElement = (className) => {
@@ -30,6 +40,28 @@ const getFormattedDate = (value) => {
   return `00`.substring(digits.length) + digits;
 };
 
+const getFormattedEventTime = (date) => {
+  const tripTime = {
+    from: ``,
+    to: ``
+  };
+
+  if (!date) {
+    return tripTime;
+  }
+
+  const dateFrom = date.from ? formatDate(date.from) : formatDate(new Date());
+  const dateTo = date.to ? formatDate(date.to) : formatDate(new Date());
+
+  const timeFrom = date.from ? formatTime(date.from) : formatDate(new Date());
+  const timeTo = date.to ? formatTime(date.to) : formatDate(new Date());
+
+  tripTime.from = `${dateFrom} ${timeFrom}`;
+  tripTime.to = `${dateTo} ${timeTo}`;
+
+  return tripTime;
+};
+
 const sortPointsByDate = (point, nextPoint) => {
   const prevTimestamp = point.date.from.getTime();
   const nextTimestamp = nextPoint.date.from.getTime();
@@ -46,15 +78,25 @@ const sortPointsByDate = (point, nextPoint) => {
 };
 
 const getEventTime = (from, to) => {
-  const hoursFrom = from ? getFormattedDate(from.getHours()) : ``;
-  const minutesFrom = from ? getFormattedDate(from.getMinutes()) : ``;
-  const hoursTo = to ? getFormattedDate(to.getHours()) : ``;
-  const minutesTo = to ? getFormattedDate(to.getMinutes()) : ``;
-
   return {
-    from: {hours: hoursFrom, minutes: minutesFrom},
-    to: {hours: hoursTo, minutes: minutesTo}
+    from: formatTime(from),
+    to: formatTime(to),
   };
+};
+
+const getEventDuration = (from, to) => {
+  const momentFrom = moment(from);
+  const momentTo = moment(to);
+
+  let MinDuration = moment.duration(momentTo.diff(momentFrom)).minutes();
+  let HourDuration = moment.duration(momentTo.diff(momentFrom)).hours();
+  let DayDuration = moment.duration(momentTo.diff(momentFrom)).days();
+
+  MinDuration = MinDuration ? `${MinDuration}M` : ``;
+  HourDuration = HourDuration ? `${HourDuration}H` : ``;
+  DayDuration = DayDuration ? `${DayDuration}D` : ``;
+
+  return `${DayDuration} ${HourDuration} ${MinDuration}`;
 };
 
 const getDateObj = (timestamp) => {
@@ -94,5 +136,9 @@ export {
   getEventTime,
   getDateObj,
   pointRandomReset,
+  getFormattedEventTime,
+  getEventDuration,
+  formatTime,
+  formatDate,
   monthNames
 };

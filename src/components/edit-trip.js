@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import flatpickr from 'flatpickr';
 
 import {eventTypes,
   DESTINATIONS,
@@ -11,9 +12,10 @@ import {eventTypes,
   PHOTO_COUNT
 } from '../mock/trip-point';
 
-import {getEventTime, getFormattedDate} from '../utils/common';
+import {getEventTime, getFormattedEventTime} from '../utils/common';
 import AbstractSmartComponent from './abstract-smart-component';
 import {NewPointMode} from '../controllers/TripController';
+import 'flatpickr/dist/flatpickr.min.css';
 
 const rideTypes = [];
 const placeTypes = [];
@@ -90,51 +92,7 @@ const getDestinationList = (destinationsArr, destination, id, type, preposition)
   );
 };
 
-// @TODO не забыть вынести в utils
-const getFormattedEventTime = (date) => {
-  const tripTime = {
-    from: ``,
-    to: ``
-  };
-
-  if (!date) {
-    return tripTime;
-  }
-
-  const eventTime = date.eventTime;
-
-  const year = {
-    from: date.from.getFullYear() % 100,
-    to: (date.to) ? date.to.getFullYear() % 100 : ``
-  };
-
-  const month = {
-    from: getFormattedDate(date.from.getMonth()),
-    to: (date.to) ? getFormattedDate(date.to.getMonth()) : ``
-  };
-
-  const day = {
-    from: getFormattedDate(date.from.getDate()),
-    to: (date.to) ? getFormattedDate(date.to.getDate()) : ``
-  };
-
-  const hours = {
-    from: eventTime.from.hours,
-    to: (eventTime.to) ? eventTime.to.hours : ``
-  };
-
-  const minutes = {
-    from: eventTime.from.minutes,
-    to: eventTime.to ? eventTime.to.minutes : ``
-  };
-
-  tripTime.from = `${day.from}/${month.from}/${year.from} ${hours.from}:${minutes.from}`;
-  tripTime.to = date.to ? `${day.to}/${month.to}/${year.to} ${hours.to}:${minutes.to}` : ``;
-
-  return tripTime;
-};
-
-const getEventTimeMarkup = (date, id) => {
+const getEventTimeTemplate = (date, id) => {
   const time = getFormattedEventTime(date);
 
   return (
@@ -152,7 +110,7 @@ const getEventTimeMarkup = (date, id) => {
   );
 };
 
-const getBasePrice = (price, id) => {
+const getBasePriceTemplate = (price, id) => {
   return (
     `<div class="event__field-group  event__field-group--price">
       <label class="event__label" for="event-price-${id}">
@@ -164,7 +122,7 @@ const getBasePrice = (price, id) => {
   );
 };
 
-const getAvailableOffers = (offers, id) => {
+const getOffersTemplate = (offers, id) => {
   if (!offers || offers.length === 0) {
     return ``;
   }
@@ -193,7 +151,7 @@ const getAvailableOffers = (offers, id) => {
   </section>`;
 };
 
-const getEventDescription = (description) => {
+const getDescriptionTemplate = (description) => {
   if (!description) {
     return ``;
   }
@@ -221,7 +179,7 @@ const getPhotosTemplate = (photos) => {
 const getEventDetails = (description, photos) => {
   return (
     `<section class="event__section  event__section--destination">
-      ${getEventDescription(description)}
+      ${getDescriptionTemplate(description)}
       ${getPhotosTemplate(photos)}
     </section>`
   );
@@ -236,7 +194,7 @@ const getEventDetailsMarkup = (offers, id, description, photos) => {
 
   return (
     `<section class="event__details">
-      ${getAvailableOffers(offers, id)}
+      ${getOffersTemplate(offers, id)}
       ${getEventDetails(description, photos)}
     </section>`
   );
@@ -288,8 +246,8 @@ const getTripEditTemplate = (point = {}, options = {}) => {
       <header class="event__header">
         ${getEventType(type, id)}
         ${getDestinationList(DESTINATIONS, destination, id, type, preposition)}
-        ${getEventTimeMarkup(date, id)}
-        ${getBasePrice(price, id)}
+        ${getEventTimeTemplate(date, id)}
+        ${getBasePriceTemplate(price, id)}
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">${resetBtnCaption}</button>
@@ -311,13 +269,10 @@ export default class EditTrip extends AbstractSmartComponent {
     this._rollupBtn = null;
     this._favoriteBtn = null;
 
-    this._type = point.type || NewPointMode.TYPE;
-    this._editing = !(_.isEmpty(this._point));
-    this._preposition = point.preposition;
-    this._offers = point.offers && point.offers.slice();
-    this._destination = point.destination;
-    this._description = point.description;
-    this._photos = point.photos && point.photos.slice();
+    this._setDefaultState();
+
+    this._flatpickrFrom = null;
+    this._flatpickrTo = null;
 
     this.getElement();
     this._onEventTypeClick = this._onEventTypeClick.bind(this);
@@ -325,6 +280,7 @@ export default class EditTrip extends AbstractSmartComponent {
 
     this._eventTypeClickHandler();
     this._eventInputChangeHandler();
+    this._applyFlatpickr();
   }
 
   getTemplate() {
@@ -355,7 +311,25 @@ export default class EditTrip extends AbstractSmartComponent {
     this._eventInputChangeHandler();
   }
 
+  _setDefaultState() {
+    const point = this._point;
+
+    this._type = point.type || NewPointMode.TYPE;
+    this._editing = !(_.isEmpty(this._point));
+    this._preposition = point.preposition;
+    this._offers = point.offers && point.offers.slice();
+    this._destination = point.destination;
+    this._description = point.description;
+    this._photos = point.photos && point.photos.slice();
+  }
+
+  rerender() {
+    super.rerender();
+    this._applyFlatpickr();
+  }
+
   reset() {
+    this._setDefaultState();
     this.rerender();
   }
 
@@ -394,6 +368,45 @@ export default class EditTrip extends AbstractSmartComponent {
     }
 
     this._deleteButtonHandler = handler;
+  }
+
+  _applyFlatpickr() {
+    const flatpickrFrom = {
+      altInput: true,
+      allowInput: true,
+      defaultDate: this._point.date && this._point.date.from || `today`,
+      dateFormat: `d\/m\/y H\:i`,
+      altFormat: `d\/m\/y H\:i`,
+      enableTime: true,
+      // eslint-disable-next-line camelcase
+      time_24hr: true,
+    };
+
+    const flatpickrTo = {
+      altInput: true,
+      allowInput: true,
+      defaultDate: this._point.date && this._point.date.to || `today`,
+      dateFormat: `d\/m\/y H\:i`,
+      altFormat: `d\/m\/y H\:i`,
+      enableTime: true,
+      // eslint-disable-next-line camelcase
+      time_24hr: true,
+    };
+
+    if (this._flatpickrFrom) {
+      this._flatpickrFrom.destroy();
+      this._flatpickrFrom = null;
+    }
+
+    if (this._flatpickTo) {
+      this._flatpickTo.destroy();
+      this._flatpickTo = null;
+    }
+
+    const from = this.getElement().querySelector(`input[name="event-start-time"]`);
+    const to = this.getElement().querySelector(`input[name="event-end-time"]`);
+    this._flatpickrFrom = flatpickr(from, flatpickrFrom);
+    this._flatpickrTo = flatpickr(to, flatpickrTo);
   }
 
   _eventTypeClickHandler() {

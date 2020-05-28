@@ -40,9 +40,9 @@ const getTripPointTemplate = (point) => {
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">${eventTime.from.hours}:${eventTime.from.minutes}</time>
+            <time class="event__start-time" datetime="2019-03-18T10:30">${eventTime.from}</time>
             &mdash;
-            <time class="event__end-time" datetime="2019-03-18T11:00">${eventTime.to.hours}:${eventTime.to.minutes}</time>
+            <time class="event__end-time" datetime="2019-03-18T11:00">${eventTime.to}</time>
           </p>
           <p class="event__duration">${eventDuration}</p>
         </div>

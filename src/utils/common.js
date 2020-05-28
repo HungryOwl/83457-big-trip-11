@@ -4,9 +4,6 @@ const MIN_IN_HOUR = 60;
 const HOURS_IN_DAY = 24;
 const SEC_IN_MIN = 60;
 const MS_IN_SEC = 1000;
-const MS_IN_MIN = MS_IN_SEC * SEC_IN_MIN;
-const MS_IN_DAY = MS_IN_SEC * SEC_IN_MIN * MIN_IN_HOUR * HOURS_IN_DAY;
-const MS_IN_HOUR = MIN_IN_HOUR * SEC_IN_MIN * MS_IN_SEC;
 
 const formatTime = (date) => {
   return moment(date).format(`HH:mm`);

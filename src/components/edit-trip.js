@@ -269,13 +269,7 @@ export default class EditTrip extends AbstractSmartComponent {
     this._rollupBtn = null;
     this._favoriteBtn = null;
 
-    this._type = point.type || NewPointMode.TYPE;
-    this._editing = !(_.isEmpty(this._point));
-    this._preposition = point.preposition;
-    this._offers = point.offers && point.offers.slice();
-    this._destination = point.destination;
-    this._description = point.description;
-    this._photos = point.photos && point.photos.slice();
+    this._setDefaultState();
 
     this._flatpickrFrom = null;
     this._flatpickrTo = null;
@@ -286,6 +280,7 @@ export default class EditTrip extends AbstractSmartComponent {
 
     this._eventTypeClickHandler();
     this._eventInputChangeHandler();
+    this._applyFlatpickr();
   }
 
   getTemplate() {
@@ -316,12 +311,25 @@ export default class EditTrip extends AbstractSmartComponent {
     this._eventInputChangeHandler();
   }
 
+  _setDefaultState() {
+    const point = this._point;
+
+    this._type = point.type || NewPointMode.TYPE;
+    this._editing = !(_.isEmpty(this._point));
+    this._preposition = point.preposition;
+    this._offers = point.offers && point.offers.slice();
+    this._destination = point.destination;
+    this._description = point.description;
+    this._photos = point.photos && point.photos.slice();
+  }
+
   rerender() {
     super.rerender();
     this._applyFlatpickr();
   }
 
   reset() {
+    this._setDefaultState();
     this.rerender();
   }
 

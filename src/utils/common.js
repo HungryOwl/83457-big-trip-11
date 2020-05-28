@@ -1,11 +1,19 @@
 import moment from 'moment';
 
-export const formatTime = (date) => {
-  return moment(date).format(`hh:mm`);
+const MIN_IN_HOUR = 60;
+const HOURS_IN_DAY = 24;
+const SEC_IN_MIN = 60;
+const MS_IN_SEC = 1000;
+const MS_IN_MIN = MS_IN_SEC * SEC_IN_MIN;
+const MS_IN_DAY = MS_IN_SEC * SEC_IN_MIN * MIN_IN_HOUR * HOURS_IN_DAY;
+const MS_IN_HOUR = MIN_IN_HOUR * SEC_IN_MIN * MS_IN_SEC;
+
+const formatTime = (date) => {
+  return moment(date).format(`HH:mm`);
 };
 
-export const formatDate = (date) => {
-  return moment(date).format(`DD MMMM`);
+const formatDate = (date) => {
+  return moment(date).format(`DD[/]MM[/]YY`);
 };
 
 const monthNames = [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`];
@@ -50,35 +58,14 @@ const getFormattedEventTime = (date) => {
     return tripTime;
   }
 
-  const eventTime = date.eventTime;
+  const dateFrom = date.from ? formatDate(date.from) : formatDate(new Date());
+  const dateTo = date.to ? formatDate(date.to) : formatDate(new Date());
 
-  const year = {
-    from: date.from.getFullYear() % 100,
-    to: (date.to) ? date.to.getFullYear() % 100 : ``
-  };
+  const timeFrom = date.from ? formatTime(date.from) : formatDate(new Date());
+  const timeTo = date.to ? formatTime(date.to) : formatDate(new Date());
 
-  const month = {
-    from: getFormattedDate(date.from.getMonth()),
-    to: (date.to) ? getFormattedDate(date.to.getMonth()) : ``
-  };
-
-  const day = {
-    from: getFormattedDate(date.from.getDate()),
-    to: (date.to) ? getFormattedDate(date.to.getDate()) : ``
-  };
-
-  const hours = {
-    from: eventTime.from.hours,
-    to: (eventTime.to) ? eventTime.to.hours : ``
-  };
-
-  const minutes = {
-    from: eventTime.from.minutes,
-    to: eventTime.to ? eventTime.to.minutes : ``
-  };
-
-  tripTime.from = `${day.from}/${month.from}/${year.from} ${hours.from}:${minutes.from}`;
-  tripTime.to = date.to ? `${day.to}/${month.to}/${year.to} ${hours.to}:${minutes.to}` : ``;
+  tripTime.from = `${dateFrom} ${timeFrom}`;
+  tripTime.to = `${dateTo} ${timeTo}`;
 
   return tripTime;
 };
@@ -99,15 +86,25 @@ const sortPointsByDate = (point, nextPoint) => {
 };
 
 const getEventTime = (from, to) => {
-  const hoursFrom = from ? getFormattedDate(from.getHours()) : ``;
-  const minutesFrom = from ? getFormattedDate(from.getMinutes()) : ``;
-  const hoursTo = to ? getFormattedDate(to.getHours()) : ``;
-  const minutesTo = to ? getFormattedDate(to.getMinutes()) : ``;
-
   return {
-    from: {hours: hoursFrom, minutes: minutesFrom},
-    to: {hours: hoursTo, minutes: minutesTo}
+    from: formatTime(from),
+    to: formatTime(to),
   };
+};
+
+const getEventDuration = (from, to) => {
+  const momentFrom = moment(from);
+  const momentTo = moment(to);
+
+  let MinDuration = moment.duration(momentTo.diff(momentFrom)).minutes();
+  let HourDuration = moment.duration(momentTo.diff(momentFrom)).hours();
+  let DayDuration = moment.duration(momentTo.diff(momentFrom)).days();
+
+  MinDuration = MinDuration ? `${MinDuration}M` : ``;
+  HourDuration = HourDuration ? `${HourDuration}H` : ``;
+  DayDuration = DayDuration ? `${DayDuration}D` : ``;
+
+  return `${DayDuration} ${HourDuration} ${MinDuration}`;
 };
 
 const getDateObj = (timestamp) => {
@@ -148,5 +145,8 @@ export {
   getDateObj,
   pointRandomReset,
   getFormattedEventTime,
+  getEventDuration,
+  formatTime,
+  formatDate,
   monthNames
 };

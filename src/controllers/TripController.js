@@ -117,6 +117,18 @@ export default class TripController {
     return tripInfo;
   }
 
+  _getFullPrice(point) {
+    let fullPrice = point.price;
+
+    if (point.offers) {
+      for (let offer of point.offers) {
+        fullPrice += offer.price;
+      }
+    }
+
+    return fullPrice;
+  }
+
   _getFullCost() {
     let fullCost = 0;
 
@@ -125,7 +137,7 @@ export default class TripController {
     }
 
     this._points.forEach((point) => {
-      fullCost += point.getFullPrice();
+      fullCost += this._getFullPrice(point);
     });
 
     return fullCost;

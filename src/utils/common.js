@@ -1,10 +1,5 @@
 import moment from 'moment';
 
-const MIN_IN_HOUR = 60;
-const HOURS_IN_DAY = 24;
-const SEC_IN_MIN = 60;
-const MS_IN_SEC = 1000;
-
 const formatTime = (date) => {
   return moment(date).format(`HH:mm`);
 };

@@ -13,14 +13,6 @@ export class TripDayController {
     this._tripEventsListComponent = new TripEventsList();
   }
 
-  onViewChange() {
-    this._parentController.onViewChange();
-  }
-
-  setDefaultView() {
-    this._pointControllers.forEach((controller) => controller.setDefaultView());
-  }
-
   _getPointControllers() {
     return this._points.map((point) => {
       const tripEventsListElement = this._tripEventsListComponent.getElement();
@@ -39,6 +31,14 @@ export class TripDayController {
 
     this._points = [].concat(this._points.slice(0, index), newData, this._points.slice(index + 1));
     pointController.render(this._points[index]);
+  }
+
+  onViewChange() {
+    this._parentController.onViewChange();
+  }
+
+  setDefaultView() {
+    this._pointControllers.forEach((controller) => controller.setDefaultView());
   }
 
   render(dayGroup, dayNumber) {

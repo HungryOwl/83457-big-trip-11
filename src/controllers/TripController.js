@@ -43,42 +43,6 @@ export default class TripController {
     this._removeAddTripForm = this._removeAddTripForm.bind(this);
   }
 
-  _getTripDayGroups(currentDate = null) {
-    const dayGroups = [];
-    const daysMap = {};
-
-    if (!this._points) {
-      return dayGroups;
-    }
-
-    this._points.forEach((point) => {
-      const pointDate = currentDate ? currentDate : point.date.from;
-      const dateObj = getDateObj(pointDate);
-      const year = dateObj.year;
-      const month = dateObj.month;
-      const day = getFormattedDate(dateObj.day);
-      const date = `${year}-${getFormattedDate(month)}-${day}`;
-
-      let group = daysMap[date];
-
-      if (!group) {
-        group = {
-          date,
-          points: [point],
-          month: monthNames[month],
-          day
-        };
-
-        daysMap[date] = group;
-        dayGroups.push(group);
-      } else {
-        group.points.push(point);
-      }
-    });
-
-    return dayGroups;
-  }
-
   _getStartEndDates() {
     let dates = [this._points[0].date.from];
 
@@ -186,40 +150,18 @@ export default class TripController {
     };
   }
 
-  _getSortedPoints(sortType) {
-    let sortedPoints = [];
-    const showingPoints = this._points.slice();
-
-    switch (sortType) {
-      case SortType.TIME:
-        sortedPoints = showingPoints.sort((a, b) => b.date.timeDuration - a.date.timeDuration);
-        break;
-      case SortType.PRICE:
-        sortedPoints = showingPoints.sort((a, b) => b.price - a.price);
-        break;
-      case SortType.EVENT:
-        sortedPoints = showingPoints;
-        break;
-    }
-
-    return sortedPoints;
-  }
-
   _onSortBtnClick(sortType) {
-    this._points = this._getSortedPoints(sortType);
     this._tripDaysController.removeElement();
 
     switch (sortType) {
       case SortType.TIME:
       case SortType.PRICE:
-        this._dayGroups = this._getTripDayGroups(new Date());
+        this._tripDaysController.render(sortType, new Date());
         break;
       case SortType.EVENT:
-        this._dayGroups = this._getTripDayGroups();
+        this._tripDaysController.render(sortType);
         break;
     }
-
-    this._tripDaysController.render(this._dayGroups, this._points);
   }
 
   render() {
@@ -246,11 +188,10 @@ export default class TripController {
       return;
     }
 
-    this._dayGroups = this._getTripDayGroups();
-    this._tripDaysController = new TripDaysController(eventsElement, this);
+    this._tripDaysController = new TripDaysController(eventsElement, this, this._pointsModel);
 
     renderTemplate(eventsElement, this._sortComponent);
-    this._tripDaysController.render(this._dayGroups, this._points);
+    this._tripDaysController.render();
 
     this._newEventBtnComponent.setClickHandler(this._onNewEventButtonClick(this._sortComponent));
     this._sortComponent.setSortTypeChangeHandler(this._onSortBtnClick);

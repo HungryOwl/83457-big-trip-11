@@ -155,7 +155,7 @@ export default class TripController {
   }
 
   _onSortBtnClick(sortType) {
-    this._tripDaysController.removeElement();
+    this._tripDaysController.remove();
 
     switch (sortType) {
       case SortType.TIME:
@@ -169,7 +169,9 @@ export default class TripController {
   }
 
   _onFilterChange() {
-    this._tripDaysController.removeElement();
+    this._tripDaysController.remove();
+    const eventsElement = this._eventsContainer.getElement();
+    this._tripDaysController = new TripDaysController(eventsElement, this, this._pointsModel);
     this._tripDaysController.render();
   }
 

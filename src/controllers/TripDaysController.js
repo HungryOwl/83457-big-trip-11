@@ -89,13 +89,17 @@ export class TripDaysController {
     });
   }
 
-  removeElement() {
+  _updatePoints(sortType) {
+    this._points = this._pointsModel.getPoints();
+    this._points = this._getSortedPoints(this._points, sortType);
+  }
+
+  remove() {
     removeElement(this._tripDaysComponent);
   }
 
   render(sortType = SortType.EVENT, currentDate = null) {
-    this._points = this._pointsModel.getPoints();
-    this._points = this._getSortedPoints(this._points, sortType);
+    this._updatePoints(sortType);
     this._dayGroups = this._getTripDayGroups(currentDate);
     this._tripDayControllers = this._getTripDayControllers();
 

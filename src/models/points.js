@@ -21,7 +21,6 @@ export default class Points {
 
   setFilter(filterType) {
     this._activeFilterType = filterType;
-    console.log(this._filterChangeHandlers);
     this._callHandlers(this._filterChangeHandlers);
   }
 

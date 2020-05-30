@@ -30,6 +30,7 @@ export default class TripController {
     this._pointsModel = pointsModel;
     this._messageComponent = new Message(`Click New Event to create your first point`);
     this._newEventBtnComponent = new NewEventButton();
+    this._activeSortType = SortType.EVENT;
     this._sortComponent = new Sort(sortItems.slice());
     this._filtersController = null;
     this._tripControlsComponent = new TripControls();
@@ -155,6 +156,7 @@ export default class TripController {
   }
 
   _onSortBtnClick(sortType) {
+    this._activeSortType = sortType;
     this._tripDaysController.remove();
 
     switch (sortType) {
@@ -172,7 +174,7 @@ export default class TripController {
     this._tripDaysController.remove();
     const eventsElement = this._eventsContainer.getElement();
     this._tripDaysController = new TripDaysController(eventsElement, this, this._pointsModel);
-    this._tripDaysController.render();
+    this._tripDaysController.render(this._activeSortType);
   }
 
   render() {
@@ -191,7 +193,6 @@ export default class TripController {
     this._filtersController.render();
 
     renderTemplate(tripControlsElement, this._navigationComponent);
-    // renderTemplate(tripControlsElement, this._filtersComponent);
     renderTemplate(headerElement, this._tripControlsComponent, RenderPosition.AFTERBEGIN);
     renderTemplate(tripInfoElement, this._tripInfoCostComponent);
     renderTemplate(headerElement, this._tripInfoComponent, RenderPosition.AFTERBEGIN);

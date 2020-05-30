@@ -1,14 +1,15 @@
-import {RenderPosition, renderTemplate, removeElement} from "../utils/render";
-import {TripDayController} from "./TripDayController";
-import {TripDays} from "../components/trip-days";
-import {getDateObj, getFormattedDate, monthNames} from "../utils/common";
-import {SortType} from "../components/sort-trip";
+import {renderTemplate, removeElement, RenderPosition} from '../utils/render';
+import {getDateObj, getFormattedDate, monthNames} from '../utils/common';
+import {TripDayController} from './TripDayController';
+import {TripDays} from '../components/trip-days';
+import {SortType} from '../components/sort-trip';
 
 export class TripDaysController {
   constructor(container, parentController, pointsModel) {
     this._container = container;
     this._pointsModel = pointsModel;
     this._points = null;
+    this._sortType = null;
     this._tripDayControllers = [];
     this._parentController = parentController;
     this._tripDaysComponent = new TripDays();
@@ -75,7 +76,7 @@ export class TripDaysController {
   }
 
   _getDayNumber(arr, day) {
-    return (arr.length > 1) ? day + 1 : null;
+    return this._sortType === SortType.EVENT ? day + 1 : null;
   }
 
   _getTripDayControllers() {
@@ -99,7 +100,8 @@ export class TripDaysController {
   }
 
   render(sortType = SortType.EVENT, currentDate = null) {
-    this._updatePoints(sortType);
+    this._sortType = sortType;
+    this._updatePoints(this._sortType);
     this._dayGroups = this._getTripDayGroups(currentDate);
     this._tripDayControllers = this._getTripDayControllers();
 

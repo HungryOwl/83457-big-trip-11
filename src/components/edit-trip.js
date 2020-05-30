@@ -398,9 +398,9 @@ export default class EditTrip extends AbstractSmartComponent {
       this._flatpickrFrom = null;
     }
 
-    if (this._flatpickTo) {
-      this._flatpickTo.destroy();
-      this._flatpickTo = null;
+    if (this._flatpickrTo) {
+      this._flatpickrTo.destroy();
+      this._flatpickrTo = null;
     }
 
     const from = this.getElement().querySelector(`input[name="event-start-time"]`);

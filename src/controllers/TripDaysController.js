@@ -8,7 +8,7 @@ export class TripDaysController {
   constructor(container, parentController, pointsModel) {
     this._container = container;
     this._pointsModel = pointsModel;
-    this._points = this._pointsModel.getPoints();
+    this._points = null;
     this._tripDayControllers = [];
     this._parentController = parentController;
     this._tripDaysComponent = new TripDays();
@@ -94,6 +94,7 @@ export class TripDaysController {
   }
 
   render(sortType = SortType.EVENT, currentDate = null) {
+    this._points = this._pointsModel.getPoints();
     this._points = this._getSortedPoints(this._points, sortType);
     this._dayGroups = this._getTripDayGroups(currentDate);
     this._tripDayControllers = this._getTripDayControllers();

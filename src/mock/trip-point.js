@@ -29,6 +29,7 @@ export const PREPOSITIONS = {
 };
 
 const dates = [
+  {from: `16/03/19 15:15`, to: `19/03/19 18:05`},
   {from: `16/03/21 15:15`, to: `16/03/21 18:05`},
   {from: `16/03/21 19:19`, to: `17/03/21 06:15`},
   {from: `17/03/21 11:11`, to: `17/03/21 12:00`},
@@ -132,6 +133,7 @@ const getPointType = () => eventTypes[getRandomInteger(0, eventTypes.length - 1)
 const getDestination = () => DESTINATIONS[getRandomInteger(0, DESTINATIONS.length - 1)];
 
 // По велению судьбы и дизайнера мы получаем дату из поля ввода в формате 18/03/19 00:00
+// Нужно добавить moment?
 const parseDate = (value) => {
   if (!value) {
     return ``;

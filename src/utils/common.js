@@ -20,12 +20,6 @@ const getHtmlElement = (className) => {
   return element;
 };
 
-const getContainerClasses = (classNamesArr, obj) => {
-  return classNamesArr.forEach((className) => {
-    obj[className] = getHtmlElement(className);
-  });
-};
-
 const getRandomInteger = (min = 1, max) => {
   let rand = min - 0.5 + Math.random() * (max - min + 1);
   return Math.round(rand);
@@ -126,11 +120,18 @@ const pointRandomReset = (point) => {
   return newPoint;
 };
 
+const isFuture = (date) => {
+  return date > new Date().getTime();
+};
+
+const isPast = (date) => {
+  return new Date().getTime() > date;
+};
+
 export {
   getRandomInteger,
   flipCoin,
   getHtmlElement,
-  getContainerClasses,
   getFormattedDate,
   sortPointsByDate,
   getEventTime,
@@ -140,5 +141,7 @@ export {
   getEventDuration,
   formatTime,
   formatDate,
+  isFuture,
+  isPast,
   monthNames
 };

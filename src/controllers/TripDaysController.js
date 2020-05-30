@@ -82,7 +82,7 @@ export class TripDaysController {
     return this._dayGroups.map((dayGroup, day, arr) => {
       const groupDayNumber = this._getDayNumber(arr, day);
       const tripDaysElement = this._tripDaysComponent.getElement();
-      const tripDayController = new TripDayController(tripDaysElement, this);
+      const tripDayController = new TripDayController(tripDaysElement, this, this._pointsModel);
 
       tripDayController.render(dayGroup, groupDayNumber);
       return tripDayController;
@@ -93,7 +93,7 @@ export class TripDaysController {
     removeElement(this._tripDaysComponent);
   }
 
-  render(sortType = `event`, currentDate = null) {
+  render(sortType = SortType.EVENT, currentDate = null) {
     this._points = this._getSortedPoints(this._points, sortType);
     this._dayGroups = this._getTripDayGroups(currentDate);
     this._tripDayControllers = this._getTripDayControllers();

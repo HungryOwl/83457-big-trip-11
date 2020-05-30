@@ -4,11 +4,12 @@ import {TripDay} from '../components/trip-days';
 import {TripEventsList} from '../components/trip-days';
 
 export class TripDayController {
-  constructor(container, parentController) {
+  constructor(container, parentController, pointsModel) {
     this._points = [];
     this._pointControllers = [];
     this._parentController = parentController;
     this._container = container;
+    this._pointsModel = pointsModel;
     this._tripDayComponent = null;
     this._tripEventsListComponent = new TripEventsList();
   }
@@ -23,14 +24,11 @@ export class TripDayController {
   }
 
   onDataChange(pointController, oldData, newData) {
-    const index = this._points.findIndex((point) => point === oldData);
+    const isSuccess = this._pointsModel.updatePoint(oldData.id, newData);
 
-    if (index === -1) {
-      return;
+    if (isSuccess) {
+      pointController.render(newData);
     }
-
-    this._points = [].concat(this._points.slice(0, index), newData, this._points.slice(index + 1));
-    pointController.render(this._points[index]);
   }
 
   onViewChange() {

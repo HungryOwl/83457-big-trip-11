@@ -344,7 +344,7 @@ export default class EditTrip extends AbstractSmartComponent {
   _parseFormData(formData) {
     let type = formData.get(`event-type`);
     type = type.charAt(0).toUpperCase() + type.slice(1);
-    
+
     const date = {
       from: getNewDate(formData.get(`event-start-time`)),
       to: getNewDate(formData.get(`event-end-time`)),

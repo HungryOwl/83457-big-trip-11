@@ -1,5 +1,5 @@
 import {RenderPosition, renderTemplate} from '../utils/render';
-import PointController, {Mode as PointControllerMode, EmptyPoint} from './PointController';
+import PointController, {Mode as PointControllerMode} from './PointController';
 import {TripDay} from '../components/trip-days';
 import {TripEventsList} from '../components/trip-days';
 

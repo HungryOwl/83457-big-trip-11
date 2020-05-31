@@ -98,14 +98,12 @@ export default class PointController {
   _onDeleteButtonClick(point) {
     return (evt) => {
       this._mode = Mode.REMOVE;
-      console.log('_onDeleteButtonClick');
       evt.preventDefault();
       this._parentController.onDataChange(this, point, null);
     };
   }
 
   setDefaultView() {
-    console.log('setDefaultView');
     if (this._mode !== Mode.DEFAULT) {
       this._replaceEditToPoint();
     }

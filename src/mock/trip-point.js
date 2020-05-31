@@ -205,8 +205,6 @@ const getPoints = (count) => {
 
 const points = getPoints(POINTS_COUNT);
 
-console.log(points[1]);
-
 export {
   points,
   eventTypes,

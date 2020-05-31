@@ -362,11 +362,8 @@ export default class EditTrip extends AbstractSmartComponent {
   }
 
   setDeleteButtonClickHandler(handler) {
-    if (this._editing) {
-      this._cancelBtn = this.getElement().querySelector(`.event__reset-btn`);
-      this._cancelBtn.addEventListener(`click`, handler);
-    }
-
+    this._cancelBtn = this.getElement().querySelector(`.event__reset-btn`);
+    this._cancelBtn.addEventListener(`click`, handler);
     this._deleteButtonHandler = handler;
   }
 

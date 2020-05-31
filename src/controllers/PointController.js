@@ -1,4 +1,4 @@
-import {renderTemplate, replaceComponent, RenderPosition} from '../utils/render.js';
+import {renderTemplate, replaceComponent, removeElement, RenderPosition} from '../utils/render.js';
 import TripPoint from '../components/trip-point';
 import EditTrip from '../components/edit-trip';
 
@@ -6,6 +6,7 @@ export const Mode = {
   ADDING: `adding`,
   DEFAULT: `default`,
   EDIT: `edit`,
+  REMOVE: `remove`,
 };
 
 export const EmptyPoint = {
@@ -32,28 +33,42 @@ export default class PointController {
     this._onPointRollupBtnClick = this._onPointRollupBtnClick.bind(this);
     this._onEditTripRollupBtnClick = this._onEditTripRollupBtnClick.bind(this);
     this._onFavoriteButtonClick = this._onFavoriteButtonClick.bind(this);
+    this._onSubmitBtnClick = this._onSubmitBtnClick.bind(this);
+  }
+
+  getMode() {
+    return this._mode;
   }
 
   _onEscKeyDown(evt) {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
 
     if (isEscKey) {
+      if (this._mode === Mode.ADDING) {
+        this._parentController.onDataChange(this, EmptyPoint, null);
+      }
       this._replaceEditToPoint();
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
   }
 
   _replaceEditToPoint() {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
     this._editPointComponent.reset();
-    replaceComponent(this._editPointComponent, this._pointComponent);
+
+    if (document.contains(this._editPointComponent.getElement())) {
+      replaceComponent(this._editPointComponent, this._pointComponent);
+    }
+
     this._mode = Mode.DEFAULT;
   }
 
   _replacePointToEdit() {
-    this._parentController.onViewChange();
+    this._mode = Mode.EDIT;
+    this._parentController.onViewChange(Mode.EDIT);
     replaceComponent(this._pointComponent, this._editPointComponent);
     document.addEventListener(`keydown`, this._onEscKeyDown);
-    this._mode = Mode.EDIT;
+    console.log('replacePointToEdit');
   }
 
   _onPointRollupBtnClick() {
@@ -65,10 +80,28 @@ export default class PointController {
     this._replaceEditToPoint();
   }
 
+  _onSubmitBtnClick(evt) {
+    evt.preventDefault();
+    console.log(`submit`);
+  }
+
   _onFavoriteButtonClick() {
     const favoriteTrigger = {isFavorite: !this._point.isFavorite};
     const newPoint = Object.assign({}, this._point, favoriteTrigger);
     this._parentController.onDataChange(this, this._point, newPoint);
+  }
+
+  _onCancelButtonClick() {
+    this._replaceEditToPoint();
+  }
+
+  _onDeleteButtonClick(point) {
+    return (evt) => {
+      this._mode = Mode.REMOVE;
+      console.log('_onDeleteButtonClick');
+      evt.preventDefault();
+      this._parentController.onDataChange(this, point, null);
+    };
   }
 
   setDefaultView() {
@@ -77,8 +110,9 @@ export default class PointController {
     }
   }
 
-  render(point) {
+  render(point, mode) {
     this._point = point;
+    this._mode = mode;
     const oldPointComponent = this._pointComponent;
     const oldEditPointComponent = this._editPointComponent;
 
@@ -86,16 +120,31 @@ export default class PointController {
     this._editPointComponent = new EditTrip(this._point);
 
     this._pointComponent.setRollupBtnClickHandler(this._onPointRollupBtnClick);
+
     this._editPointComponent.setFavoriteButtonClickHandler(this._onFavoriteButtonClick);
-    this._editPointComponent.setSubmitButtonClickHandler(this._onEditTripRollupBtnClick);
+    this._editPointComponent.setSubmitButtonClickHandler(this._onSubmitBtnClick);
     this._editPointComponent.setRollupButtonClickHandler(this._onEditTripRollupBtnClick);
+    this._editPointComponent.setDeleteButtonClickHandler(this._onDeleteButtonClick(this._point));
+    // this._editPointComponent.setCancelButtonClickHandler(this._onCancelButtonClick);
 
-    if (oldPointComponent && oldEditPointComponent) {
-      replaceComponent(oldPointComponent, this._pointComponent);
-      replaceComponent(oldEditPointComponent, this._editPointComponent);
-
-    } else {
-      renderTemplate(this._container, this._pointComponent, RenderPosition.BEFOREEND);
+    switch (mode) {
+      case Mode.DEFAULT:
+        if (oldPointComponent && oldEditPointComponent) {
+          replaceComponent(oldPointComponent, this._pointComponent);
+          replaceComponent(oldEditPointComponent, this._editPointComponent);
+          this._replaceEditToPoint();
+        } else {
+          renderTemplate(this._container, this._pointComponent, RenderPosition.BEFOREEND);
+        }
+        break;
+      case Mode.ADDING:
+        if (oldPointComponent && oldEditPointComponent) {
+          removeElement(oldPointComponent);
+          removeElement(oldEditPointComponent);
+        }
+        document.addEventListener(`keydown`, this._onEscKeyDown);
+        renderTemplate(this._container, this._editPointComponent, RenderPosition.AFTERBEGIN);
+        break;
     }
   }
 }

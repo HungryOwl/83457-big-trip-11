@@ -70,8 +70,8 @@ export class TripDaysController {
     return dayGroups;
   }
 
-  onViewChange() {
-    this._parentController.onViewChange();
+  onViewChange(mode) {
+    this._parentController.onViewChange(mode);
     this._tripDayControllers.forEach((controller) => controller.setDefaultView());
   }
 

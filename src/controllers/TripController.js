@@ -5,6 +5,7 @@ import Message from '../components/messages';
 import Sort, {SortType} from '../components/sort-trip';
 import EditTrip from '../components/edit-trip';
 import {TripDaysController} from './TripDaysController';
+import {Mode as PointControllerMode} from './PointController';
 import FilterController from './filter';
 import TripControls from '../components/trip-controls';
 import Navigation from '../components/menu';
@@ -30,19 +31,21 @@ export default class TripController {
     this._tripInfo = {};
     this._fullCost = 0;
 
+    this._filtersController = null;
+    this._tripDaysController = null;
+
     this._messageComponent = new Message(`Click New Event to create your first point`);
     this._newEventBtnComponent = new NewEventButton();
     this._activeSortType = SortType.EVENT;
     this._sortComponent = new Sort(sortItems.slice());
-    this._filtersController = null;
     this._tripControlsComponent = new TripControls();
     this._navigationComponent = new Navigation(tabs.slice());
-    this._addTripComponent = new EditTrip();
-    this._newPointMode = NewPointMode.DEFAULT;
+    
+    this.sortElement = this._sortComponent.getElement();
+    // this._addTripComponent = new EditTrip();
 
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._onSortBtnClick = this._onSortBtnClick.bind(this);
-    this._removeAddTripForm = this._removeAddTripForm.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
     this._onNewEventButtonClick = this._onNewEventButtonClick.bind(this);
 
@@ -116,44 +119,61 @@ export default class TripController {
     return fullCost;
   }
 
-  _onAddTripCancelBtnClick() {
-    return this._removeAddTripForm;
-  }
+  // _onAddTripCancelBtnClick() {
+  //   return this._removeAddTripForm;
+  // }
 
-  _renderAddTripForm() {
-    const sortElement = this._sortComponent.getElement();
+  _createPoint() {
     document.addEventListener(`keydown`, this._onEscKeyDown);
-    this._addTripComponent.setCancelButtonClickHandler(this._onAddTripCancelBtnClick());
-    this._addTripComponent.rerender();
-    renderTemplate(sortElement, this._addTripComponent, RenderPosition.AFTEREND);
-    this._newPointMode = NewPointMode.OPEN;
+    // this._addTripComponent.setCancelButtonClickHandler(this._onAddTripCancelBtnClick());
+    // this._addTripComponent.rerender();
+    // renderTemplate(sortElement, this._addTripComponent, RenderPosition.AFTEREND);
+    // this._newPointMode = NewPointMode.OPEN;
   }
 
-  _removeAddTripForm() {
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
-    this._newEventBtnComponent.enable();
-    removeElement(this._addTripComponent);
-    this._newPointMode = NewPointMode.DEFAULT;
-  }
+  // _removeAddTripForm() {
+  //   document.removeEventListener(`keydown`, this._onEscKeyDown);
+  //   // this._newEventBtnComponent.enable();
+  //   // removeElement(this._addTripComponent);
+  //   // this._newPointMode = NewPointMode.DEFAULT;
+  // }
 
   _onEscKeyDown(evt) {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
 
     if (isEscKey) {
-      this._removeAddTripForm();
+      // this._removeAddTripForm();
     }
   }
 
-  onViewChange() {
-    if (this._newPointMode !== NewPointMode.DEFAULT) {
-      this._removeAddTripForm();
+  _removeTripDays() {
+    this._tripDaysController.remove();
+    // this._showedTaskControllers.forEach((taskController) => taskController.destroy());
+  }
+
+  _renderTripDays() {
+    this._tripDaysController.render(this._activeSortType);
+  }
+
+  _updateTripDays() {
+    this._removeTripDays();
+    this._renderTripDays();
+  }
+
+  onViewChange(mode) {
+    switch (mode) {
+      case PointControllerMode.REMOVE:
+        this._updateTripDays();
+        break;
+      default:
+        break;
     }
   }
 
   _onNewEventButtonClick(evt) {
     evt.target.disabled = true;
     this._tripDaysController.onViewChange();
-    this._renderAddTripForm();
+    this._createPoint();
   }
 
   _onSortBtnClick(sortType) {

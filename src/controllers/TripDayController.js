@@ -18,17 +18,15 @@ export class TripDayController {
     return this._points.map((point) => {
       const tripEventsListElement = this._tripEventsListComponent.getElement();
       const pointController = new PointController(tripEventsListElement, this);
-      pointController.render(point);
+      pointController.render(point, PointControllerMode.DEFAULT);
       return pointController;
     });
   }
 
   onDataChange(pointController, oldData, newData) {
-    if (oldData === EmptyPoint) {
-      console.log(`EmptyPoint`, EmptyPoint);
-    } else if (newData === null) {
-      this.pointsModel.removeTask(oldData.id);
-      this.parentController.this._parentController.render();
+    if (newData === null) {
+      this._pointsModel.removePoint(oldData.id);
+      this.onViewChange(pointController.getMode());
     } else {
       const isSuccess = this._pointsModel.updatePoint(oldData.id, newData);
 
@@ -38,8 +36,8 @@ export class TripDayController {
     }
   }
 
-  onViewChange() {
-    this._parentController.onViewChange();
+  onViewChange(mode) {
+    this._parentController.onViewChange(mode);
   }
 
   setDefaultView() {

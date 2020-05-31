@@ -141,7 +141,8 @@ const parseDate = (value) => {
   }
 
   const THRESHOLD_YEAR = 30;
-  let [day, month, year] = value.split(` `)[0].split(`/`);
+  const [day, month] = value.split(` `)[0].split(`/`);
+  let [year] = value.split(` `)[0].split(`/`);
   const [hours, minutes] = value.split(` `)[1].split(`:`);
 
   year = year < THRESHOLD_YEAR ? `20` + year : `19` + year;
@@ -158,11 +159,11 @@ const getDate = (datesArr) => {
 };
 
 const getRandomDescription = (count, descArr) => {
-  let initialArr = descArr.slice();
-  let descriptions = [];
+  const initialArr = descArr.slice();
+  const descriptions = [];
 
   for (let i = 0; i < count; i++) {
-    let index = Math.floor(Math.random() * initialArr.length);
+    const index = Math.floor(Math.random() * initialArr.length);
     descriptions.push(initialArr.splice(index, 1));
   }
 
@@ -170,7 +171,7 @@ const getRandomDescription = (count, descArr) => {
 };
 
 const getPhotos = (count) => {
-  let photoArr = [];
+  const photoArr = [];
 
   for (let i = 0; i < count; i++) {
     const photo = `http://picsum.photos/248/152?r=${getRandomInteger(1, 100)}`;

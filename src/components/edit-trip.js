@@ -378,9 +378,9 @@ export default class EditTrip extends AbstractSmartComponent {
       dateFormat: `d\/m\/y H\:i`,
       altFormat: `d\/m\/y H\:i`,
       enableTime: true,
-      // eslint-disable-next-line camelcase
-      time_24hr: true,
     };
+
+    flatpickrFrom[`time_24hr`] = true;
 
     const flatpickrTo = {
       altInput: true,
@@ -389,9 +389,9 @@ export default class EditTrip extends AbstractSmartComponent {
       dateFormat: `d\/m\/y H\:i`,
       altFormat: `d\/m\/y H\:i`,
       enableTime: true,
-      // eslint-disable-next-line camelcase
-      time_24hr: true,
     };
+
+    flatpickrTo[`time_24hr`] = true;
 
     if (this._flatpickrFrom) {
       this._flatpickrFrom.destroy();

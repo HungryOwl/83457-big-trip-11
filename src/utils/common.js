@@ -21,7 +21,7 @@ const getHtmlElement = (className) => {
 };
 
 const getRandomInteger = (min = 1, max) => {
-  let rand = min - 0.5 + Math.random() * (max - min + 1);
+  const rand = min - 0.5 + Math.random() * (max - min + 1);
   return Math.round(rand);
 };
 
@@ -107,19 +107,6 @@ const getDateObj = (timestamp) => {
   };
 };
 
-const pointRandomReset = (point) => {
-  const newPoint = {};
-  const isReset = flipCoin();
-
-  for (let field in point) {
-    if (point.hasOwnProperty(field)) {
-      newPoint[field] = (!isReset || field === `type`) ? point[field] : ``;
-    }
-  }
-
-  return newPoint;
-};
-
 const isFuture = (date) => {
   return date > new Date().getTime();
 };
@@ -136,7 +123,6 @@ export {
   sortPointsByDate,
   getEventTime,
   getDateObj,
-  pointRandomReset,
   getFormattedEventTime,
   getEventDuration,
   formatTime,

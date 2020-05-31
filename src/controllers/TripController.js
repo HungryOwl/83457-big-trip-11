@@ -92,7 +92,7 @@ export default class TripController {
     let fullPrice = point.price;
 
     if (point.offers) {
-      for (let offer of point.offers) {
+      for (const offer of point.offers) {
         fullPrice += offer.price;
       }
     }

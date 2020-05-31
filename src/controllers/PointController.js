@@ -2,9 +2,21 @@ import {renderTemplate, replaceComponent, RenderPosition} from '../utils/render.
 import TripPoint from '../components/trip-point';
 import EditTrip from '../components/edit-trip';
 
-const Mode = {
+export const Mode = {
+  ADDING: `adding`,
   DEFAULT: `default`,
   EDIT: `edit`,
+};
+
+export const EmptyPoint = {
+  type: `flight`,
+  isEditing: false,
+  isFavorite: false,
+  preposition: `to`,
+  offers: ``,
+  destination: ``,
+  description: ``,
+  photos: ``,
 };
 
 export default class PointController {

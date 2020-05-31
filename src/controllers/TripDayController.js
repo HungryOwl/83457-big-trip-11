@@ -1,5 +1,5 @@
 import {RenderPosition, renderTemplate} from '../utils/render';
-import PointController from './PointController';
+import PointController, {Mode as PointControllerMode, EmptyPoint} from './PointController';
 import {TripDay} from '../components/trip-days';
 import {TripEventsList} from '../components/trip-days';
 
@@ -24,10 +24,17 @@ export class TripDayController {
   }
 
   onDataChange(pointController, oldData, newData) {
-    const isSuccess = this._pointsModel.updatePoint(oldData.id, newData);
+    if (oldData === EmptyPoint) {
+      console.log('EmptyPoint', EmptyPoint);
+    } else if (newData === null) {
+      this.pointsModel.removeTask(oldData.id);
+      this.parentController.this._parentController.render();
+    } else {
+      const isSuccess = this._pointsModel.updatePoint(oldData.id, newData);
 
-    if (isSuccess) {
-      pointController.render(newData);
+      if (isSuccess) {
+        pointController.render(newData);
+      }
     }
   }
 

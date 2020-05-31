@@ -1,3 +1,4 @@
+import moment from 'moment';
 import {getRandomInteger, getEventDuration, getEventTime, sortPointsByDate, flipCoin} from '../utils/common';
 
 const eventTypes = [
@@ -133,19 +134,18 @@ const DESCRIPTION_MOCK = `Lorem ipsum dolor sit amet, consectetur adipiscing eli
 const getPointType = () => eventTypes[getRandomInteger(0, eventTypes.length - 1)].event;
 const getDestination = () => DESTINATIONS[getRandomInteger(0, DESTINATIONS.length - 1)];
 
-// По велению судьбы и дизайнера мы получаем дату из поля ввода в формате 18/03/19 00:00
-// Нужно добавить moment?
 const parseDate = (value) => {
+
   if (!value) {
     return ``;
   }
 
-  const THRESHOLD_YEAR = 30;
-  const [day, month] = value.split(` `)[0].split(`/`);
-  let [year] = value.split(` `)[0].split(`/`);
-  const [hours, minutes] = value.split(` `)[1].split(`:`);
-
-  year = year < THRESHOLD_YEAR ? `20` + year : `19` + year;
+  const momentObj = moment(value, `DD-MM-YY hh:mm`);
+  const day = momentObj.date();
+  const month = momentObj.month() + 1;
+  const year = momentObj.year();
+  const hours = momentObj.hours();
+  const minutes = momentObj.minutes();
 
   return new Date(year, month, day, hours, minutes);
 };

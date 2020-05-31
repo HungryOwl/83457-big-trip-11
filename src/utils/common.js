@@ -10,16 +10,6 @@ const formatDate = (date) => {
 
 const monthNames = [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`];
 
-const getHtmlElement = (className) => {
-  const element = document.querySelector(`.${className}`);
-
-  if (!element) {
-    throw new Error(`Элемент ${className} не найден`);
-  }
-
-  return element;
-};
-
 const getRandomInteger = (min = 1, max) => {
   const rand = min - 0.5 + Math.random() * (max - min + 1);
   return Math.round(rand);
@@ -93,6 +83,21 @@ const getEventDuration = (from, to) => {
   return `${DayDuration} ${HourDuration} ${MinDuration}`;
 };
 
+const getNewDate = (value) => {
+  if (!value) {
+    return ``;
+  }
+
+  const momentObj = moment(value, `DD-MM-YY hh:mm`);
+  const day = momentObj.date();
+  const month = momentObj.month() + 1;
+  const year = momentObj.year();
+  const hours = momentObj.hours();
+  const minutes = momentObj.minutes();
+
+  return new Date(year, month, day, hours, minutes);
+};
+
 const getDateObj = (timestamp) => {
   const date = timestamp;
   const year = date.getFullYear();
@@ -118,11 +123,11 @@ const isPast = (date) => {
 export {
   getRandomInteger,
   flipCoin,
-  getHtmlElement,
   getFormattedDate,
   sortPointsByDate,
   getEventTime,
   getDateObj,
+  getNewDate,
   getFormattedEventTime,
   getEventDuration,
   formatTime,

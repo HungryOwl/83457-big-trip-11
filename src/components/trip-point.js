@@ -1,4 +1,5 @@
 import AbstractComponent from './abstract-component';
+import {PREPOSITIONS} from '../mock/trip-point';
 
 const getEventOfferMarkup = (name, price) => {
   return (
@@ -26,9 +27,10 @@ const getCheckedOffersTemplate = (offers) => {
 };
 
 const getTripPointTemplate = (point) => {
-  const {type, price, destination, offers, preposition, date} = point;
+  const {type, price, destination, offers, date} = point;
   const eventTime = date.eventTime;
   const eventDuration = date.eventDuration;
+  const preposition = PREPOSITIONS[type];
 
   return (
     `<li class="trip-events__item">

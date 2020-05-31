@@ -12,7 +12,7 @@ import {eventTypes,
   PHOTO_COUNT
 } from '../mock/trip-point';
 
-import {getEventTime, getFormattedEventTime} from '../utils/common';
+import {getEventDuration, getEventTime, getFormattedEventTime, getNewDate} from '../utils/common';
 import AbstractSmartComponent from './abstract-smart-component';
 import {NewPointMode} from '../controllers/TripController';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -331,6 +331,56 @@ export default class EditTrip extends AbstractSmartComponent {
   reset() {
     this._setDefaultState();
     this.rerender();
+  }
+
+
+  getData() {
+    const form = this.getElement();
+    const formData = new FormData(form);
+
+    return this._parseFormData(formData);
+  }
+
+  _parseFormData(formData) {
+    let type = formData.get(`event-type`);
+    type = type.charAt(0).toUpperCase() + type.slice(1);
+    
+    const date = {
+      from: getNewDate(formData.get(`event-start-time`)),
+      to: getNewDate(formData.get(`event-end-time`)),
+    };
+
+    date.eventTime = getEventTime(date.from, date.to);
+    date.eventDuration = getEventDuration(date.from, date.to);
+
+    const offerElems = Array.from(this.getElement().querySelectorAll(`.event__offer-selector`));
+
+    const offers = !(_.isEmpty(offerElems))
+      ? offerElems.map((offer) => {
+        const name = offer.querySelector(`.event__offer-title`).textContent;
+        const price = offer.querySelector(`.event__offer-price`).textContent;
+        const checked = offer.querySelector(`input[type="checkbox"]`).checked;
+
+        return {
+          name,
+          price,
+          checked
+        };
+      })
+      : null;
+
+    const photosElems = Array.from(this.getElement().querySelectorAll(`.event__photo`));
+    const photos = !(_.isEmpty(photosElems)) ? photosElems.map((photo) => photo.src) : null;
+
+    return {
+      date,
+      price: formData.get(`event-price`),
+      type,
+      destination: formData.get(`event-destination`),
+      offers,
+      description: formData.get(`event__destination-description`),
+      photos
+    };
   }
 
   setCancelButtonClickHandler(handler) {

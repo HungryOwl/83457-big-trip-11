@@ -1,5 +1,4 @@
-import moment from 'moment';
-import {getRandomInteger, getEventDuration, getEventTime, sortPointsByDate, flipCoin} from '../utils/common';
+import {getRandomInteger, getNewDate, getEventDuration, getEventTime, sortPointsByDate, flipCoin} from '../utils/common';
 
 const eventTypes = [
   {event: `Taxi`, type: `ride`},
@@ -134,26 +133,10 @@ const DESCRIPTION_MOCK = `Lorem ipsum dolor sit amet, consectetur adipiscing eli
 const getPointType = () => eventTypes[getRandomInteger(0, eventTypes.length - 1)].event;
 const getDestination = () => DESTINATIONS[getRandomInteger(0, DESTINATIONS.length - 1)];
 
-const parseDate = (value) => {
-
-  if (!value) {
-    return ``;
-  }
-
-  const momentObj = moment(value, `DD-MM-YY hh:mm`);
-  const day = momentObj.date();
-  const month = momentObj.month() + 1;
-  const year = momentObj.year();
-  const hours = momentObj.hours();
-  const minutes = momentObj.minutes();
-
-  return new Date(year, month, day, hours, minutes);
-};
-
 const getDate = (datesArr) => {
   const date = datesArr.splice(getRandomInteger(0, dates.length - 1), 1)[0];
-  date.from = parseDate(date.from);
-  date.to = parseDate(date.to);
+  date.from = getNewDate(date.from);
+  date.to = getNewDate(date.to);
 
   return date;
 };
@@ -187,7 +170,6 @@ const getPoint = (i) => {
   const offers = OFFERS_MAP.get(type);
   const description = getRandomDescription(SENTENCE_COUNT, DESCRIPTION_MOCK);
   const photos = getPhotos(PHOTO_COUNT);
-  const preposition = PREPOSITIONS[type];
   const date = getDate(dates);
   const price = prices[type];
   const id = i;
@@ -203,7 +185,6 @@ const getPoint = (i) => {
     offers,
     description,
     photos,
-    preposition,
     date,
     id,
     isFavorite,
@@ -223,6 +204,8 @@ const getPoints = (count) => {
 };
 
 const points = getPoints(POINTS_COUNT);
+
+console.log(points[1]);
 
 export {
   points,

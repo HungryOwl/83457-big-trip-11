@@ -81,6 +81,8 @@ export default class PointController {
 
   _onSubmitBtnClick(evt) {
     evt.preventDefault();
+    const pointData = this._editPointComponent.getData();
+    this._parentController.onDataChange(this, this._point, pointData);
   }
 
   _onFavoriteButtonClick() {

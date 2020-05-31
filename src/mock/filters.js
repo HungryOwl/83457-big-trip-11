@@ -1,11 +1,10 @@
-const filterNames = [
-  `Everything`, `Future`, `Past`
-];
+import {FilterType} from '../const';
 
 const getFilters = () => {
-  return filterNames.map((name) => {
+  return Object.values(FilterType).map((filterType, i) => {
     return {
-      name
+      name: filterType,
+      checked: i === 0,
     };
   });
 };

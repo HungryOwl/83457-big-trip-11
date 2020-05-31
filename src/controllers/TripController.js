@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import {renderTemplate, removeElement, RenderPosition} from '../utils/render.js';
-import {getDateObj, getFormattedDate, monthNames} from '../utils/common';
+import {getDateObj} from '../utils/common';
 import Message from '../components/messages';
-import Filters from '../components/filters';
 import Sort, {SortType} from '../components/sort-trip';
 import EditTrip from '../components/edit-trip';
 import {TripDaysController} from './TripDaysController';
+import FilterController from './filter';
 import TripControls from '../components/trip-controls';
 import Navigation from '../components/menu';
 import TripInfo from '../components/trip-info';
@@ -13,7 +13,6 @@ import TripInfoCost from '../components/trip-info-cost';
 import NewEventButton from '../components/new-event-button';
 import {tabs} from '../mock/menu';
 import {sortItems} from '../mock/sort-trip';
-import {filters} from '../mock/filters';
 
 export const NewPointMode = {
   DEFAULT: `close`,
@@ -22,16 +21,18 @@ export const NewPointMode = {
 };
 
 export default class TripController {
-  constructor(headerContainer, eventsContainer) {
+  constructor(headerContainer, eventsContainer, pointsModel) {
     this._points = null;
     this._tripInfo = {};
     this._fullCost = 0;
     this._headerContainer = headerContainer;
     this._eventsContainer = eventsContainer;
+    this._pointsModel = pointsModel;
     this._messageComponent = new Message(`Click New Event to create your first point`);
     this._newEventBtnComponent = new NewEventButton();
+    this._activeSortType = SortType.EVENT;
     this._sortComponent = new Sort(sortItems.slice());
-    this._filtersComponent = new Filters(filters.slice());
+    this._filtersController = null;
     this._tripControlsComponent = new TripControls();
     this._navigationComponent = new Navigation(tabs.slice());
     this._addTripComponent = new EditTrip();
@@ -40,42 +41,12 @@ export default class TripController {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._onSortBtnClick = this._onSortBtnClick.bind(this);
     this._removeAddTripForm = this._removeAddTripForm.bind(this);
-  }
+    this._onFilterChange = this._onFilterChange.bind(this);
+    this._onNewEventButtonClick = this._onNewEventButtonClick.bind(this);
 
-  _getTripDayGroups(currentDate = null) {
-    const dayGroups = [];
-    const daysMap = {};
-
-    if (!this._points) {
-      return dayGroups;
-    }
-
-    this._points.forEach((point) => {
-      const pointDate = currentDate ? currentDate : point.date.from;
-      const dateObj = getDateObj(pointDate);
-      const year = dateObj.year;
-      const month = dateObj.month;
-      const day = getFormattedDate(dateObj.day);
-      const date = `${year}-${getFormattedDate(month)}-${day}`;
-
-      let group = daysMap[date];
-
-      if (!group) {
-        group = {
-          date,
-          points: [point],
-          month: monthNames[month],
-          day
-        };
-
-        daysMap[date] = group;
-        dayGroups.push(group);
-      } else {
-        group.points.push(point);
-      }
-    });
-
-    return dayGroups;
+    this._newEventBtnComponent.setClickHandler(this._onNewEventButtonClick);
+    this._sortComponent.setSortTypeChangeHandler(this._onSortBtnClick);
+    this._pointsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
   _getStartEndDates() {
@@ -177,52 +148,36 @@ export default class TripController {
     }
   }
 
-  _onNewEventButtonClick() {
-    return (evt) => {
-      evt.target.disabled = true;
-      this._tripDaysController.onViewChange();
-      this._renderAddTripForm();
-    };
-  }
-
-  _getSortedPoints(sortType) {
-    let sortedPoints = [];
-    const showingPoints = this._points.slice();
-
-    switch (sortType) {
-      case SortType.TIME:
-        sortedPoints = showingPoints.sort((a, b) => b.date.timeDuration - a.date.timeDuration);
-        break;
-      case SortType.PRICE:
-        sortedPoints = showingPoints.sort((a, b) => b.price - a.price);
-        break;
-      case SortType.EVENT:
-        sortedPoints = showingPoints;
-        break;
-    }
-
-    return sortedPoints;
+  _onNewEventButtonClick(evt) {
+    evt.target.disabled = true;
+    this._tripDaysController.onViewChange();
+    this._renderAddTripForm();
   }
 
   _onSortBtnClick(sortType) {
-    this._points = this._getSortedPoints(sortType);
-    this._tripDaysController.removeElement();
+    this._activeSortType = sortType;
+    this._tripDaysController.remove();
 
     switch (sortType) {
       case SortType.TIME:
       case SortType.PRICE:
-        this._dayGroups = this._getTripDayGroups(new Date());
+        this._tripDaysController.render(sortType, new Date());
         break;
       case SortType.EVENT:
-        this._dayGroups = this._getTripDayGroups();
+        this._tripDaysController.render(sortType);
         break;
     }
-
-    this._tripDaysController.render(this._dayGroups, this._points);
   }
 
-  render(points) {
-    this._points = points;
+  _onFilterChange() {
+    this._tripDaysController.remove();
+    const eventsElement = this._eventsContainer.getElement();
+    this._tripDaysController = new TripDaysController(eventsElement, this, this._pointsModel);
+    this._tripDaysController.render(this._activeSortType);
+  }
+
+  render() {
+    this._points = this._pointsModel.getPoints();
     this._fullCost = this._getFullCost();
     this._tripInfo = this._getTripInfo();
     this._tripInfoComponent = new TripInfo(this._tripInfo);
@@ -233,8 +188,10 @@ export default class TripController {
     const tripControlsElement = this._tripControlsComponent.getElement();
     const tripInfoElement = this._tripInfoComponent.getElement();
 
+    this._filtersController = new FilterController(tripControlsElement, this._pointsModel);
+    this._filtersController.render();
+
     renderTemplate(tripControlsElement, this._navigationComponent);
-    renderTemplate(tripControlsElement, this._filtersComponent);
     renderTemplate(headerElement, this._tripControlsComponent, RenderPosition.AFTERBEGIN);
     renderTemplate(tripInfoElement, this._tripInfoCostComponent);
     renderTemplate(headerElement, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
@@ -245,13 +202,9 @@ export default class TripController {
       return;
     }
 
-    this._dayGroups = this._getTripDayGroups();
-    this._tripDaysController = new TripDaysController(eventsElement, this);
+    this._tripDaysController = new TripDaysController(eventsElement, this, this._pointsModel);
 
     renderTemplate(eventsElement, this._sortComponent);
-    this._tripDaysController.render(this._dayGroups, this._points);
-
-    this._newEventBtnComponent.setClickHandler(this._onNewEventButtonClick(this._sortComponent));
-    this._sortComponent.setSortTypeChangeHandler(this._onSortBtnClick);
+    this._tripDaysController.render();
   }
 }

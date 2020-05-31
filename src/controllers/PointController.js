@@ -64,11 +64,10 @@ export default class PointController {
   }
 
   _replacePointToEdit() {
-    this._mode = Mode.EDIT;
-    this._parentController.onViewChange(Mode.EDIT);
-    replaceComponent(this._pointComponent, this._editPointComponent);
     document.addEventListener(`keydown`, this._onEscKeyDown);
-    console.log('replacePointToEdit');
+    this._parentController.onViewChange(this._mode);
+    this._mode = Mode.EDIT;
+    replaceComponent(this._pointComponent, this._editPointComponent);
   }
 
   _onPointRollupBtnClick() {
@@ -82,7 +81,6 @@ export default class PointController {
 
   _onSubmitBtnClick(evt) {
     evt.preventDefault();
-    console.log(`submit`);
   }
 
   _onFavoriteButtonClick() {
@@ -105,6 +103,7 @@ export default class PointController {
   }
 
   setDefaultView() {
+    console.log('setDefaultView');
     if (this._mode !== Mode.DEFAULT) {
       this._replaceEditToPoint();
     }

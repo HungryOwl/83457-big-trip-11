@@ -40,7 +40,7 @@ export default class TripController {
     this._sortComponent = new Sort(sortItems.slice());
     this._tripControlsComponent = new TripControls();
     this._navigationComponent = new Navigation(tabs.slice());
-    
+
     this.sortElement = this._sortComponent.getElement();
     // this._addTripComponent = new EditTrip();
 
@@ -156,6 +156,7 @@ export default class TripController {
   }
 
   _updateTripDays() {
+    console.log('_updateTripDays');
     this._removeTripDays();
     this._renderTripDays();
   }

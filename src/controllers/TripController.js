@@ -42,8 +42,9 @@ export default class TripController {
     this._onSortBtnClick = this._onSortBtnClick.bind(this);
     this._removeAddTripForm = this._removeAddTripForm.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
+    this._onNewEventButtonClick = this._onNewEventButtonClick.bind(this);
 
-    this._newEventBtnComponent.setClickHandler(this._onNewEventButtonClick(this._sortComponent));
+    this._newEventBtnComponent.setClickHandler(this._onNewEventButtonClick);
     this._sortComponent.setSortTypeChangeHandler(this._onSortBtnClick);
     this._pointsModel.setFilterChangeHandler(this._onFilterChange);
   }
@@ -147,12 +148,10 @@ export default class TripController {
     }
   }
 
-  _onNewEventButtonClick() {
-    return (evt) => {
-      evt.target.disabled = true;
-      this._tripDaysController.onViewChange();
-      this._renderAddTripForm();
-    };
+  _onNewEventButtonClick(evt) {
+    evt.target.disabled = true;
+    this._tripDaysController.onViewChange();
+    this._renderAddTripForm();
   }
 
   _onSortBtnClick(sortType) {

@@ -22,12 +22,14 @@ export const NewPointMode = {
 
 export default class TripController {
   constructor(headerContainer, eventsContainer, pointsModel) {
-    this._points = null;
-    this._tripInfo = {};
-    this._fullCost = 0;
     this._headerContainer = headerContainer;
     this._eventsContainer = eventsContainer;
     this._pointsModel = pointsModel;
+
+    this._points = null;
+    this._tripInfo = {};
+    this._fullCost = 0;
+
     this._messageComponent = new Message(`Click New Event to create your first point`);
     this._newEventBtnComponent = new NewEventButton();
     this._activeSortType = SortType.EVENT;

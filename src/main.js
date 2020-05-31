@@ -14,13 +14,13 @@ const eventsContainer = document.querySelector(`.page-main .page-body__container
 
 
 const api = new API(END_POINT, AUTHORIZATION);
-const pointsModel = new PointsModel();
+const pointsModel = new PointsModel(api);
 pointsModel.setPoints(points.slice());
 
 const tripHeaderComponent = new TripHeader();
 const tripEventsComponent = new TripEvents();
 
-const tripController = new TripController(tripHeaderComponent, tripEventsComponent, pointsModel, api);
+const tripController = new TripController(tripHeaderComponent, tripEventsComponent, pointsModel);
 
 renderTemplate(headerContainer, tripHeaderComponent);
 renderTemplate(eventsContainer, tripEventsComponent);

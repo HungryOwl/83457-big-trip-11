@@ -25,7 +25,7 @@ export class TripDayController {
 
   onDataChange(pointController, oldData, newData) {
     if (oldData === EmptyPoint) {
-      console.log('EmptyPoint', EmptyPoint);
+      console.log(`EmptyPoint`, EmptyPoint);
     } else if (newData === null) {
       this.pointsModel.removeTask(oldData.id);
       this.parentController.this._parentController.render();

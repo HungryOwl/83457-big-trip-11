@@ -132,7 +132,7 @@ const getOffersTemplate = (offers, id) => {
 
     return (
       `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${label}-${id}" type="checkbox" name="event-offer-${label}" ${isChecked ? `checked` : ``}>
+        <input class="event__offer-checkbox  visually-hidden" data-label="${label}" id="event-offer-${label}-${id}" type="checkbox" name="event-offer-${label}" ${isChecked ? `checked` : ``}>
         <label class="event__offer-label" for="event-offer-${label}-${id}">
           <span class="event__offer-title">${name}</span>
           &plus;
@@ -333,7 +333,6 @@ export default class EditTrip extends AbstractSmartComponent {
     this.rerender();
   }
 
-
   getData() {
     const form = this.getElement();
     const formData = new FormData(form);
@@ -342,6 +341,7 @@ export default class EditTrip extends AbstractSmartComponent {
   }
 
   _parseFormData(formData) {
+    const id = this._point.id;
     let type = formData.get(`event-type`);
     type = type.charAt(0).toUpperCase() + type.slice(1);
 
@@ -358,13 +358,16 @@ export default class EditTrip extends AbstractSmartComponent {
     const offers = !(_.isEmpty(offerElems))
       ? offerElems.map((offer) => {
         const name = offer.querySelector(`.event__offer-title`).textContent;
-        const price = offer.querySelector(`.event__offer-price`).textContent;
-        const checked = offer.querySelector(`input[type="checkbox"]`).checked;
+        const price = Number(offer.querySelector(`.event__offer-price`).textContent);
+        const input = offer.querySelector(`input[type="checkbox"]`);
+        const checked = input.checked;
+        const label = input.dataset.label;
 
         return {
           name,
           price,
-          checked
+          checked,
+          label
         };
       })
       : null;
@@ -373,13 +376,15 @@ export default class EditTrip extends AbstractSmartComponent {
     const photos = !(_.isEmpty(photosElems)) ? photosElems.map((photo) => photo.src) : null;
 
     return {
+      id,
       date,
-      price: formData.get(`event-price`),
+      price: Number(formData.get(`event-price`)),
       type,
       destination: formData.get(`event-destination`),
       offers,
-      description: formData.get(`event__destination-description`),
-      photos
+      description: this.getElement().querySelector(`.event__destination-description`).textContent,
+      photos,
+      isFavorite: Boolean(formData.get(`event-favorite`)),
     };
   }
 

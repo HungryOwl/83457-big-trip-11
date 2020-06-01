@@ -5,6 +5,9 @@ const formatTime = (date) => {
 };
 
 const formatDate = (date) => {
+  // const baseDate = moment(date).format(`DD[/]MM[/]YY`).split(`/`);
+  // const month = baseDate[1] - 1;
+  // return [baseDate[0], month, baseDate[2]].join(`/`);
   return moment(date).format(`DD[/]MM[/]YY`);
 };
 
@@ -90,7 +93,7 @@ const getNewDate = (value) => {
 
   const momentObj = moment(value, `DD-MM-YY hh:mm`);
   const day = momentObj.date();
-  const month = momentObj.month() + 1;
+  const month = momentObj.month();
   const year = momentObj.year();
   const hours = momentObj.hours();
   const minutes = momentObj.minutes();

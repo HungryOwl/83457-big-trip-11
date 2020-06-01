@@ -175,7 +175,6 @@ const getPoint = (i) => {
   const id = i;
   const isFavorite = flipCoin();
   date.eventTime = getEventTime(date.from, date.to);
-  date.timeDuration = date.to - date.from;
   date.eventDuration = getEventDuration(date.from, date.to);
 
   return {

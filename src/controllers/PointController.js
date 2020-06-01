@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {renderTemplate, replaceComponent, removeElement, RenderPosition} from '../utils/render.js';
 import TripPoint from '../components/trip-point';
 import EditTrip from '../components/edit-trip';
@@ -54,13 +55,12 @@ export default class PointController {
 
   _replaceEditToPoint() {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
+    this._mode = Mode.DEFAULT;
     this._editPointComponent.reset();
 
     if (document.contains(this._editPointComponent.getElement())) {
       replaceComponent(this._editPointComponent, this._pointComponent);
     }
-
-    this._mode = Mode.DEFAULT;
   }
 
   _replacePointToEdit() {
@@ -82,7 +82,14 @@ export default class PointController {
   _onSubmitBtnClick(evt) {
     evt.preventDefault();
     const pointData = this._editPointComponent.getData();
-    this._parentController.onDataChange(this, this._point, pointData);
+
+    if (!_.isEqual(this._point, pointData)) {
+      this._mode = Mode.DEFAULT;
+      this._parentController.onDataChange(this, this._point, pointData);
+    } else {
+      console.log('equal');
+      this._replaceEditToPoint();
+    }
   }
 
   _onFavoriteButtonClick() {

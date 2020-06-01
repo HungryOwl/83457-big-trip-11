@@ -30,7 +30,8 @@ export class TripDayController {
     } else {
       const isSuccess = this._pointsModel.updatePoint(oldData.id, newData);
       if (isSuccess) {
-        pointController.render(newData, PointControllerMode.DEFAULT);
+        console.log(pointController.getMode());
+        pointController.render(newData, pointController.getMode());
       }
     }
   }

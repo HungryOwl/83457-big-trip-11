@@ -87,8 +87,7 @@ export default class PointController {
       this._mode = Mode.DEFAULT;
       this._parentController.onDataChange(this, this._point, pointData);
     } else {
-      console.log('equal');
-      this._replaceEditToPoint();
+      this.setDefaultView();
     }
   }
 
@@ -112,6 +111,7 @@ export default class PointController {
 
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
+      this._mode = Mode.DEFAULT;
       this._replaceEditToPoint();
     }
   }
@@ -141,6 +141,12 @@ export default class PointController {
           this._replaceEditToPoint();
         } else {
           renderTemplate(this._container, this._pointComponent, RenderPosition.BEFOREEND);
+        }
+        break;
+      case Mode.EDIT:
+        if (oldPointComponent && oldEditPointComponent) {
+          replaceComponent(oldPointComponent, this._pointComponent);
+          replaceComponent(oldEditPointComponent, this._editPointComponent);
         }
         break;
       case Mode.ADDING:
